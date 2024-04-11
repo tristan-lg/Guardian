@@ -1,0 +1,33 @@
+# IDEs and editors
+/.idea/*
+!/.idea/inspectionProfiles
+!/.idea/symfony2.xml
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+/load-test/jmeter/
+/load-test/build/
+/load-test/jmeter.log
+
+#Projet
+workflow.png

@@ -1,0 +1,26 @@
+parameters:
+    level: max
+    paths:
+        - src/
+        - bin/
+        - config/
+        - public/
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    disallowedFunctionCalls:
+            -
+                function:
+                    - 'var_dump()'
+                    - 'print_r()'
+                    - 'dump()'
+                    - 'dd()'
+                message: 'only allowed for debugging purpose'
+
+
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon

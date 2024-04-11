@@ -1,0 +1,92 @@
+version: '3.4'
+
+services:
+  # Application entrypoint (reverse-proxy)
+  traefik:
+    build:
+      context: ./docker/traefik/local
+    ports:
+      - "8080:8080" #Traefik admin page
+      - "443:443" #Entrypoint for https
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - local
+
+  httpd:
+    build:
+      context: ./app/public
+      dockerfile: ../../docker/httpd/local/Dockerfile
+    volumes:
+      - ./app/public:/var/www/html/public
+      - ./docker/httpd/local/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./docker/httpd/local/conf/vhost.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+    environment:
+      - PHP_FPM_SERVER=phpfpmcontainer
+    working_dir: /var/www/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.sticky.cookie.secure=true"
+      - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.sticky.cookie.httpOnly=true"
+      - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.server.port=80"
+      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.entrypoints=${TRAEFIK_ENTRYPOINTS:-https}"
+      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.tls=${TRAEFIK_TLS:-true}"
+    networks:
+      local:
+        aliases:
+          - httpdcontainer
+
+  phpfpm:
+    build:
+      context: ./app
+      dockerfile: ../docker/phpfpm/local/Dockerfile
+    depends_on:
+      - database
+    volumes:
+      - ./app:/var/www/html/
+      - ./docker/phpfpm/local/conf.d/php.ini:/usr/local/etc/php/conf.d/99-php.ini
+      - ./docker/phpfpm/local/conf.d/dev.ini:/usr/local/etc/php/conf.d/99-dev.ini
+      - ./docker/phpfpm/local/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+    environment:
+      - APP_ENV=dev
+    labels:
+      - "traefik.enable=false"
+    networks:
+      local:
+        aliases:
+          - phpfpmcontainer
+
+  # Database container
+  database:
+    image: mysql:8.0
+    ports:
+      - '33061:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USER: 'guardian'
+      MYSQL_PASSWORD: 'guardian'
+      MYSQL_DATABASE: 'guardian'
+    labels:
+        - "traefik.enable=false"
+    networks:
+      - local
+
+  # Mailcatcher
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - local
+
+volumes:
+  db_data:
+
+networks:
+  local:
+    driver: bridge
