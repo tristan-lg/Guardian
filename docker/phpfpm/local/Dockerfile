@@ -1,11 +1,12 @@
 FROM php:8.2-fpm
 
 RUN apt-get update  \
-    && apt-get install -y git zip libzip-dev \
+    && apt-get install -y git zip libzip-dev libicu-dev \
     && apt-get clean
 
 RUN pecl install xdebug
-RUN docker-php-ext-install -j$(nproc) iconv pdo_mysql zip opcache
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install -j$(nproc) iconv pdo_mysql zip opcache intl
 
 #Set the workdir
 WORKDIR /var/www/html
