@@ -1,0 +1,13 @@
+{% extends '@!EasyAdmin/page/login.html.twig' %}
+
+{% block header_logo %}
+    {% if ea is defined %}
+        <a class="logo logo-long text-center mb-3" title="DENIS LE GACQUE FORMATIONS" href="{{ path(ea.dashboardRouteName) }}">
+            <img src="{{ asset('imgs/guardian_logo.png') }}" alt="DENIS LE GACQUE FORMATIONS">
+        </a>
+    {% else %}
+        <div class="logo logo-long text-center mb-3 mt-3">
+            <img src="{{ asset('imgs/guardian_logo.png') }}" alt="DENIS LE GACQUE FORMATIONS">
+        </div>
+    {% endif %}
+{% endblock header_logo %}
