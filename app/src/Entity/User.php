@@ -74,9 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
         return $this;
     }
 
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 
     public function getUserIdentifier(): string
     {
@@ -85,6 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
 
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        $user->setPassword($newHashedPassword);
+        $this->setPassword($newHashedPassword);
     }
 }
