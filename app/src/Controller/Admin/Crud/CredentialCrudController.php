@@ -3,6 +3,9 @@
 namespace App\Controller\Admin\Crud;
 
 use App\Entity\Credential;
+use App\Security\Voter\CredentialVoter;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -30,6 +33,14 @@ class CredentialCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Identifiant')
             ->setEntityLabelInPlural('Identifiants');
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $actions =  parent::configureActions($actions);
+
+        $actions->setPermission(Action::DELETE, CredentialVoter::DELETE);
+        return $actions;
     }
 
 

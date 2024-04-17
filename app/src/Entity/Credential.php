@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CredentialRepository;
+use App\Validator\IsCredentialValid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,7 +24,8 @@ class Credential
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 512)]
+    #[ORM\Column(length: 255)]
+    #[IsCredentialValid]
     private ?string $accessToken = null;
 
     /**
