@@ -9,6 +9,7 @@ use App\Service\GitlabApiService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfonycasts\DynamicForms\DependentField;
@@ -27,12 +28,18 @@ class ProjectType extends AbstractType
         $builder = new DynamicFormBuilder($builder);
 
         $builder
-            ->add('name')
+            ->add('name', TextType::class, [
+                'label' => 'Nom du projet',
+            ])
             ->add('credential', EntityType::class, [
                 'class' => Credential::class,
                 'empty_data' => null,
                 'placeholder' => 'Selectionner un identifiant',
                 'choice_label' => 'name',
+                'label' => 'Identifiant de connexion',
+                'attr' => [
+                    'class' => 'field-text'
+                ]
             ])
         ;
 
@@ -53,6 +60,7 @@ class ProjectType extends AbstractType
 
             $field->add(ChoiceType::class, [
                 'choices' => $projects,
+                'label' => 'Projet git associé',
             ]);
         });
     }
