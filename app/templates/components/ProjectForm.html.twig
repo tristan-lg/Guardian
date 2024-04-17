@@ -1,7 +1,10 @@
 <div {{ attributes }}>
-    <strong>{{ this.randomNumber }}</strong>
 
-    <button
-            data-action="live#$render"
-    >Generate a new number!</button>
+    {{ form_start(form) }}
+
+    {{ form_widget(form) }}
+
+    <button>Save</button>
+    {{ form_end(form) }}
+
 </div>

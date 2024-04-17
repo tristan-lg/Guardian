@@ -3,6 +3,7 @@
 namespace App\Component;
 
 use App\Entity\Credential;
+use App\Entity\DTO\ProjectApiDTO;
 use App\Entity\Project;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -22,13 +23,27 @@ class GitlabApiClient
         $this->headers = ['Authorization' => 'Bearer ' . $credential->getAccessToken()];
     }
 
-    public function check(): bool
+    public function checkCredentials(): bool
     {
         try {
             return $this->get('version')->getStatusCode() === Response::HTTP_OK;
         } catch (Throwable) {
             return false;
         }
+    }
+
+    /**
+     * @return ProjectApiDTO[]
+     */
+    public function getAssociatedProjects(): array
+    {
+        $projects = json_decode($this->get('projects', [
+            'min_access_level' => 10,
+            'simple' => true,
+            'per_page' => 100
+        ])->getContent(), true);
+
+        return array_map(fn($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
     }
 
     private function get(string $endpoint, array $options = []): ResponseInterface
@@ -42,7 +57,6 @@ class GitlabApiClient
             ]
         );
     }
-
 
     public static function createClient(
         HttpClientInterface $client,

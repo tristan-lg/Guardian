@@ -33,7 +33,7 @@ class IsCredentialValidValidator extends ConstraintValidator
         }
 
         $client = $this->gitlabApiService->getClient($credentials);
-        if (!$client->check()) {
+        if (!$client->checkCredentials()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->setParameter('{{ host }}', $credentials->getDomain())

@@ -5,6 +5,10 @@
 
 {% block page_content %}
     Contenu de la page
-    <twig:ProjectForm />
+
+    {{ component('ProjectForm', {
+        initialFormData: project,
+        form: form
+    }) }}
 {% endblock %}
 
