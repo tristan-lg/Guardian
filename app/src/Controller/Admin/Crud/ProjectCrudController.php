@@ -23,13 +23,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProjectCrudController extends AbstractCrudController
 {
-
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly ProjectScanService $projectScanService
-    ) {
-    }
+    ) {}
 
     public static function getEntityFqcn(): string
     {
@@ -49,7 +47,7 @@ class ProjectCrudController extends AbstractCrudController
             FormField::addTab('Fichiers', 'fas fa-file'),
             ArrayField::new('files', false)
                 ->setTemplatePath('@Admin/field/files.html.twig')
-                ->hideOnForm()
+                ->hideOnForm(),
         ];
     }
 
@@ -57,7 +55,8 @@ class ProjectCrudController extends AbstractCrudController
     {
         return $crud
             ->setEntityLabelInSingular('Projet')
-            ->setEntityLabelInPlural('Projets');
+            ->setEntityLabelInPlural('Projets')
+        ;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -69,7 +68,7 @@ class ProjectCrudController extends AbstractCrudController
             ->add(Crud::PAGE_DETAIL, Action::new('scan', 'Scanner le projet')
                 ->linkToCrudAction('scan')
             )
-            ;
+        ;
     }
 
     public function new(AdminContext $context): Response
@@ -83,7 +82,7 @@ class ProjectCrudController extends AbstractCrudController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($project);
 
-            //Scan project for the first time
+            // Scan project for the first time
             $this->projectScanService->scanProject($project);
             $this->em->flush();
 
@@ -98,7 +97,7 @@ class ProjectCrudController extends AbstractCrudController
 
         return $this->render('@Admin/crud/project/new.html.twig', [
             'project' => $project,
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
@@ -128,7 +127,7 @@ class ProjectCrudController extends AbstractCrudController
             throw new Exception('Project not found');
         }
 
-        /** @var string|null $fileKey */
+        /** @var null|string $fileKey */
         $fileKey = $context->getRequest()->get('file');
         if (!$fileKey) {
             throw new Exception('File not found');
@@ -144,11 +143,7 @@ class ProjectCrudController extends AbstractCrudController
         return $this->render('@Admin/crud/project/view_file.html.twig', [
             'project' => $project,
             'fileKey' => $fileKey,
-            'fileContent' => $fileContent
+            'fileContent' => $fileContent,
         ]);
     }
-
-
-
-
 }

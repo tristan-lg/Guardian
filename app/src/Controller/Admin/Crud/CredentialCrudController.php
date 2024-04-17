@@ -32,16 +32,16 @@ class CredentialCrudController extends AbstractCrudController
     {
         return $crud
             ->setEntityLabelInSingular('Identifiant')
-            ->setEntityLabelInPlural('Identifiants');
+            ->setEntityLabelInPlural('Identifiants')
+        ;
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        $actions =  parent::configureActions($actions);
+        $actions = parent::configureActions($actions);
 
         $actions->setPermission(Action::DELETE, CredentialVoter::DELETE);
+
         return $actions;
     }
-
-
 }

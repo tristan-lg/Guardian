@@ -39,6 +39,11 @@ class Credential
         $this->projects = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return ($this->getName() ?? '') . ' (' . ($this->getDomain() ?? '') . ')';
+    }
+
     public function getId(): string
     {
         return $this->id;
@@ -109,11 +114,4 @@ class Credential
 
         return $this;
     }
-
-    public function __toString(): string
-    {
-        return ($this->getName() ?? '')  . ' (' . ($this->getDomain() ?? '') . ')';
-    }
-
-
 }

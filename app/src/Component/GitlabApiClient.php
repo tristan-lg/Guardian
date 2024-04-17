@@ -27,7 +27,7 @@ class GitlabApiClient
     public function checkCredentials(): bool
     {
         try {
-            return $this->get('version')->getStatusCode() === Response::HTTP_OK;
+            return Response::HTTP_OK === $this->get('version')->getStatusCode();
         } catch (Throwable) {
             return false;
         }
@@ -41,22 +41,11 @@ class GitlabApiClient
         $projects = json_decode($this->get('projects', [
             'min_access_level' => 10,
             'simple' => true,
-            'per_page' => 100
+            'per_page' => 100,
         ])->getContent(), true);
 
-        return array_map(fn($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
-    }
-
-    private function get(string $endpoint, array $options = []): ResponseInterface
-    {
-        return $this->client->request(
-            'GET',
-            'https://' . $this->credential->getDomain() . '/api/' . self::API_VERSION . '/' . $endpoint,
-            [
-                'headers' => $this->headers,
-                'query' => $options,
-            ]
-        );
+        // @phpstan-ignore-next-line
+        return array_map(fn ($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
     }
 
     public static function createClient(
@@ -68,7 +57,7 @@ class GitlabApiClient
 
     public function getFileContent(Project $project, string $path): string
     {
-        $response = $this->get('projects/' . $project->getProjectId(). '/repository/files/' . urlencode($path) . '/raw', [
+        $response = $this->get('projects/' . $project->getProjectId() . '/repository/files/' . urlencode($path) . '/raw', [
             'ref' => $project->getRef(),
         ]);
 
@@ -83,7 +72,7 @@ class GitlabApiClient
             return array_values($file)[0]['path'] ?? null;
         }
 
-        foreach (array_filter($trees, fn($tree) => $tree['type'] === 'tree' && !in_array($tree['name'], self::EXCLUDED_DIRS)) as $tree) {
+        foreach (array_filter($trees, fn ($tree) => 'tree' === $tree['type'] && !in_array($tree['name'], self::EXCLUDED_DIRS)) as $tree) {
             if ($file = $this->searchFileOnProject($project, $filename, $tree['path'])) {
                 return $file;
             }
@@ -92,14 +81,26 @@ class GitlabApiClient
         return null;
     }
 
+    private function get(string $endpoint, array $options = []): ResponseInterface
+    {
+        return $this->client->request(
+            'GET',
+            'https://' . $this->credential->getDomain() . '/api/' . self::API_VERSION . '/' . $endpoint,
+            [
+                'headers' => $this->headers,
+                'query' => $options,
+            ]
+        );
+    }
+
     private function requestProjectTree(Project $project, ?string $path = null): array
     {
-        $response = $this->get('projects/' . $project->getProjectId(). '/repository/tree', [
+        $response = $this->get('projects/' . $project->getProjectId() . '/repository/tree', [
             'path' => $path,
             'ref' => $project->getRef(),
             'per_page' => 100,
         ]);
 
-        return json_decode($response->getContent(), true);
+        return (array) json_decode($response->getContent(), true);
     }
 }

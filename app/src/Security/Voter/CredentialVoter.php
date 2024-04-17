@@ -7,8 +7,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-use function PHPUnit\Framework\matches;
-
 class CredentialVoter extends Voter
 {
     public const string DELETE = 'DELETE_CREDENTIAL';
@@ -20,7 +18,7 @@ class CredentialVoter extends Voter
     }
 
     /**
-     * @param  Credential  $subject
+     * @param Credential $subject
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
@@ -30,7 +28,7 @@ class CredentialVoter extends Voter
             return false;
         }
 
-        return match($attribute) {
+        return match ($attribute) {
             self::DELETE => $subject->getProjects()->isEmpty(),
             default => false,
         };

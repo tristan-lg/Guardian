@@ -4,31 +4,35 @@ namespace App\Validator;
 
 use App\Entity\Credential;
 use App\Service\GitlabApiService;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class IsCredentialValidValidator extends ConstraintValidator
 {
-
     public function __construct(
         private readonly GitlabApiService $gitlabApiService
-    ) {
-    }
+    ) {}
 
-    public function validate($value, Constraint $constraint)
+    /**
+     * @param IsCredentialValid $constraint
+     */
+    public function validate(mixed $value, Constraint $constraint)
     {
-        /* @var IsCredentialValid $constraint */
-
-        if (null === $value || '' === $value) {
+        if (null === $value || '' === $value || !is_string($value)) {
             return;
         }
 
-        //Ensure credentials are valid
-        $credentials = $this->context->getRoot()->getData();
+        // Ensure credentials are valid
+        /** @var Form $form */
+        $form = $this->context->getRoot();
+        $credentials = $form->getData();
         if (!$credentials instanceof Credential) {
-            $this->context->buildViolation($constraint->credentialCreationError)
+            $this->context
+                ->buildViolation($constraint->credentialCreationError)
                 ->addViolation()
             ;
+
             return;
         }
 
@@ -36,7 +40,7 @@ class IsCredentialValidValidator extends ConstraintValidator
         if (!$client->checkCredentials()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
-                ->setParameter('{{ host }}', $credentials->getDomain())
+                ->setParameter('{{ host }}', $credentials->getDomain() ?? '')
                 ->addViolation()
             ;
         }

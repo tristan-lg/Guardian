@@ -11,14 +11,10 @@ class ProjectScanService
     public function __construct(
         private readonly GitlabApiService $clientService,
         private readonly EntityManagerInterface $em
-    ) {
-    }
+    ) {}
 
     /**
-     * Scan the project and update the file list
-     * @param  Project  $project
-     *
-     * @return void
+     * Scan the project and update the file list.
      */
     public function scanProject(Project $project): void
     {
@@ -26,15 +22,17 @@ class ProjectScanService
 
         $expectedFiles = ['composer.lock', 'composer.json'];
 
-        $foundFiles = [];
+        $foundFileList = [];
         foreach ($expectedFiles as $file) {
-            $foundFiles[$file] = $client->searchFileOnProject($project, $file);
-            if (!$file) {
+            $found = $client->searchFileOnProject($project, $file);
+            $foundFileList[$file] = $found;
+
+            if (!$found) {
                 throw new Exception("File '{$file}' not found");
             }
         }
 
-        $project->setFiles($foundFiles);
+        $project->setFiles($foundFileList);
         $this->em->flush();
     }
 
@@ -43,6 +41,6 @@ class ProjectScanService
         $client = $this->clientService->getClient($project->getCredential());
         $fileContent = $client->getFileContent($project, $filepath);
 
-        return json_decode($fileContent, true);
+        return (array) json_decode($fileContent, true);
     }
 }

@@ -1,22 +1,27 @@
 :::Site pour faire du reporting de sécurité sur nos applications en production
-> Analyse automatique du code source de la branche 'master'
-	> Lecture du composer.lock et vérification des CVE
-	> Verification de la version PHP
-	> Vérification de la version de Symfony
-	> Vérifier que le fichiers composer est bien écrit
-	> Vérifier aussi les version des librairies js ?
-	> Affichage du score de l'application : Rate basé sur les CVE
-	> Affichage de la date d'expiration des versions (Maintenance & Security)
-	> Dashboard avec les alertes de toutes nos applications
-	> Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons)
-	> Analyse périodique (tous les jours ?)
+[ ] Analyse automatique du code source de la branche 'master'
+	[ ] Lecture du composer.lock vérification des CVE
+	[ ] Verification de la version PHP (via composer.json) et vérification fin LTS / CVE connues
+	[ ] Vérification de la version de Symfony (via composer.json) et vérification fin LTS / CVE connues
+	[ ] Vérifier que le fichiers composer est bien écrit
+	[ ] Vérifier aussi les version des librairies js ?
+	[ ] Affichage du score de l'application : Rate basé sur les CVE
+	[ ] Affichage de la date d'expiration des versions (Maintenance & Security)
+	[ ] Dashboard avec les alertes de toutes nos applications
+	[ ] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons)
+	[ ] Analyse périodique (tous les jours ?)
 
-> Pouvoir rajouter une application
-	> Nom
-	> Lien vers le code source
-	> Icone ?
+[X] Pouvoir rajouter une application
+	[X] Nom
+	[X] Lien vers le code source
 
-> Parametrer les identifiants git (role view only) pour faire l'analyse
+[X] Parametrer les identifiants git (role view only) pour faire l'analyse
 
 
 [ ] Faire l'analyse des CVE via l'api
+[ ] Faire une page d'analyse, sur laquelle on clique sur un bouton pour lancer une analyse
+    Une analyse récupère le contenu des fichiers, et stock les versions demandées & installées
+    De plus (plus tard), l'analyse doit indiquer si une version est obsolète (patch)
+    De plus (plus tard), l'analyse doit indiquer si une version possède une CVE
+
+    Permettre d'afficher les analyses executées dans un des onglets du détail d'un projet

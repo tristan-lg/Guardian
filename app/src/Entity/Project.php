@@ -83,7 +83,7 @@ class Project
 
     public function getRef(): string
     {
-        //TODO - Later enable customization per project
+        // TODO - Later enable customization per project
 
         return 'master';
     }

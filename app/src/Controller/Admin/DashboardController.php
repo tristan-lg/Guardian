@@ -16,7 +16,7 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-         return $this->render('@Admin/dashboard/dashboard.html.twig');
+        return $this->render('@Admin/dashboard/dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard
@@ -29,10 +29,13 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+
         yield MenuItem::linkToCrud('Projets', 'fas fa-list', Project::class);
 
         yield MenuItem::section('Gestion des accès');
+
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
+
         yield MenuItem::linkToCrud('Identifiants', 'fas fa-user-secret', Credential::class);
     }
 }

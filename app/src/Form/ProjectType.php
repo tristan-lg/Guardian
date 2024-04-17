@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Credential;
-use App\Entity\DTO\ProjectApiDTO;
 use App\Entity\Project;
 use App\Service\GitlabApiService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -17,11 +16,9 @@ use Symfonycasts\DynamicForms\DynamicFormBuilder;
 
 class ProjectType extends AbstractType
 {
-
     public function __construct(
         private readonly GitlabApiService $gitlabApiService
-    ) {
-    }
+    ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -38,8 +35,8 @@ class ProjectType extends AbstractType
                 'choice_label' => 'name',
                 'label' => 'Identifiant de connexion',
                 'attr' => [
-                    'class' => 'field-text'
-                ]
+                    'class' => 'field-text',
+                ],
             ])
         ;
 
@@ -48,11 +45,11 @@ class ProjectType extends AbstractType
                 return;
             }
 
-            //Fetch projects available for the selected credential
+            // Fetch projects available for the selected credential
             $client = $this->gitlabApiService->getClient($credential);
             $projectsData = $client->getAssociatedProjects();
 
-            //Transform as int => string array
+            // Transform as int => string array
             $projects = [];
             foreach ($projectsData as $project) {
                 $projects[sprintf('%d - %s', $project->id, $project->name)] = $project->id;
