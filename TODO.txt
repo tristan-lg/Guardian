@@ -17,3 +17,6 @@
 	> Icone ?
 
 > Parametrer les identifiants git (role view only) pour faire l'analyse
+
+
+[ ] Faire l'analyse des CVE via l'api

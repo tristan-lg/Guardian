@@ -13,10 +13,11 @@ use Throwable;
 class GitlabApiClient
 {
     public const string API_VERSION = 'v4';
+    private const array EXCLUDED_DIRS = ['vendor', 'node_modules', '.idea', 'docker'];
 
     private array $headers;
 
-    private function __construct(
+    protected function __construct(
         private readonly HttpClientInterface $client,
         private readonly Credential $credential
     ) {
@@ -52,7 +53,7 @@ class GitlabApiClient
             'GET',
             'https://' . $this->credential->getDomain() . '/api/' . self::API_VERSION . '/' . $endpoint,
             [
-                'headers' => $this->getHeaders($this->credential),
+                'headers' => $this->headers,
                 'query' => $options,
             ]
         );
@@ -60,65 +61,45 @@ class GitlabApiClient
 
     public static function createClient(
         HttpClientInterface $client,
-        Credential $credential
+        Credential $credential,
     ): GitlabApiClient {
         return new self($client, $credential);
     }
 
-    private function downloadFile(Project $project, string $path): string
+    public function getFileContent(Project $project, string $path): string
     {
-        $response = $this->client->request(
-            'GET',
-            'https://' . $project->getCredential()->getDomain() . '/api/v4/projects/' . $project->getProjectId(). '/repository/files/' . urlencode($path) . '/raw',
-            [
-                'headers' => $this->getHeaders($project->getCredential()),
-                'query' => [
-                    'ref' => 'master',
-                ],
-            ]
-        );
+        $response = $this->get('projects/' . $project->getProjectId(). '/repository/files/' . urlencode($path) . '/raw', [
+            'ref' => $project->getRef(),
+        ]);
 
         return $response->getContent();
     }
 
-    private function searchComposerLock(Project $project, ?string $path = null): ?array
+    public function searchFileOnProject(Project $project, string $filename, ?string $path = null): ?string
     {
-        $trees = $this->requestTree($project, $path);
-        $composerFile = array_filter($trees, fn ($tree) => $tree['name'] === 'composer.json');
+        $trees = $this->requestProjectTree($project, $path);
 
-        if ($composerFile) {
-            return array_values($composerFile)[0];
+        if ($file = array_filter($trees, fn ($tree) => $tree['name'] === $filename)) {
+            return array_values($file)[0]['path'] ?? null;
         }
 
-        foreach (array_filter($trees, fn($tree) => $tree['type'] === 'tree') as $tree) {
-            if ($composerFile = $this->searchComposerLock($project, $tree['path'])) {
-                return $composerFile;
+        foreach (array_filter($trees, fn($tree) => $tree['type'] === 'tree' && !in_array($tree['name'], self::EXCLUDED_DIRS)) as $tree) {
+            if ($file = $this->searchFileOnProject($project, $filename, $tree['path'])) {
+                return $file;
             }
         }
 
         return null;
     }
 
-    private function requestTree(Project $project, ?string $path = null): array
+    private function requestProjectTree(Project $project, ?string $path = null): array
     {
-        $response = $this->client->request(
-            'GET',
-            'https://' . $project->getCredential()->getDomain() . '/api/v4/projects/' . $project->getProjectId(). '/repository/tree',
-            [
-                'headers' => $this->getHeaders( $project->getCredential()),
-                'query' => [
-                    'path' => $path,
-                    'ref' => 'master',
-                    'per_page' => 100,
-                ],
-            ]
-        );
+        $response = $this->get('projects/' . $project->getProjectId(). '/repository/tree', [
+            'path' => $path,
+            'ref' => $project->getRef(),
+            'per_page' => 100,
+        ]);
 
         return json_decode($response->getContent(), true);
-    }
-
-    private function getHeaders(Credential $credential): array
-    {
-        return $this->headers;
     }
 }

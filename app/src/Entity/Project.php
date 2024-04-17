@@ -25,6 +25,9 @@ class Project
     #[ORM\Column]
     private ?int $projectId = null;
 
+    #[ORM\Column]
+    private array $files = [];
+
     public function getId(): string
     {
         return $this->id;
@@ -38,18 +41,6 @@ class Project
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getGitUrl(): ?string
-    {
-        return $this->gitUrl;
-    }
-
-    public function setGitUrl(string $gitUrl): static
-    {
-        $this->gitUrl = $gitUrl;
 
         return $this;
     }
@@ -76,5 +67,24 @@ class Project
         $this->projectId = $projectId;
 
         return $this;
+    }
+
+    public function getFiles(): array
+    {
+        return $this->files;
+    }
+
+    public function setFiles(array $files): static
+    {
+        $this->files = $files;
+
+        return $this;
+    }
+
+    public function getRef(): string
+    {
+        //TODO - Later enable customization per project
+
+        return 'master';
     }
 }
