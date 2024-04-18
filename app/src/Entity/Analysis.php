@@ -113,4 +113,9 @@ class Analysis
 
         return $this;
     }
+
+    public function getDurationInSeconds(): int
+    {
+        return $this->endAt->getTimestamp() - $this->runAt->getTimestamp();
+    }
 }

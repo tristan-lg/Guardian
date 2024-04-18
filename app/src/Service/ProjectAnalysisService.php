@@ -6,6 +6,7 @@ use App\Entity\Advisory;
 use App\Entity\Analysis;
 use App\Entity\Package;
 use App\Entity\Project;
+use App\Enum\Severity;
 use App\Message\RunAnalysis;
 use Composer\Semver\Semver;
 use DateTimeImmutable;
@@ -57,6 +58,11 @@ class ProjectAnalysisService
             );
         }
 
+        //Compute grade
+        $analysis->setGrade(
+            $this->getGrade($analysis)
+        );
+
         //Add all packages to the analysis, persist & flush
         $analysis->setEndAt(new DateTimeImmutable());
         foreach ($packages as $package) {
@@ -107,5 +113,42 @@ class ProjectAnalysisService
             $advisoriesForPackage,
             fn ($adv) => Semver::satisfies($package->getInstalledVersion(), $adv['affectedVersions'])
         ));
+    }
+
+    /**
+     * Compute the grade for the analysis
+     * A (0) => No issue
+     * B (1) => Composer.json is malformed, or at least one of these is not the LTS (PHP / Symfony)
+     * C (2) => At least one of these is out of security support (end of support) (PHP / Symfony)
+     * D (3) => At least one package has CVE (nothing critical)
+     * E (4) => At least one package has critical CVE
+     *
+     * @return string
+     */
+    private function getGrade(Analysis $analysis): string
+    {
+        $grade = 0;
+        foreach ($analysis->getPackages() as $package) {
+            //Check if package is malformated
+            if ($package->isVersionMalformated()) {
+                $grade = max($grade, 1);
+            }
+
+            //TODO - Check at least one of these is not the LTS (PHP / Symfony) => GRADE B (1)
+
+            //TODO - Check at least one of these is out of security support (end of support) (PHP / Symfony) => GRADE C (2)
+
+            //Check if package has advisories
+            if ($package->getAdvisories()->count() > 0) {
+                $grade = max($grade, 3);
+            }
+
+            //Check if at least one critical severity
+            if ($package->getAdvisories()->filter(fn (Advisory $adv) => $adv->getSeverityEnum() === Severity::CRITICAL)->count() > 0) {
+                $grade = max($grade, 4);
+            }
+        }
+
+        return ['A', 'B', 'C', 'D', 'E'][$grade];
     }
 }

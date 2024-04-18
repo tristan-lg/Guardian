@@ -5,23 +5,24 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Fichier</th>
-            <th>Chemin sur le repository</th>
+            <th>Date de début</th>
+            <th>Durée</th>
+            <th>Grade</th>
             <th>&nbsp;</th>
         </tr>
         </thead>
         <tbody>
-        {% for key, item in field.value %}
+        {% for analysis in field.value %}
             <tr>
-                <td>{{ key }}</td>
-                <td>{{ item }}</td>
+                <td>{{ analysis.runAt|date }}</td>
+                <td>{{ analysis.getDurationInSeconds }} sec.</td>
+                <td>{{ analysis.grade }}</td>
                 <td> <a href="{{
                         ea_url()
-                        .setController('App\\Controller\\Admin\\Crud\\ProjectCrudController')
-                        .setAction('viewFile')
-                        .set('file', key)
-                        .setEntityId(ea.entity.instance.id)
-                    }}" class="btn btn-sm btn-primary">Visualiser le fichier</a></td>
+                        .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
+                        .setAction('detail')
+                        .setEntityId(analysis.id)
+                    }}" class="btn btn-sm btn-primary">Visualiser le détail</a></td>
             </tr>
         {% endfor %}
         </tbody>
