@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Project;
+use App\Exception\ProjectFileNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -36,8 +37,13 @@ class ProjectScanService
         $this->em->flush();
     }
 
-    public function getFileJsonContent(Project $project, string $filepath): array
+    public function getFileJsonContent(Project $project, string $fileKey): array
     {
+        $filepath = $project->getFiles()[$fileKey];
+        if (!$filepath) {
+            throw new ProjectFileNotFoundException($fileKey);
+        }
+
         $client = $this->clientService->getClient($project->getCredential());
         $fileContent = $client->getFileContent($project, $filepath);
 

@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 
-class UserCrudController extends AbstractCrudController
+class UserCrudController extends AbstractGuardianCrudController
 {
     public static function getEntityFqcn(): string
     {
@@ -20,17 +20,13 @@ class UserCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->add(Crud::PAGE_EDIT, Action::INDEX)
-            ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->add(Crud::PAGE_EDIT, Action::DETAIL)
-
             ->remove(Crud::PAGE_INDEX, Action::NEW)
         ;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
-        return $crud
+        return parent::configureCrud($crud)
             ->setEntityLabelInSingular('Utilisateur')
             ->setEntityLabelInPlural('Utilisateurs')
         ;

@@ -1,7 +1,7 @@
 :::Site pour faire du reporting de sécurité sur nos applications en production
 [ ] Analyse automatique du code source de la branche 'master'
 	[ ] Lecture du composer.lock vérification des CVE
-	[ ] Verification de la version PHP (via composer.json) et vérification fin LTS / CVE connues
+	[-] Verification de la version PHP (via composer.json) et vérification fin LTS / CVE connues [Compliqué car on ne connait pas la version installée sur le serveur]
 	[ ] Vérification de la version de Symfony (via composer.json) et vérification fin LTS / CVE connues
 	[ ] Vérifier que le fichiers composer est bien écrit
 	[ ] Vérifier aussi les version des librairies js ?

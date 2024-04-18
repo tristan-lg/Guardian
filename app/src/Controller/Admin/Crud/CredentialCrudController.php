@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class CredentialCrudController extends AbstractCrudController
+class CredentialCrudController extends AbstractGuardianCrudController
 {
     public static function getEntityFqcn(): string
     {
@@ -30,7 +30,7 @@ class CredentialCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return $crud
+        return parent::configureCrud($crud)
             ->setEntityLabelInSingular('Identifiant')
             ->setEntityLabelInPlural('Identifiants')
         ;
@@ -38,10 +38,7 @@ class CredentialCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $actions = parent::configureActions($actions);
-
-        $actions->setPermission(Action::DELETE, CredentialVoter::DELETE);
-
-        return $actions;
+        return parent::configureActions($actions)
+            ->setPermission(Action::DELETE, CredentialVoter::DELETE);
     }
 }

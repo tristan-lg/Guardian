@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
@@ -27,6 +29,17 @@ class Project
 
     #[ORM\Column]
     private array $files = [];
+
+    /**
+     * @var Collection<int, Analysis>
+     */
+    #[ORM\OneToMany(targetEntity: Analysis::class, mappedBy: 'project')]
+    private Collection $analyses;
+
+    public function __construct()
+    {
+        $this->analyses = new ArrayCollection();
+    }
 
     public function getId(): string
     {
@@ -86,5 +99,35 @@ class Project
         // TODO - Later enable customization per project
 
         return 'master';
+    }
+
+    /**
+     * @return Collection<int, Analysis>
+     */
+    public function getAnalyses(): Collection
+    {
+        return $this->analyses;
+    }
+
+    public function addAnalysis(Analysis $analysis): static
+    {
+        if (!$this->analyses->contains($analysis)) {
+            $this->analyses->add($analysis);
+            $analysis->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnalysis(Analysis $analysis): static
+    {
+        if ($this->analyses->removeElement($analysis)) {
+            // set the owning side to null (unless already changed)
+            if ($analysis->getProject() === $this) {
+                $analysis->setProject(null);
+            }
+        }
+
+        return $this;
     }
 }
