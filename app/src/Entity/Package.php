@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PackageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
@@ -36,6 +38,20 @@ class Package
 
     #[ORM\Column]
     private bool $subDependency;
+
+    #[ORM\Column]
+    private bool $versionMalformated = false;
+
+    /**
+     * @var Collection<int, Advisory>
+     */
+    #[ORM\OneToMany(targetEntity: Advisory::class, mappedBy: 'package', cascade: ['persist'])]
+    private Collection $advisories;
+
+    public function __construct()
+    {
+        $this->advisories = new ArrayCollection();
+    }
 
     public function getId(): string
     {
@@ -122,6 +138,48 @@ class Package
     public function setSubDependency(bool $subDependency): static
     {
         $this->subDependency = $subDependency;
+
+        return $this;
+    }
+
+    public function isVersionMalformated(): bool
+    {
+        return $this->versionMalformated;
+    }
+
+    public function setVersionMalformated(bool $versionMalformated): static
+    {
+        $this->versionMalformated = $versionMalformated;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Advisory>
+     */
+    public function getAdvisories(): Collection
+    {
+        return $this->advisories;
+    }
+
+    public function addAdvisory(Advisory $advisory): static
+    {
+        if (!$this->advisories->contains($advisory)) {
+            $this->advisories->add($advisory);
+            $advisory->setPackage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdvisory(Advisory $advisory): static
+    {
+        if ($this->advisories->removeElement($advisory)) {
+            // set the owning side to null (unless already changed)
+            if ($advisory->getPackage() === $this) {
+                $advisory->setPackage(null);
+            }
+        }
 
         return $this;
     }

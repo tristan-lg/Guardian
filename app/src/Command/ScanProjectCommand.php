@@ -2,8 +2,10 @@
 
 namespace App\Command;
 
+use App\Entity\Package;
 use App\Entity\Project;
 use App\Service\GitlabApiService;
+use App\Service\ProjectAnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,6 +23,7 @@ class ScanProjectCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly GitlabApiService $gitlabApiService,
+        private readonly ProjectAnalysisService $projectAnalysisService
     ) {
         parent::__construct();
     }
@@ -50,14 +53,34 @@ class ScanProjectCommand extends Command
 
         $io->section('Scan the project : ' . $project->getName());
 
-        $client = $this->gitlabApiService->getClient($project->getCredential());
-        $composerLock = $client->searchFileOnProject($project, 'composer.lock');
-        if (!$composerLock) {
-            $io->error('Composer file not found');
+//        $client = $this->gitlabApiService->getClient($project->getCredential());
+//        $composerLock = $client->searchFileOnProject($project, 'composer.lock');
+//        if (!$composerLock) {
+//            $io->error('Composer file not found');
+//
+//            return Command::FAILURE;
+//        }
 
-            return Command::FAILURE;
-        }
+//        $package = new Package();
+//        $package->setName('adodb/adodb-php')
+//            ->setInstalledVersion('5.0.0');
+//
+//        $package2 = new Package();
+//        $package2->setName('composer/composer')
+//            ->setInstalledVersion('2.7.0');
+//
+//        $package3 = new Package();
+//        $package3->setName('guzzlehttp/guzzle')
+//            ->setInstalledVersion('6.1.0');
 
+
+//        $this->projectAnalysisService->injectPackageSecurityAdvisories([
+//            $package,
+//            $package2,
+//            $package3,
+//        ]);
+//
+//        dd($package, $package2, $package3);
         // TODO - perform scan ?
 
         return Command::SUCCESS;

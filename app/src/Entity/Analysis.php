@@ -31,7 +31,7 @@ class Analysis
     /**
      * @var Collection<int, Package>
      */
-    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'analysis')]
+    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'analysis', cascade: ['persist'])]
     private Collection $packages;
 
     #[ORM\Column]

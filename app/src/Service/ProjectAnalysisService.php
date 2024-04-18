@@ -2,22 +2,23 @@
 
 namespace App\Service;
 
+use App\Entity\Advisory;
 use App\Entity\Analysis;
 use App\Entity\Package;
 use App\Entity\Project;
 use App\Message\RunAnalysis;
+use Composer\Semver\Semver;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProjectAnalysisService
 {
     public function __construct(
-        private readonly GitlabApiService $clientService,
         private readonly EntityManagerInterface $em,
         private readonly MessageBusInterface $messageBus,
-        private readonly ProjectScanService $projectScanService
+        private readonly ProjectScanService $projectScanService,
+        private readonly PackagistApiService $packagistApiService
     ) {}
 
     public function scheduleAnalysis(Project $project): void
@@ -35,36 +36,38 @@ class ProjectAnalysisService
         $composerJson = $this->projectScanService->getFileJsonContent($project, 'composer.json');
         $composerLock = $this->projectScanService->getFileJsonContent($project, 'composer.lock');
 
-        // Create list of packages
+        // Create list of packages & advisories
         $packages = $this->createPackageList($composerJson, $composerLock);
+        $packagesNames = array_map(fn (Package $package) => $package->getName(), $packages);
+        $advisoriesDb = $this->packagistApiService->getPackageSecurityAdvisories($packagesNames);
+
+        //Run checks on all packages
+        foreach ($packages as $package) {
+            // Check if package has security advisories
+            foreach ($this->getPackageAdvisories($package, $advisoriesDb) as $advisory) {
+                $package->addAdvisory($advisory);
+            }
+
+            //Check if package is outdated
+            //TODO
+
+            //Check malformation
+            $package->setVersionMalformated(
+                $this->isPackageMalformated($package)
+            );
+        }
+
+        //Add all packages to the analysis, persist & flush
+        $analysis->setEndAt(new DateTimeImmutable());
         foreach ($packages as $package) {
             $analysis->addPackage($package);
         }
-
-        dd($packages);
-
-
-        dd($composerJson);
-        $client = $this->clientService->getClient($project->getCredential());
-
-        $expectedFiles = ['composer.lock', 'composer.json'];
-
-        $foundFileList = [];
-        foreach ($expectedFiles as $file) {
-            $found = $client->searchFileOnProject($project, $file);
-            $foundFileList[$file] = $found;
-
-            if (!$found) {
-                throw new Exception("File '{$file}' not found");
-            }
-        }
-
-        $project->setFiles($foundFileList);
+        $this->em->persist($analysis);
         $this->em->flush();
     }
 
     /**
-     * @return array
+     * @return Package[]
      */
     private function createPackageList(array $json, array $lock): array
     {
@@ -76,13 +79,33 @@ class ProjectAnalysisService
                 ->setName($lockPackage['name'])
                 ->setInstalledVersion($lockPackage['version'])
                 ->setRequiredVersion($jsonPackage)
-
+                ->setSubDependency($jsonPackage === null)
             ;
-            $packageList[$package['name']] = $package['version'];
+            $packageList[] = $package;
         }
 
-
+        return $packageList;
     }
 
+    private function isPackageMalformated(Package $package): bool
+    {
+        if ($package->getRequiredVersion() === null) {
+            return false;
+        }
 
+        return Semver::satisfies($package->getInstalledVersion(), $package->getRequiredVersion()) === false;
+    }
+
+    private function getPackageAdvisories(Package $package, array $advisories): array
+    {
+        $advisoriesForPackage = $advisories[$package->getName()] ?? null;
+        if ($advisoriesForPackage === null) {
+            return [];
+        }
+
+        return array_map(fn ($adv) => Advisory::fromPackagistApi($adv), array_filter(
+            $advisoriesForPackage,
+            fn ($adv) => Semver::satisfies($package->getInstalledVersion(), $adv['affectedVersions'])
+        ));
+    }
 }

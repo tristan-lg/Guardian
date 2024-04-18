@@ -53,6 +53,11 @@ class ProjectCrudController extends AbstractGuardianCrudController
             ArrayField::new('files', false)
                 ->setTemplatePath('@Admin/field/files.html.twig')
                 ->hideOnForm(),
+
+            FormField::addTab('Analyses', 'fas fa-flask'),
+            ArrayField::new('analyses', false)
+                ->setTemplatePath('@Admin/field/analyses.html.twig')
+                ->onlyOnDetail(),
         ];
     }
 

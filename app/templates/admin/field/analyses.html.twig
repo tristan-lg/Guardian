@@ -1,0 +1,31 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% if ea.crud.currentAction == 'detail' %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Fichier</th>
+            <th>Chemin sur le repository</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key, item in field.value %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ item }}</td>
+                <td> <a href="{{
+                        ea_url()
+                        .setController('App\\Controller\\Admin\\Crud\\ProjectCrudController')
+                        .setAction('viewFile')
+                        .set('file', key)
+                        .setEntityId(ea.entity.instance.id)
+                    }}" class="btn btn-sm btn-primary">Visualiser le fichier</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    Valeur impossible à afficher
+{% endif %}
