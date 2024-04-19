@@ -58,6 +58,11 @@ class ProjectAnalysisService
             );
         }
 
+        // Add all packages to the analysis
+        foreach ($packages as $package) {
+            $analysis->addPackage($package);
+        }
+
         // Compute grade
         $analysis->setGrade(
             $this->getGrade($analysis)
@@ -65,9 +70,6 @@ class ProjectAnalysisService
 
         // Add all packages to the analysis, persist & flush
         $analysis->setEndAt(new DateTimeImmutable());
-        foreach ($packages as $package) {
-            $analysis->addPackage($package);
-        }
         $this->em->persist($analysis);
         $this->em->flush();
 

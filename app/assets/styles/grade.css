@@ -27,7 +27,7 @@
 .c-grade--e {
     background-color: #e52d1a;
 }
-.c-grade[aria-selected="true"] {
+.c-grade[aria-current="true"] {
     opacity: 1;
     border: 2px solid black;
     line-height: calc(2rem - 4px);
