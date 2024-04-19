@@ -1,28 +1,24 @@
 :::Site pour faire du reporting de sécurité sur nos applications en production
-[ ] Analyse automatique du code source de la branche 'master'
-	[X] Lecture du composer.lock vérification des CVE
-	[-] Verification de la version PHP (via composer.json) et vérification fin LTS / CVE connues [Compliqué car on ne connait pas la version installée sur le serveur]
-	[ ] Vérification de la version de Symfony (via composer.json) et vérification fin LTS / CVE connues
-	[ ] Vérifier que le fichiers composer est bien écrit
-	[ ] Vérifier aussi les version des librairies js ?
-	[ ] Affichage du score de l'application : Rate basé sur les CVE
-	[ ] Affichage de la date d'expiration des versions (Maintenance & Security)
+[X] Ajouter un projet via git
+[X] Analyse automatique du code source de la branche 'master'
+[X] Lecture du composer.lock vérification des CVE
+[X] Affichage du score de l'application : Rate basé sur les CVE
+[X] Affichage des erreurs de sécurité
+
+
+== v2
 	[ ] Dashboard avec les alertes de toutes nos applications
+	[ ] Rajouter des canaux de communication (discord / email) en cas d'erreur
 	[ ] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons)
-	[ ] Analyse périodique (tous les jours ?)
+	[ ] Programmer une analyse journalière (via Scheduler)
 	[ ] Purger les analyses trop vielles (+ 5 / projet)
 
-[X] Pouvoir rajouter une application
-	[X] Nom
-	[X] Lien vers le code source
+== v3
+    [ ] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
+    [ ] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
+    [ ] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
+    [ ] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)
 
-[X] Parametrer les identifiants git (role view only) pour faire l'analyse
-
-
-[ ] Faire l'analyse des CVE via l'api
-[ ] Faire une page d'analyse, sur laquelle on clique sur un bouton pour lancer une analyse
-    Une analyse récupère le contenu des fichiers, et stock les versions demandées & installées
-    De plus (plus tard), l'analyse doit indiquer si une version est obsolète (patch)
-    De plus (plus tard), l'analyse doit indiquer si une version possède une CVE
-
-    Permettre d'afficher les analyses executées dans un des onglets du détail d'un projet
+== v4
+	[ ] Vérifier que le fichiers composer est bien écrit
+	[ ] Vérifier aussi les version des librairies js ?
