@@ -6,6 +6,9 @@
 [X] Affichage des erreurs de sécurité
 
 
+[ ] Faire le Dockerfile et le processus pour livrer le projet
+[ ] Intégrer la version du projet pour affichage
+
 == v2
 	[ ] Dashboard avec les alertes de toutes nos applications
 	[ ] Rajouter des canaux de communication (discord / email) en cas d'erreur
@@ -18,6 +21,7 @@
     [ ] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
     [ ] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
     [ ] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)
+    [ ] Permettre l'ajout d'utilisateur
 
 == v4
 	[ ] Vérifier que le fichiers composer est bien écrit
