@@ -2,9 +2,6 @@
 
 namespace App\Service;
 
-use App\Component\GitlabApiClient;
-use App\Entity\Credential;
-use InvalidArgumentException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PackagistApiService
@@ -17,11 +14,10 @@ class PackagistApiService
     {
         $response = $this->client->request('GET', 'https://packagist.org/api/security-advisories/', [
             'query' => [
-                'packages' => $packages
-            ]
+                'packages' => $packages,
+            ],
         ]);
 
         return $response->toArray()['advisories'];
     }
-
 }

@@ -35,10 +35,11 @@ abstract class AbstractGuardianCrudController extends AbstractCrudController
         $crud = parent::configureCrud($crud)->showEntityActionsInlined();
 
         $fqcn = $this::getEntityFqcn();
-        if (in_array(NameableEntityInterface::class, class_implements($fqcn))) {
-            /** @var NameableEntityInterface $fqcn */
+        if (in_array(NameableEntityInterface::class, class_implements($fqcn) ?: [])) {
+            /* @var NameableEntityInterface $fqcn */
             $crud->setEntityLabelInSingular($fqcn::getSingular())
-                ->setEntityLabelInPlural($fqcn::getPlural());
+                ->setEntityLabelInPlural($fqcn::getPlural())
+            ;
         }
 
         return $crud;

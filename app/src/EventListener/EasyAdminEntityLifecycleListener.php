@@ -17,6 +17,7 @@ final class EasyAdminEntityLifecycleListener
 
         $entityName = $entity instanceof NameableEntityInterface ? $entity::getSingular() : (string) $entity;
 
+        // @phpstan-ignore-next-line
         noty()->addDeleted($entityName);
     }
 
@@ -27,6 +28,7 @@ final class EasyAdminEntityLifecycleListener
 
         $entityName = $entity instanceof NameableEntityInterface ? $entity::getSingular() : (string) $entity;
 
+        // @phpstan-ignore-next-line
         noty()->addUpdated($entityName);
     }
 
@@ -37,7 +39,7 @@ final class EasyAdminEntityLifecycleListener
 
         $entityName = $entity instanceof NameableEntityInterface ? $entity::getSingular() : (string) $entity;
 
+        // @phpstan-ignore-next-line
         noty()->addCreated($entityName);
     }
 }
-

@@ -42,6 +42,11 @@ class Project implements NameableEntityInterface
         $this->analyses = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getName() ?? $this->getId();
+    }
+
     public function getId(): string
     {
         return $this->id;
@@ -125,11 +130,6 @@ class Project implements NameableEntityInterface
         $this->analyses->removeElement($analysis);
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->getName() ?? $this->getId();
     }
 
     public static function getSingular(): string

@@ -167,6 +167,7 @@ class Advisory implements NameableEntityInterface
     public static function fromPackagistApi(array $advisory): Advisory
     {
         $severity = Severity::tryFrom($advisory['severity']) ?? Severity::UNKNOWN;
+
         return (new Advisory())
             ->setAdvisoryId($advisory['advisoryId'])
             ->setTitle($advisory['title'])
@@ -176,7 +177,7 @@ class Advisory implements NameableEntityInterface
             ->setSource($advisory['source'] ?? 'Unknown')
             ->setReportedAt(new DateTimeImmutable($advisory['reportedAt']))
             ->setSeverity($severity->value)
-            ;
+        ;
     }
 
     public static function getSingular(): string

@@ -14,8 +14,7 @@ class RunAnalysisHandler
     public function __construct(
         private readonly ProjectAnalysisService $projectAnalysisService,
         private readonly EntityManagerInterface $em
-    ) {
-    }
+    ) {}
 
     public function __invoke(RunAnalysis $runAnalysis): void
     {

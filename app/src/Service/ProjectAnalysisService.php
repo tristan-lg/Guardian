@@ -42,28 +42,28 @@ class ProjectAnalysisService
         $packagesNames = array_map(fn (Package $package) => $package->getName(), $packages);
         $advisoriesDb = $this->packagistApiService->getPackageSecurityAdvisories($packagesNames);
 
-        //Run checks on all packages
+        // Run checks on all packages
         foreach ($packages as $package) {
             // Check if package has security advisories
             foreach ($this->getPackageAdvisories($package, $advisoriesDb) as $advisory) {
                 $package->addAdvisory($advisory);
             }
 
-            //Check if package is outdated
-            //TODO
+            // Check if package is outdated
+            // TODO
 
-            //Check malformation
+            // Check malformation
             $package->setVersionMalformated(
                 $this->isPackageMalformated($package)
             );
         }
 
-        //Compute grade
+        // Compute grade
         $analysis->setGrade(
             $this->getGrade($analysis)
         );
 
-        //Add all packages to the analysis, persist & flush
+        // Add all packages to the analysis, persist & flush
         $analysis->setEndAt(new DateTimeImmutable());
         foreach ($packages as $package) {
             $analysis->addPackage($package);
@@ -87,7 +87,7 @@ class ProjectAnalysisService
                 ->setName($lockPackage['name'])
                 ->setInstalledVersion($lockPackage['version'])
                 ->setRequiredVersion($jsonPackage)
-                ->setSubDependency($jsonPackage === null)
+                ->setSubDependency(null === $jsonPackage)
             ;
             $packageList[] = $package;
         }
@@ -97,17 +97,17 @@ class ProjectAnalysisService
 
     private function isPackageMalformated(Package $package): bool
     {
-        if ($package->getRequiredVersion() === null) {
+        if (null === $package->getRequiredVersion()) {
             return false;
         }
 
-        return Semver::satisfies($package->getInstalledVersion(), $package->getRequiredVersion()) === false;
+        return false === Semver::satisfies($package->getInstalledVersion(), $package->getRequiredVersion());
     }
 
     private function getPackageAdvisories(Package $package, array $advisories): array
     {
         $advisoriesForPackage = $advisories[$package->getName()] ?? null;
-        if ($advisoriesForPackage === null) {
+        if (null === $advisoriesForPackage) {
             return [];
         }
 
@@ -123,30 +123,28 @@ class ProjectAnalysisService
      * B (1) => Composer.json is malformed, or at least one of these is not the LTS (PHP / Symfony)
      * C (2) => At least one of these is out of security support (end of support) (PHP / Symfony)
      * D (3) => At least one package has CVE (nothing critical)
-     * E (4) => At least one package has critical CVE
-     *
-     * @return string
+     * E (4) => At least one package has critical CVE.
      */
     private function getGrade(Analysis $analysis): string
     {
         $grade = 0;
         foreach ($analysis->getPackages() as $package) {
-            //Check if package is malformated
+            // Check if package is malformated
             if ($package->isVersionMalformated()) {
                 $grade = max($grade, 1);
             }
 
-            //TODO - Check at least one of these is not the LTS (PHP / Symfony) => GRADE B (1)
+            // TODO - Check at least one of these is not the LTS (PHP / Symfony) => GRADE B (1)
 
-            //TODO - Check at least one of these is out of security support (end of support) (PHP / Symfony) => GRADE C (2)
+            // TODO - Check at least one of these is out of security support (end of support) (PHP / Symfony) => GRADE C (2)
 
-            //Check if package has advisories
+            // Check if package has advisories
             if ($package->getAdvisories()->count() > 0) {
                 $grade = max($grade, 3);
             }
 
-            //Check if at least one critical severity
-            if ($package->getAdvisories()->filter(fn (Advisory $adv) => $adv->getSeverityEnum() === Severity::CRITICAL)->count() > 0) {
+            // Check if at least one critical severity
+            if ($package->getAdvisories()->filter(fn (Advisory $adv) => Severity::CRITICAL === $adv->getSeverityEnum())->count() > 0) {
                 $grade = max($grade, 4);
             }
         }

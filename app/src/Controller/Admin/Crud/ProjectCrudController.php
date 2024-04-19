@@ -4,7 +4,6 @@ namespace App\Controller\Admin\Crud;
 
 use App\Controller\Admin\DashboardController;
 use App\Entity\Project;
-use App\Exception\ProjectFileNotFoundException;
 use App\Form\ProjectType;
 use App\Service\ProjectAnalysisService;
 use App\Service\ProjectScanService;
