@@ -1,0 +1,52 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{# @var package \App\Entity\Package #}
+{# @var advisory \App\Entity\Advisory #}
+{% if ea.crud.currentAction == 'detail' %}
+    {% set dependencies = field.value|sort((a, b) => b.advisories|length <=> a.advisories|length) %}
+
+    <h5>Dépendances</h5>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Dependance</th>
+            <th>Version requise</th>
+            <th>Version installée</th>
+            <th>Vulnérabilités</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for package in dependencies %}
+            <tr>
+                <td>{{ package.name }}</td>
+                <td>{{ package.requiredVersion|default('') }}</td>
+                <td>{{ package.installedVersion }}</td>
+                <td>
+                    {% if package.advisories|length > 0 %}
+                        {% for advisory in package.advisories %}
+                            <a href="{{ advisory.link }}" target="_blank">
+                                {% if advisory.severity|lower == 'low' or advisory.severity|lower == 'medium' %}
+                                    <span class="badge badge-warning">
+                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                    [{{ advisory.severity|upper }}] {{ advisory.title }}
+                                </span>
+                                {% else %}
+                                    <span class="badge badge-danger">
+                                    <i class="fas fa-exclamation-circle fa-fw"></i>&nbsp;
+                                    [{{ advisory.severity|upper }}] {{ advisory.title }}
+                                </span>
+                                {% endif %}
+                            </a><br />
+                        {% endfor %}
+                    {% else %}
+                        <span class="badge badge-success">Aucunes</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ field.formattedValue }}
+{% endif %}

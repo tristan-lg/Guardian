@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -34,25 +35,14 @@ class AnalysisCrudController extends AbstractGuardianCrudController
                 ->setTemplatePath('@Admin/field/grade.html.twig')
                 ->hideOnForm(),
             IntegerField::new('packagesCount', 'Dépendances')->hideOnForm(),
+            IntegerField::new('vulnerabilitiesCount', 'Vulnérabilités')
+                ->setTemplatePath('@Admin/field/cve_count_alert.html.twig')
+                ->hideOnForm(),
 
             FormField::addTab('Liste des dépendances', 'fas fa-cube'),
-            // TODO - Afficher la liste des packages (dans un FormField::addTab) avec les vulnérabilités pour chaque package
-            // TODO - Afficher la liste des packages (dans un FormField::addTab) avec la liste des erreurs de version pour chaque package
-
-            //            TextField::new('name', 'Nom du projet'),
-            //            AssociationField::new('credential', 'Identifiant')
-            //                ->setTemplatePath('@Admin/field/association_readonly.html.twig')
-            //                ->hideOnForm(),
-            //
-            //            FormField::addTab('Fichiers', 'fas fa-file'),
-            //            ArrayField::new('files', false)
-            //                ->setTemplatePath('@Admin/field/files.html.twig')
-            //                ->hideOnForm(),
-            //
-            //            FormField::addTab('Analyses', 'fas fa-flask'),
-            //            ArrayField::new('analyses', false)
-            //                ->setTemplatePath('@Admin/field/analyses.html.twig')
-            //                ->onlyOnDetail(),
+            ArrayField::new('packages', false)
+                ->setTemplatePath('@Admin/field/dependencies.html.twig')
+                ->onlyOnDetail(),
         ];
     }
 

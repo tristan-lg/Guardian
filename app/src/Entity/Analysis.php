@@ -131,6 +131,16 @@ class Analysis implements NameableEntityInterface
         return $this->packages->count();
     }
 
+    public function getVulnerabilitiesCount(): int
+    {
+        $count = 0;
+        foreach ($this->packages as $package) {
+            $count += count($package->getAdvisories());
+        }
+
+        return $count;
+    }
+
     public static function getSingular(): string
     {
         return 'Analyse';

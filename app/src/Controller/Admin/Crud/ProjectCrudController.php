@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Exception;
@@ -48,10 +49,20 @@ class ProjectCrudController extends AbstractGuardianCrudController
                 ->setTemplatePath('@Admin/field/association_readonly.html.twig')
                 ->hideOnForm(),
 
+            TextField::new('lastGrade', 'Grade')
+                ->setTemplatePath('@Admin/field/grade_simple.html.twig')
+                ->onlyOnIndex(),
+            TextField::new('lastGrade', 'Grade')
+                ->setTemplatePath('@Admin/field/grade_simple.html.twig')
+                ->onlyOnDetail(),
+            IntegerField::new('lastVulnerabilitiesCount', 'Vulnérabilités')
+                ->setTemplatePath('@Admin/field/cve_count_alert.html.twig')
+                ->hideOnForm(),
+
             FormField::addTab('Fichiers', 'fas fa-file'),
             ArrayField::new('files', false)
                 ->setTemplatePath('@Admin/field/files.html.twig')
-                ->hideOnForm(),
+                ->onlyOnDetail(),
 
             FormField::addTab('Analyses', 'fas fa-flask'),
             ArrayField::new('analyses', false)

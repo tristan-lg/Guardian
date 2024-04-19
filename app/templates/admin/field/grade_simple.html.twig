@@ -1,0 +1,5 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set grade = grade|default(field.formattedValue) %}
+<span class="c-grade c-grade--{{ grade|lower }}" aria-current="true">{{ grade }}</span>

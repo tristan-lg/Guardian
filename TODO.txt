@@ -10,6 +10,7 @@
 	[ ] Dashboard avec les alertes de toutes nos applications
 	[ ] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons)
 	[ ] Analyse périodique (tous les jours ?)
+	[ ] Purger les analyses trop vielles (+ 5 / projet)
 
 [X] Pouvoir rajouter une application
 	[X] Nom

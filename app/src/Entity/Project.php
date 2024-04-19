@@ -132,6 +132,26 @@ class Project implements NameableEntityInterface
         return $this;
     }
 
+    public function getLastGrade(): ?string
+    {
+        $lastAnalysis = $this->analyses->last();
+        if (false === $lastAnalysis) {
+            return null;
+        }
+
+        return $lastAnalysis->getGrade();
+    }
+
+    public function getLastVulnerabilitiesCount(): ?int
+    {
+        $lastAnalysis = $this->analyses->last();
+        if (false === $lastAnalysis) {
+            return null;
+        }
+
+        return $lastAnalysis->getVulnerabilitiesCount();
+    }
+
     public static function getSingular(): string
     {
         return 'Projet';

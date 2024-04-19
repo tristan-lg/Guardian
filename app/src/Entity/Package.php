@@ -30,9 +30,6 @@ class Package implements NameableEntityInterface
     #[ORM\Column(length: 16, nullable: true)]
     private ?string $availablePatch = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $cve = null;
-
     #[ORM\ManyToOne(inversedBy: 'packages')]
     #[ORM\JoinColumn(nullable: false)]
     private Analysis $analysis;
@@ -103,18 +100,6 @@ class Package implements NameableEntityInterface
     public function setAvailablePatch(?string $availablePatch): static
     {
         $this->availablePatch = $availablePatch;
-
-        return $this;
-    }
-
-    public function getCve(): ?string
-    {
-        return $this->cve;
-    }
-
-    public function setCve(?string $cve): static
-    {
-        $this->cve = $cve;
 
         return $this;
     }
