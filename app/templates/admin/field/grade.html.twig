@@ -1,0 +1,11 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set grade = grade|default(field.formattedValue) %}
+<div class="c-grade__container" role="list">
+    <span role="listitem" class="c-grade c-grade--a" aria-selected="{{ grade == 'A' ? 'true' : 'false' }}">A</span>
+    <span role="listitem" class="c-grade c-grade--b" aria-selected="{{ grade == 'B' ? 'true' : 'false' }}">B</span>
+    <span role="listitem" class="c-grade c-grade--c" aria-selected="{{ grade == 'C' ? 'true' : 'false' }}">C</span>
+    <span role="listitem" class="c-grade c-grade--d" aria-selected="{{ grade == 'D' ? 'true' : 'false' }}">D</span>
+    <span role="listitem" class="c-grade c-grade--e" aria-selected="{{ grade == 'E' ? 'true' : 'false' }}">E</span>
+</div>

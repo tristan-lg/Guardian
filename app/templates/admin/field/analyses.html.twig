@@ -2,6 +2,7 @@
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {% if ea.crud.currentAction == 'detail' %}
+    <h5>Affichage des 20 dernières analyses</h5>
     <table class="table">
         <thead>
         <tr>
@@ -12,11 +13,14 @@
         </tr>
         </thead>
         <tbody>
-        {% for analysis in field.value %}
+        {% for analysis in field.value|sort((a, b) => b <=> a)|slice(0, 20) %}
             <tr>
-                <td>{{ analysis.runAt|date }}</td>
+                <td>{{ analysis.runAt|date('d/m/y H:i') }}</td>
                 <td>{{ analysis.getDurationInSeconds }} sec.</td>
-                <td>{{ analysis.grade }}</td>
+                <td>{{ include('@Admin/field/grade.html.twig', {
+                        grade: analysis.grade
+                    }) }}
+                </td>
                 <td> <a href="{{
                         ea_url()
                         .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')

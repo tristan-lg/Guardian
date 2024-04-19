@@ -30,7 +30,9 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             AssociationField::new('project', 'Projet')->hideOnForm(),
             DateTimeField::new('runAt', 'Date de début')->hideOnForm(),
             DateTimeField::new('endAt', 'Date de fin')->hideOnForm(),
-            TextField::new('grade', 'Grade')->hideOnForm(),
+            TextField::new('grade', 'Grade')
+                ->setTemplatePath('@Admin/field/grade.html.twig')
+                ->hideOnForm(),
             IntegerField::new('packagesCount', 'Dépendances')->hideOnForm(),
 
             FormField::addTab('Liste des dépendances', 'fas fa-cube'),

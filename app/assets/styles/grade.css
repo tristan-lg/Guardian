@@ -1,0 +1,34 @@
+.c-grade__container {
+    width: fit-content;
+    display: flex;
+    gap: 0;
+}
+.c-grade {
+    color: white;
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    text-align: center;
+    line-height: 2rem;
+    opacity: 0.5;
+}
+.c-grade--a {
+    background-color: #1e8f4f;
+}
+.c-grade--b {
+    background-color: #2dcc70;
+}
+.c-grade--c {
+    background-color: #fdc800;
+}
+.c-grade--d {
+    background-color: #b1ae97;
+}
+.c-grade--e {
+    background-color: #e52d1a;
+}
+.c-grade[aria-selected="true"] {
+    opacity: 1;
+    border: 2px solid black;
+    line-height: calc(2rem - 4px);
+}

@@ -44,7 +44,7 @@ class ScanProjectCommand extends Command
             return Command::FAILURE;
         }
 
-        if (count($projectList) === 1) {
+        if (1 === count($projectList)) {
             $project = $projectList[0];
         } else {
             $question = new ChoiceQuestion(
@@ -63,8 +63,8 @@ class ScanProjectCommand extends Command
             return Command::FAILURE;
         }
 
-        //Check if project files are scanned
-        if (count($project->getFiles()) === 0) {
+        // Check if project files are scanned
+        if (0 === count($project->getFiles())) {
             $io->section('Scan the project files : ' . $project->getName());
             $this->projectScanService->scanProject($project);
         }
@@ -76,11 +76,13 @@ class ScanProjectCommand extends Command
             ->setController(AnalysisCrudController::class)
             ->setAction(Action::DETAIL)
             ->setEntityId($analysis->getId())
-            ->generateUrl();
+            ->generateUrl()
+        ;
 
         $io->success("Analysis done with grade [{$analysis->getGrade()}]");
 
         $io->block("See the result at : {$urlToAnalysis}");
+
         return Command::SUCCESS;
     }
 }
