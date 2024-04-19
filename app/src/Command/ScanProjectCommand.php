@@ -2,11 +2,13 @@
 
 namespace App\Command;
 
-use App\Entity\Package;
+use App\Controller\Admin\Crud\AnalysisCrudController;
 use App\Entity\Project;
-use App\Service\GitlabApiService;
 use App\Service\ProjectAnalysisService;
+use App\Service\ProjectScanService;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,8 +24,9 @@ class ScanProjectCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly GitlabApiService $gitlabApiService,
-        private readonly ProjectAnalysisService $projectAnalysisService
+        private readonly ProjectAnalysisService $projectAnalysisService,
+        private readonly ProjectScanService $projectScanService,
+        private readonly AdminUrlGenerator $adminUrlGenerator
     ) {
         parent::__construct();
     }
@@ -34,16 +37,25 @@ class ScanProjectCommand extends Command
 
         // Set the project
         $projectList = $this->em->getRepository(Project::class)->findAll();
-        //        $question = new ChoiceQuestion(
-        //            'Please select the project you want to scan',
-        //            array_map(fn (Project $project) => $project->getName(), $projectList),
-        //        );
-        //
-        //        $projectKey = $io->askQuestion($question);
-        //        $project = $projectList[array_search($projectKey, array_map(fn (Project $project) => $project->getName(), $projectList))];
 
-        // TODO - For now, we force the project
-        $project = $projectList[0] ?? null;
+        if (empty($projectList)) {
+            $io->error('No project found');
+
+            return Command::FAILURE;
+        }
+
+        if (count($projectList) === 1) {
+            $project = $projectList[0];
+        } else {
+            $question = new ChoiceQuestion(
+                'Please select the project you want to scan',
+                array_map(fn (Project $project) => $project->getName(), $projectList),
+            );
+
+            $projectKey = $io->askQuestion($question);
+            $project = $projectList[array_search($projectKey, array_map(fn (Project $project) => $project->getName(), $projectList))];
+        }
+
         // Find project
         if (!$project || !$project->getCredential()) {
             $io->error('Project not found');
@@ -51,38 +63,24 @@ class ScanProjectCommand extends Command
             return Command::FAILURE;
         }
 
-        $io->section('Scan the project : ' . $project->getName());
+        //Check if project files are scanned
+        if (count($project->getFiles()) === 0) {
+            $io->section('Scan the project files : ' . $project->getName());
+            $this->projectScanService->scanProject($project);
+        }
 
-//        $client = $this->gitlabApiService->getClient($project->getCredential());
-//        $composerLock = $client->searchFileOnProject($project, 'composer.lock');
-//        if (!$composerLock) {
-//            $io->error('Composer file not found');
-//
-//            return Command::FAILURE;
-//        }
+        $io->section('Run project analysis for : ' . $project->getName());
+        $analysis = $this->projectAnalysisService->runAnalysis($project);
 
-//        $package = new Package();
-//        $package->setName('adodb/adodb-php')
-//            ->setInstalledVersion('5.0.0');
-//
-//        $package2 = new Package();
-//        $package2->setName('composer/composer')
-//            ->setInstalledVersion('2.7.0');
-//
-//        $package3 = new Package();
-//        $package3->setName('guzzlehttp/guzzle')
-//            ->setInstalledVersion('6.1.0');
+        $urlToAnalysis = $this->adminUrlGenerator
+            ->setController(AnalysisCrudController::class)
+            ->setAction(Action::DETAIL)
+            ->setEntityId($analysis->getId())
+            ->generateUrl();
 
+        $io->success("Analysis done with grade [{$analysis->getGrade()}]");
 
-//        $this->projectAnalysisService->injectPackageSecurityAdvisories([
-//            $package,
-//            $package2,
-//            $package3,
-//        ]);
-//
-//        dd($package, $package2, $package3);
-        // TODO - perform scan ?
-
+        $io->block("See the result at : {$urlToAnalysis}");
         return Command::SUCCESS;
     }
 }

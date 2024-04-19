@@ -26,10 +26,12 @@ services:
     working_dir: /var/www/html
     labels:
       - "traefik.enable=true"
+      # Service
       - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.sticky.cookie.secure=true"
       - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.sticky.cookie.httpOnly=true"
       - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.server.port=80"
-      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.rule=PathPrefix(`/`)"
+      # Router
+      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.rule=Host(`localhost`)"
       - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.entrypoints=${TRAEFIK_ENTRYPOINTS:-https}"
       - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.tls=${TRAEFIK_TLS:-true}"
     networks:

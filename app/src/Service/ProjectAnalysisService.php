@@ -27,7 +27,7 @@ class ProjectAnalysisService
         $this->messageBus->dispatch(new RunAnalysis($project->getId()));
     }
 
-    public function runAnalysis(Project $project): void
+    public function runAnalysis(Project $project): Analysis
     {
         $analysis = new Analysis();
         $analysis->setProject($project);
@@ -70,6 +70,8 @@ class ProjectAnalysisService
         }
         $this->em->persist($analysis);
         $this->em->flush();
+
+        return $analysis;
     }
 
     /**
