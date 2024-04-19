@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NameableEntityInterface;
 use App\Repository\PackageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
 #[ORM\Entity(repositoryClass: PackageRepository::class)]
-class Package
+class Package implements NameableEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -174,13 +175,18 @@ class Package
 
     public function removeAdvisory(Advisory $advisory): static
     {
-        if ($this->advisories->removeElement($advisory)) {
-            // set the owning side to null (unless already changed)
-            if ($advisory->getPackage() === $this) {
-                $advisory->setPackage(null);
-            }
-        }
+        $this->advisories->removeElement($advisory);
 
         return $this;
+    }
+
+    public static function getSingular(): string
+    {
+        return 'Dépendance';
+    }
+
+    public static function getPlural(): string
+    {
+        return 'Dépendances';
     }
 }

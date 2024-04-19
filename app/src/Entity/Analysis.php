@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NameableEntityInterface;
+use App\Enum\Grade;
 use App\Repository\AnalysisRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
 #[ORM\Entity(repositoryClass: AnalysisRepository::class)]
-class Analysis
+class Analysis implements NameableEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -31,7 +33,7 @@ class Analysis
     /**
      * @var Collection<int, Package>
      */
-    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'analysis', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'analysis', cascade: ['persist', 'remove'])]
     private Collection $packages;
 
     #[ORM\Column]
@@ -77,6 +79,11 @@ class Analysis
         return $this->grade;
     }
 
+    public function getGradeEnum(): Grade
+    {
+        return Grade::fromString($this->grade);
+    }
+
     public function setGrade(string $grade): static
     {
         $this->grade = $grade;
@@ -117,5 +124,20 @@ class Analysis
     public function getDurationInSeconds(): int
     {
         return $this->endAt->getTimestamp() - $this->runAt->getTimestamp();
+    }
+
+    public function getPackagesCount(): int
+    {
+        return $this->packages->count();
+    }
+
+    public static function getSingular(): string
+    {
+        return 'Analyse';
+    }
+
+    public static function getPlural(): string
+    {
+        return 'Analyses';
     }
 }

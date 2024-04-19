@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NameableEntityInterface;
 use App\Enum\Severity;
 use App\Repository\AdvisoryRepository;
 use DateTimeImmutable;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
 #[ORM\Entity(repositoryClass: AdvisoryRepository::class)]
-class Advisory
+class Advisory implements NameableEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -45,7 +46,7 @@ class Advisory
     #[ORM\Column(length: 32)]
     private string $severity;
 
-    public function getId(): ?int
+    public function getId(): string
     {
         return $this->id;
     }
@@ -176,5 +177,15 @@ class Advisory
             ->setReportedAt(new DateTimeImmutable($advisory['reportedAt']))
             ->setSeverity($severity->value)
             ;
+    }
+
+    public static function getSingular(): string
+    {
+        return 'Vulnérabilité';
+    }
+
+    public static function getPlural(): string
+    {
+        return 'Vulnérabilités';
     }
 }

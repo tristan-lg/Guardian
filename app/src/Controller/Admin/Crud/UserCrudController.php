@@ -24,14 +24,6 @@ class UserCrudController extends AbstractGuardianCrudController
         ;
     }
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return parent::configureCrud($crud)
-            ->setEntityLabelInSingular('Utilisateur')
-            ->setEntityLabelInPlural('Utilisateurs')
-        ;
-    }
-
     public function configureFields(string $pageName): iterable
     {
         return [

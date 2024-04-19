@@ -59,6 +59,12 @@
             "config/packages/nelmio_cors.yaml"
         ]
     },
+    "php-flasher/flasher-noty-symfony": {
+        "version": "v1.15.14"
+    },
+    "php-flasher/flasher-symfony": {
+        "version": "v1.15.14"
+    },
     "phpstan/phpstan": {
         "version": "1.10",
         "recipe": {

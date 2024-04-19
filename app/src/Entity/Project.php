@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NameableEntityInterface;
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-class Project
+class Project implements NameableEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -121,13 +122,23 @@ class Project
 
     public function removeAnalysis(Analysis $analysis): static
     {
-        if ($this->analyses->removeElement($analysis)) {
-            // set the owning side to null (unless already changed)
-            if ($analysis->getProject() === $this) {
-                $analysis->setProject(null);
-            }
-        }
+        $this->analyses->removeElement($analysis);
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName() ?? $this->getId();
+    }
+
+    public static function getSingular(): string
+    {
+        return 'Projet';
+    }
+
+    public static function getPlural(): string
+    {
+        return 'Projets';
     }
 }

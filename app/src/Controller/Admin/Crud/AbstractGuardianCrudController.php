@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin\Crud;
 
+use App\Entity\Interface\NameableEntityInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -19,7 +20,7 @@ abstract class AbstractGuardianCrudController extends AbstractCrudController
                 return $action->setIcon('fa fa-edit');
             })
             ->update(Crud::PAGE_DETAIL, Action::DELETE, function (Action $action) {
-                return $action->setIcon('fa fa-trash')->setCssClass('btn btn-danger text-white');
+                return $action->setIcon('fa fa-trash')->setCssClass('btn btn-danger text-white action-delete');
             })
             ->update(Crud::PAGE_EDIT, Action::DETAIL, function (Action $action) {
                 return $action->setIcon('fa fa-eye');
@@ -31,7 +32,15 @@ abstract class AbstractGuardianCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return parent::configureCrud($crud)
-            ->showEntityActionsInlined();
+        $crud = parent::configureCrud($crud)->showEntityActionsInlined();
+
+        $fqcn = $this::getEntityFqcn();
+        if (in_array(NameableEntityInterface::class, class_implements($fqcn))) {
+            /** @var NameableEntityInterface $fqcn */
+            $crud->setEntityLabelInSingular($fqcn::getSingular())
+                ->setEntityLabelInPlural($fqcn::getPlural());
+        }
+
+        return $crud;
     }
 }

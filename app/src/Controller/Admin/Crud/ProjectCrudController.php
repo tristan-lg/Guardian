@@ -61,14 +61,6 @@ class ProjectCrudController extends AbstractGuardianCrudController
         ];
     }
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return parent::configureCrud($crud)
-            ->setEntityLabelInSingular('Projet')
-            ->setEntityLabelInPlural('Projets')
-        ;
-    }
-
     public function configureActions(Actions $actions): Actions
     {
         return parent::configureActions($actions)
@@ -154,7 +146,7 @@ class ProjectCrudController extends AbstractGuardianCrudController
         /** @var null|string $fileKey */
         $fileKey = $context->getRequest()->get('file');
         if (!$fileKey) {
-            throw new ProjectFileNotFoundException($fileKey);
+            throw new Exception('The parameter \'file\' is not set.');
         }
 
         $fileContent = $this->projectScanService->getFileJsonContent($project, $fileKey);

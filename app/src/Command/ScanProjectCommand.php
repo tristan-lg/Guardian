@@ -53,7 +53,7 @@ class ScanProjectCommand extends Command
             );
 
             $projectKey = $io->askQuestion($question);
-            $project = $projectList[array_search($projectKey, array_map(fn (Project $project) => $project->getName(), $projectList))];
+            $project = $projectList[array_search($projectKey, array_map(fn (Project $project) => $project->getName(), $projectList))] ?? null;
         }
 
         // Find project

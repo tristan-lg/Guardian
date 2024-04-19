@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NameableEntityInterface;
 use App\Enum\Role;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
@@ -12,7 +13,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -84,5 +85,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         $this->setPassword($newHashedPassword);
+    }
+
+    public static function getSingular(): string
+    {
+        return 'Utilisateur';
+    }
+
+    public static function getPlural(): string
+    {
+        return 'Utilisateurs';
     }
 }

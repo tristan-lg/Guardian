@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\NameableEntityInterface;
 use App\Repository\CredentialRepository;
 use App\Validator\IsCredentialValid;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
 #[ORM\Entity(repositoryClass: CredentialRepository::class)]
-class Credential
+class Credential implements NameableEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -113,5 +114,15 @@ class Credential
         }
 
         return $this;
+    }
+
+    public static function getSingular(): string
+    {
+        return 'Identifiant';
+    }
+
+    public static function getPlural(): string
+    {
+        return 'Identifiants';
     }
 }

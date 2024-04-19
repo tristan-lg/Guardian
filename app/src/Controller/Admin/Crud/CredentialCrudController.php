@@ -28,14 +28,6 @@ class CredentialCrudController extends AbstractGuardianCrudController
         ];
     }
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return parent::configureCrud($crud)
-            ->setEntityLabelInSingular('Identifiant')
-            ->setEntityLabelInPlural('Identifiants')
-        ;
-    }
-
     public function configureActions(Actions $actions): Actions
     {
         return parent::configureActions($actions)
