@@ -85,7 +85,7 @@ class ProjectCrudController extends AbstractGuardianCrudController
                 ->setCssClass('btn btn-primary')
             )
             ->reorder(Crud::PAGE_DETAIL, [Action::INDEX, self::ACTION_START_ANALYSIS, self::ACTION_SCAN, Action::EDIT, Action::DELETE])
-        ;
+            ;
     }
 
     public function new(AdminContext $context): Response
@@ -100,8 +100,12 @@ class ProjectCrudController extends AbstractGuardianCrudController
             $this->em->persist($project);
 
             // Scan project for the first time
-            $this->projectScanService->scanProject($project);
-            $this->em->flush();
+            try {
+                $this->projectScanService->scanProject($project);
+                $this->em->flush();
+            } catch (Exception $e) {
+                $this->addFlash('danger', 'Impossible de lier le projet : '.$e->getMessage());
+            }
 
             return $this->redirect(
                 $this->adminUrlGenerator
@@ -121,8 +125,13 @@ class ProjectCrudController extends AbstractGuardianCrudController
     public function scan(AdminContext $context): Response
     {
         $project = $this->getProject($context);
-        $this->projectScanService->scanProject($project);
-        $this->addFlash('success', 'Le projet a été scanné avec succès');
+
+        try {
+            $this->projectScanService->scanProject($project);
+            $this->addFlash('success', 'Le projet a été scanné avec succès');
+        } catch (Exception $e) {
+            $this->addFlash('danger', 'Erreur lors du scan du projet : '.$e->getMessage());
+        }
 
         return $this->redirect(
             $this->adminUrlGenerator

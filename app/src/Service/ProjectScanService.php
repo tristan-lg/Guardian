@@ -29,7 +29,7 @@ class ProjectScanService
             $foundFileList[$file] = $found;
 
             if (!$found) {
-                throw new Exception("File '{$file}' not found");
+                throw new Exception("Le fichier '{$file}' est introuvable");
             }
         }
 

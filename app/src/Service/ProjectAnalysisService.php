@@ -7,21 +7,24 @@ use App\Entity\Analysis;
 use App\Entity\Package;
 use App\Entity\Project;
 use App\Enum\Severity;
+use App\Event\AnalysisDoneEvent;
 use App\Message\RunAnalysis;
 use Composer\Semver\Semver;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProjectAnalysisService
 {
-    public const int ANALYSYS_TO_KEEP = 0;
+    public const int ANALYSYS_TO_KEEP = 5;
 
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly MessageBusInterface $messageBus,
         private readonly ProjectScanService $projectScanService,
-        private readonly PackagistApiService $packagistApiService
+        private readonly PackagistApiService $packagistApiService,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
     public function scheduleAnalysis(Project $project): void
@@ -66,6 +69,7 @@ class ProjectAnalysisService
         }
 
         // Compute grade
+        $previousGrade = $project->getLastGrade();
         $analysis->setGrade(
             $this->getGrade($analysis)
         );
@@ -79,6 +83,9 @@ class ProjectAnalysisService
         $analysis->setEndAt(new DateTimeImmutable());
         $this->em->persist($analysis);
         $this->em->flush();
+
+        //Dispatch the event
+        $this->eventDispatcher->dispatch(new AnalysisDoneEvent($analysis, $previousGrade));
 
         return $analysis;
     }

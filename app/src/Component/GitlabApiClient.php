@@ -13,7 +13,8 @@ use Throwable;
 class GitlabApiClient
 {
     public const string API_VERSION = 'v4';
-    private const array EXCLUDED_DIRS = ['vendor', 'node_modules', '.idea', 'docker'];
+    private const array EXCLUDED_DIRS = ['vendor', 'node_modules', '.idea', 'docker', 'tests', 'library', 'lib'];
+    private const int MAX_LEVELS = 2;
 
     private array $headers;
 
@@ -74,8 +75,13 @@ class GitlabApiClient
         return $response->getContent();
     }
 
-    public function searchFileOnProject(Project $project, string $filename, ?string $path = null): ?string
+    public function searchFileOnProject(Project $project, string $filename, ?string $path = null, int $level = 0): ?string
     {
+        //Prevent too many recursions
+        if ($level >= self::MAX_LEVELS) {
+            return null;
+        }
+
         $trees = $this->requestProjectTree($project, $path);
 
         if ($file = array_filter($trees, fn ($tree) => $tree['name'] === $filename)) {
@@ -83,7 +89,7 @@ class GitlabApiClient
         }
 
         foreach (array_filter($trees, fn ($tree) => 'tree' === $tree['type'] && !in_array($tree['name'], self::EXCLUDED_DIRS)) as $tree) {
-            if ($file = $this->searchFileOnProject($project, $filename, $tree['path'])) {
+            if ($file = $this->searchFileOnProject($project, $filename, $tree['path'], ($level + 1))) {
                 return $file;
             }
         }

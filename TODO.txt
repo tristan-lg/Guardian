@@ -4,17 +4,15 @@
 [X] Lecture du composer.lock vérification des CVE
 [X] Affichage du score de l'application : Rate basé sur les CVE
 [X] Affichage des erreurs de sécurité
-
-
-[ ] Faire le Dockerfile et le processus pour livrer le projet
-[ ] Intégrer la version du projet pour affichage
+[X] Faire le Dockerfile et le processus pour livrer le projet (github.com)
+[X] Intégrer la version du projet pour affichage
 
 == v2
 	[ ] Dashboard avec les alertes de toutes nos applications
 	[ ] Rajouter des canaux de communication (discord / email) en cas d'erreur
 	[ ] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons)
 	[ ] Programmer une analyse journalière (via Scheduler)
-	[ ] Purger les analyses trop vielles (+ 5 / projet)
+	[ ] Purger les analyses trop vielles (+ 5 / projet) (via Scheduler)
 
 == v3
     [ ] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
