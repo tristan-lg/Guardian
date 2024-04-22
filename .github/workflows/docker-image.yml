@@ -46,5 +46,5 @@ jobs:
           push: true
           file: ./docker/httpd/prod/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: "${{ steps.meta.outputs.labels }}-httpd"
 
