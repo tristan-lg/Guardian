@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:project:scan',
-    description: 'Run a project scan - For POC & dev purpose only',
+    description: 'Run a project scan',
 )]
 class ScanProjectCommand extends Command
 {

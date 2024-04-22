@@ -2,10 +2,12 @@
 
 namespace App\Controller\Admin\Crud;
 
+use App\Controller\Admin\Field\MessageField;
 use App\Entity\Credential;
 use App\Security\Voter\CredentialVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -32,4 +34,12 @@ class CredentialCrudController extends AbstractGuardianCrudController
             ->setPermission(Action::DELETE, CredentialVoter::DELETE)
         ;
     }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return parent::configureCrud($crud)
+            ->overrideTemplate('crud/new', '@Admin/crud/credential/new.html.twig');
+    }
+
+
 }

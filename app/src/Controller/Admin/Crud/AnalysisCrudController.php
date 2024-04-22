@@ -35,7 +35,7 @@ class AnalysisCrudController extends AbstractGuardianCrudController
                 ->setTemplatePath('@Admin/field/grade.html.twig')
                 ->hideOnForm(),
             IntegerField::new('packagesCount', 'Dépendances')->hideOnForm(),
-            IntegerField::new('vulnerabilitiesCount', 'Vulnérabilités')
+            IntegerField::new('cveCount', 'Vulnérabilités')
                 ->setTemplatePath('@Admin/field/cve_count_alert.html.twig')
                 ->hideOnForm(),
 

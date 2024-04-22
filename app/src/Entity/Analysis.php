@@ -39,6 +39,9 @@ class Analysis implements NameableEntityInterface
     #[ORM\Column]
     private DateTimeImmutable $endAt;
 
+    #[ORM\Column]
+    private int $cveCount;
+
     public function __construct()
     {
         $this->runAt = new DateTimeImmutable();
@@ -131,16 +134,6 @@ class Analysis implements NameableEntityInterface
         return $this->packages->count();
     }
 
-    public function getVulnerabilitiesCount(): int
-    {
-        $count = 0;
-        foreach ($this->packages as $package) {
-            $count += count($package->getAdvisories());
-        }
-
-        return $count;
-    }
-
     public static function getSingular(): string
     {
         return 'Analyse';
@@ -149,5 +142,17 @@ class Analysis implements NameableEntityInterface
     public static function getPlural(): string
     {
         return 'Analyses';
+    }
+
+    public function getCveCount(): int
+    {
+        return $this->cveCount;
+    }
+
+    public function setCveCount(int $cveCount): static
+    {
+        $this->cveCount = $cveCount;
+
+        return $this;
     }
 }

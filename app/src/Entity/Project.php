@@ -149,7 +149,7 @@ class Project implements NameableEntityInterface
             return null;
         }
 
-        return $lastAnalysis->getVulnerabilitiesCount();
+        return $lastAnalysis->getCveCount();
     }
 
     public static function getSingular(): string

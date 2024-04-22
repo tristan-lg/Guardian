@@ -43,7 +43,7 @@ class Package implements NameableEntityInterface
     /**
      * @var Collection<int, Advisory>
      */
-    #[ORM\OneToMany(targetEntity: Advisory::class, mappedBy: 'package', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Advisory::class, mappedBy: 'package', cascade: ['persist', 'remove'])]
     private Collection $advisories;
 
     public function __construct()

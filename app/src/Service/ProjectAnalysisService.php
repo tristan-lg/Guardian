@@ -15,6 +15,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProjectAnalysisService
 {
+    public const int ANALYSYS_TO_KEEP = 0;
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly MessageBusInterface $messageBus,
@@ -68,12 +70,33 @@ class ProjectAnalysisService
             $this->getGrade($analysis)
         );
 
+        //Count advisories
+        $analysis->setCveCount(
+            array_sum(array_map(fn (Package $package) => $package->getAdvisories()->count(), $packages))
+        );
+
         // Add all packages to the analysis, persist & flush
         $analysis->setEndAt(new DateTimeImmutable());
         $this->em->persist($analysis);
         $this->em->flush();
 
         return $analysis;
+    }
+
+    public function clearOutdatedAnalysis(Project $project, int $analysesToKeep = self::ANALYSYS_TO_KEEP): void
+    {
+        $analyses = $project->getAnalyses();
+        if ($analyses->count() <= $analysesToKeep) {
+            return;
+        }
+
+        $analyses = $analyses->slice(0, $analyses->count() - $analysesToKeep);
+        foreach ($analyses as $analysis) {
+            $project->removeAnalysis($analysis);
+            $this->em->remove($analysis);
+        }
+
+        $this->em->flush();
     }
 
     /**
