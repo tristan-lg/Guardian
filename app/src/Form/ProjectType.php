@@ -56,8 +56,27 @@ class ProjectType extends AbstractType
             }
 
             $field->add(ChoiceType::class, [
+                'empty_data' => null,
+                'placeholder' => 'Selectionner un projet',
                 'choices' => $projects,
                 'label' => 'Projet git associé',
+            ]);
+        });
+
+        $builder->addDependent('branch', ['projectId', 'credential'], function (DependentField $field, ?int $projectId, ?Credential $credential): void {
+            if (null === $projectId || null === $credential) {
+                return;
+            }
+
+            //Fake object to use the gitlab client
+            $project = (new Project())->setProjectId($projectId)->setCredential($credential);
+
+            $client = $this->gitlabApiService->getClient($credential);
+            $branches = $client->getBranches($project);
+
+            $field->add(ChoiceType::class, [
+                'choices' => array_combine($branches, $branches),
+                'label' => 'Branche',
             ]);
         });
     }

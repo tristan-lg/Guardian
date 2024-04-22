@@ -2,6 +2,52 @@
 
 {% block content_title %}Guardian{% endblock %}
 
+{# project \App\Entity\Project #}
 {% block main %}
-    <p>Page d'accueil</p>
+    <div class="d-flex flex-wrap gap-3">
+        {% for project in projects %}
+            {% set grade = project.lastGrade %}
+            {% set borderColor = {
+                'A': 'success',
+                'B': 'warning',
+                'C': 'warning',
+                'D': 'danger',
+                'E': 'danger',
+            }[grade]|default('warning') %}
+
+            <div class="card border-{{ borderColor }}" style="width: 22rem;">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span class="c-grade c-grade--{{ grade|lower }}" aria-current="true">{{ grade }}</span>
+                        {{ project.name }}
+                    </h5>
+                    <div class="card-text">
+                        <div>Dernière analyse : <strong>{{ project.lastAnalysis.runAt|date('d/m/Y à H:i') }}</strong></div>
+                        <div>
+                            Vulnérabilités :
+                            {{ include('@Admin/field/cve_count_alert.html.twig', {
+                                field: {value: project.lastVulnerabilitiesCount}
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex flex-row justify-content-between">
+                        {% if project.lastAnalysis %}
+                            <a href="{{ ea_url()
+                                .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
+                                .setAction('detail')
+                                .setEntityId(project.lastAnalysis.id)
+                            }}" class=""><i class="fas fa-eye fa-fw"></i>&nbsp;Voir la dernière analyse</a>
+                        {% endif %}
+                        <a href="{{ ea_url()
+                            .setController('App\\Controller\\Admin\\Crud\\ProjectCrudController')
+                            .setAction('detail')
+                            .setEntityId(project.id)
+                        }}" class=""><i class="fas fa-arrow-right fa-fw"></i>&nbsp;Voir le projet</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}

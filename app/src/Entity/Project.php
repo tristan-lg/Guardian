@@ -37,6 +37,9 @@ class Project implements NameableEntityInterface
     #[ORM\OneToMany(targetEntity: Analysis::class, mappedBy: 'project')]
     private Collection $analyses;
 
+    #[ORM\Column(length: 255)]
+    private string $branch;
+
     public function __construct()
     {
         $this->analyses = new ArrayCollection();
@@ -102,9 +105,7 @@ class Project implements NameableEntityInterface
 
     public function getRef(): string
     {
-        // TODO - Later enable customization per project
-
-        return 'master';
+        return $this->getBranch();
     }
 
     /**
@@ -134,8 +135,8 @@ class Project implements NameableEntityInterface
 
     public function getLastGrade(): ?string
     {
-        $lastAnalysis = $this->analyses->last();
-        if (false === $lastAnalysis) {
+        $lastAnalysis = $this->getLastAnalysis();
+        if (!$lastAnalysis) {
             return null;
         }
 
@@ -144,12 +145,17 @@ class Project implements NameableEntityInterface
 
     public function getLastVulnerabilitiesCount(): ?int
     {
-        $lastAnalysis = $this->analyses->last();
-        if (false === $lastAnalysis) {
+        $lastAnalysis = $this->getLastAnalysis();
+        if (!$lastAnalysis) {
             return null;
         }
 
         return $lastAnalysis->getCveCount();
+    }
+
+    public function getLastAnalysis(): ?Analysis
+    {
+        return $this->analyses->last() ?: null;
     }
 
     public static function getSingular(): string
@@ -160,5 +166,17 @@ class Project implements NameableEntityInterface
     public static function getPlural(): string
     {
         return 'Projets';
+    }
+
+    public function getBranch(): string
+    {
+        return $this->branch;
+    }
+
+    public function setBranch(string $branch): static
+    {
+        $this->branch = $branch;
+
+        return $this;
     }
 }

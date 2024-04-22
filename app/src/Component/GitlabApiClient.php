@@ -48,6 +48,16 @@ class GitlabApiClient
         return array_map(fn ($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
     }
 
+    public function getBranches(Project $project): array
+    {
+        return array_map(
+            fn(array $data) => $data['name'],
+            json_decode($this->get('projects/' . $project->getProjectId() . '/repository/branches', [
+                'per_page' => 100,
+            ])->getContent(), true)
+        );
+    }
+
     public static function createClient(
         HttpClientInterface $client,
         Credential $credential,
