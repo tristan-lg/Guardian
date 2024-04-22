@@ -31,11 +31,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       # Extract metadata
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
+      - name: Extract metadata (tags, labels) for Docker (HTTPD)
+        id: metaHttpd
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          images: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-httpd"
+      - name: Extract metadata (tags, labels) for Docker (PHPFPM)
+        id: metaPhp
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-phpfpm"
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
       # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
       # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
@@ -45,6 +50,15 @@ jobs:
           context: .
           push: true
           file: ./docker/httpd/prod/Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: "${{ steps.meta.outputs.labels }}-httpd"
+          tags: ${{ steps.metaHttpd.outputs.tags }}
+          labels: ${{ steps.metaHttpd.outputs.labels }}
+
+      - name: Build and push Docker image (phpfpm)
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          file: ./docker/phpfpm/prod/Dockerfile
+          tags: ${{ steps.metaPhp.outputs.tags }}
+          labels: ${{ steps.metaPhp.outputs.labels }}
 
