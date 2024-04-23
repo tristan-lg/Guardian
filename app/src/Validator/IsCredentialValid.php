@@ -8,6 +8,6 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class IsCredentialValid extends Constraint
 {
-    public string $credentialCreationError = 'The credential could not be created.';
-    public string $message = 'The access token "{{ value }}" for the host "{{ host }}" is not valid.';
+    public string $credentialCreationError = 'L\'identifiant de connexion n\'a pas pu être créé.';
+    public string $message = 'L\'identifiant de connexion "{{ value }}" est invalide pour "{{ host }}".';
 }

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Credential;
+use App\Entity\NotificationChannel;
 use App\Entity\Project;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,5 +46,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
 
         yield MenuItem::linkToCrud('Identifiants', 'fas fa-user-secret', Credential::class);
+
+        yield MenuItem::linkToCrud('Notifications', 'fas fa-bell', NotificationChannel::class);
     }
 }
