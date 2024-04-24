@@ -18,7 +18,7 @@ RUN chmod +x /usr/bin/composer
 RUN mkdir "/.composer" && chmod 777 /.composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-RUN composer install --no-interaction --no-dev --no-progress --no-scripts
+RUN composer install --no-interaction --no-dev --no-progress
 RUN composer dump-autoload --no-dev --classmap-authoritative
 RUN composer dump-env prod
 RUN php bin/console assets:install public
