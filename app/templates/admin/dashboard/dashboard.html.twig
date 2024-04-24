@@ -22,7 +22,7 @@
                         {{ project.name }}
                     </h5>
                     <div class="card-text">
-                        <div>Dernière analyse : <strong>{{ project.lastAnalysis.runAt|date('d/m/Y à H:i') }}</strong></div>
+                        <div>Dernière analyse : <strong>{{ project.lastAnalysis.runAt|default ? project.lastAnalysis.runAt|date('d/m/Y à H:i') : 'N/D' }}</strong></div>
                         <div>
                             Vulnérabilités :
                             {{ include('@Admin/field/cve_count_alert.html.twig', {

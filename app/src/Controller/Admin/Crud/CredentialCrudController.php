@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin\Crud;
 
-use App\Controller\Admin\Field\MessageField;
 use App\Entity\Credential;
 use App\Security\Voter\CredentialVoter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -38,8 +37,7 @@ class CredentialCrudController extends AbstractGuardianCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
-            ->overrideTemplate('crud/new', '@Admin/crud/credential/new.html.twig');
+            ->overrideTemplate('crud/new', '@Admin/crud/credential/new.html.twig')
+        ;
     }
-
-
 }

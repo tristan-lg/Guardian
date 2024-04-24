@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Analysis;
 use App\Entity\Credential;
 use App\Entity\NotificationChannel;
 use App\Entity\Project;
@@ -17,8 +18,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private readonly EntityManagerInterface $em
-    ) {
-    }
+    ) {}
 
     #[Route('/admin', name: 'admin')]
     public function index(): Response
@@ -32,14 +32,18 @@ class DashboardController extends AbstractDashboardController
     {
         return Dashboard::new()
             ->setTitle('PoolPHP - Guardian')
-            ;
+        ;
     }
 
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
+        yield MenuItem::linkToRoute('Page publique', 'fa fa-eye', 'homepage');
+
         yield MenuItem::linkToCrud('Projets', 'fas fa-list', Project::class);
+
+        yield MenuItem::linkToCrud('Analyses', 'fas fa-flask', Analysis::class);
 
         yield MenuItem::section('Gestion des accès');
 

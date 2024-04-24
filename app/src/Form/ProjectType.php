@@ -8,7 +8,6 @@ use App\Service\GitlabApiService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfonycasts\DynamicForms\DependentField;
@@ -65,7 +64,7 @@ class ProjectType extends AbstractType
                 return;
             }
 
-            //Fake object to use the gitlab client
+            // Fake object to use the gitlab client
             $project = (new Project())->setProjectId($projectId)->setCredential($credential);
 
             $client = $this->gitlabApiService->getClient($credential);

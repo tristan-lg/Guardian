@@ -56,11 +56,11 @@ class NotificationChannel implements NameableEntityInterface
 
     public static function getSingular(): string
     {
-        return "Canal de notification";
+        return 'Canal de notification';
     }
 
     public static function getPlural(): string
     {
-        return "Canaux de notifications";
+        return 'Canaux de notifications';
     }
 }

@@ -18,11 +18,11 @@
 .c-grade--b {
     background-color: #2dcc70;
 }
-.c-grade--c {
-    background-color: #fdc800;
+.c-grade--c, .c-grade--unknown {
+    background-color: #bb9716;
 }
 .c-grade--d {
-    background-color: #b1ae97;
+    background-color: #e0712a;
 }
 .c-grade--e {
     background-color: #e52d1a;

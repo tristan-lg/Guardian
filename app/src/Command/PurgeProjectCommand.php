@@ -2,18 +2,13 @@
 
 namespace App\Command;
 
-use App\Controller\Admin\Crud\AnalysisCrudController;
 use App\Entity\Project;
 use App\Service\ProjectAnalysisService;
-use App\Service\ProjectScanService;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
@@ -34,7 +29,6 @@ class PurgeProjectCommand extends Command
         $this->setDescription('Removes the outdated analyses for all projects');
         $this->addOption('all', 'a', null, 'Purge all analyses');
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -59,7 +53,7 @@ class PurgeProjectCommand extends Command
             );
         }
 
-        $io->success("Purge done !");
+        $io->success('Purge done !');
 
         return Command::SUCCESS;
     }

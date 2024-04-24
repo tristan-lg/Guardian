@@ -46,6 +46,10 @@ class Advisory implements NameableEntityInterface
     #[ORM\Column(length: 32)]
     private string $severity;
 
+    #[ORM\ManyToOne(inversedBy: 'advisories')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Analysis $analysis;
+
     public function getId(): string
     {
         return $this->id;
@@ -188,5 +192,17 @@ class Advisory implements NameableEntityInterface
     public static function getPlural(): string
     {
         return 'Vulnérabilités';
+    }
+
+    public function getAnalysis(): Analysis
+    {
+        return $this->analysis;
+    }
+
+    public function setAnalysis(Analysis $analysis): static
+    {
+        $this->analysis = $analysis;
+
+        return $this;
     }
 }

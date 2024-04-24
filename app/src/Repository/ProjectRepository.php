@@ -23,11 +23,13 @@ class ProjectRepository extends ServiceEntityRepository
 
     public function getProjectOrderedByGrade(): array
     {
+        /** @var Project[] $projects */
         $projects = $this->createQueryBuilder('p')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
 
-        usort($projects, fn(Project $a, Project $b) => $b->getLastGrade() <=> $a->getLastGrade());
+        usort($projects, fn (Project $a, Project $b) => $b->getLastGrade() <=> $a->getLastGrade());
 
         return $projects;
     }

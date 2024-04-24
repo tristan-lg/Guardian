@@ -2,28 +2,26 @@
 
 namespace App\Component\Discord;
 
+use DateTimeInterface;
+
 class Embed
 {
     private string $title;
-    private string $description;
-    private ?int $color = null;
+    private ?string $description = null;
+    private ?EmbedColor $color = null;
     private ?EmbedAuthor $author = null;
+    private ?DateTimeInterface $timestamp = null;
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
+    /**
+     * @var EmbedField[]
+     */
+    private array $fields = [];
 
     public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
     }
 
     public function setDescription(string $description): self
@@ -33,26 +31,30 @@ class Embed
         return $this;
     }
 
-    public function getColor(): ?int
+    public function setAuthor(?EmbedAuthor $author): self
     {
-        return $this->color;
+        $this->author = $author;
+
+        return $this;
     }
 
-    public function setColor(?int $color): self
+    public function setTimestamp(?DateTimeInterface $timestamp): self
+    {
+        $this->timestamp = $timestamp;
+
+        return $this;
+    }
+
+    public function setColor(?EmbedColor $color): self
     {
         $this->color = $color;
 
         return $this;
     }
 
-    public function getAuthor(): ?EmbedAuthor
+    public function addField(EmbedField $field): self
     {
-        return $this->author;
-    }
-
-    public function setAuthor(?EmbedAuthor $author): self
-    {
-        $this->author = $author;
+        $this->fields[] = $field;
 
         return $this;
     }
@@ -62,8 +64,10 @@ class Embed
         return array_filter([
             'title' => $this->title,
             'description' => $this->description,
-            'color' => $this->color,
+            'color' => $this->color?->getDecimal() ?? null,
             'author' => $this->author?->toArray() ?? null,
+            'timestamp' => $this->timestamp?->format('c') ?? null,
+            'fields' => array_map(fn (EmbedField $field) => $field->toArray(), $this->fields),
         ]);
     }
 

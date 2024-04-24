@@ -34,6 +34,8 @@ class ProjectAnalysisService
 
     public function runAnalysis(Project $project): Analysis
     {
+        $previousAnalysis = $project->getLastAnalysis();
+
         $analysis = new Analysis();
         $analysis->setProject($project);
         $analysis->setRunAt(new DateTimeImmutable());
@@ -52,6 +54,7 @@ class ProjectAnalysisService
             // Check if package has security advisories
             foreach ($this->getPackageAdvisories($package, $advisoriesDb) as $advisory) {
                 $package->addAdvisory($advisory);
+                $analysis->addAdvisory($advisory);
             }
 
             // Check if package is outdated
@@ -69,23 +72,26 @@ class ProjectAnalysisService
         }
 
         // Compute grade
-        $previousGrade = $project->getLastGrade();
         $analysis->setGrade(
             $this->getGrade($analysis)
         );
 
-        //Count advisories
+        // Count advisories
         $analysis->setCveCount(
             array_sum(array_map(fn (Package $package) => $package->getAdvisories()->count(), $packages))
         );
+
+        // Compute analysis hash
+        $advisoriesIds = array_map(fn (Advisory $advisory) => $advisory->getAdvisoryId(), $analysis->getAdvisoriesOrdered());
+        $analysis->setAdvisoryHash(hash('sha256', implode(',', $advisoriesIds)));
 
         // Add all packages to the analysis, persist & flush
         $analysis->setEndAt(new DateTimeImmutable());
         $this->em->persist($analysis);
         $this->em->flush();
 
-        //Dispatch the event
-        $this->eventDispatcher->dispatch(new AnalysisDoneEvent($analysis, $previousGrade));
+        // Dispatch the event
+        $this->eventDispatcher->dispatch(new AnalysisDoneEvent($analysis, $previousAnalysis));
 
         return $analysis;
     }

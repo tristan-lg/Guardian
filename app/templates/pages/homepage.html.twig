@@ -38,13 +38,13 @@
             <div class="card border-{{ borderColor }}" style="width: 22rem;">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <span class="c-grade c-grade--{{ grade|lower }}" aria-current="true">{{ grade }}</span>
+                        <span class="c-grade c-grade--{{ grade|default('unknown')|lower }}" aria-current="true">{{ grade|default('?') }}</span>
                         {{ project.name }}
                     </h5>
                     <div class="card-text d-flex flex-column align-items-baseline">
                         <div class="">
                             <span>Dernière analyse : </span>
-                            <strong>{{ project.lastAnalysis.runAt|date('d/m/Y à H:i') }}</strong>
+                            <strong>{{ project.lastAnalysis.runAt|default ? project.lastAnalysis.runAt|date('d/m/Y à H:i') : 'N/D' }}</strong>
                         </div>
                         <div>
                             <span>Vulnérabilités :</span>
@@ -59,9 +59,16 @@
                         </div>
                     </div>
 
-                    <div class="mt-3 d-flex flex-row-reverse">
+                    <div class="mt-3 d-flex flex-row-reverse justify-content-between">
                         {% if project.gitUrl is not null %}
                             <a href="{{ project.gitUrl }}" class="">Voir le repository</a>
+                        {% endif %}
+                        {% if is_granted('ROLE_USER') and project.lastAnalysis %}
+                            <a href="{{ ea_url()
+                                .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
+                                .setAction('detail')
+                                .setEntityId(project.lastAnalysis.id)
+                            }}" class=""><i class="fas fa-eye fa-fw"></i>&nbsp;Voir la dernière analyse</a>
                         {% endif %}
                     </div>
                 </div>

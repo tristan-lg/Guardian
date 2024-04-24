@@ -34,7 +34,7 @@ class Project implements NameableEntityInterface
     /**
      * @var Collection<int, Analysis>
      */
-    #[ORM\OneToMany(targetEntity: Analysis::class, mappedBy: 'project')]
+    #[ORM\OneToMany(targetEntity: Analysis::class, mappedBy: 'project', cascade: ['persist', 'remove'])]
     private Collection $analyses;
 
     #[ORM\Column(length: 255)]

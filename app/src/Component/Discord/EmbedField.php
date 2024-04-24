@@ -2,11 +2,11 @@
 
 namespace App\Component\Discord;
 
-class EmbedAuthor
+class EmbedField
 {
     private string $name;
-    private ?string $url = null;
-    private ?string $iconUrl = null;
+    private string $value;
+    private bool $inline = false;
 
     public function setName(string $name): self
     {
@@ -15,16 +15,16 @@ class EmbedAuthor
         return $this;
     }
 
-    public function setUrl(?string $url): self
+    public function setValue(string $value): self
     {
-        $this->url = $url;
+        $this->value = $value;
 
         return $this;
     }
 
-    public function setIconUrl(?string $iconUrl): self
+    public function setInline(bool $inline = true): self
     {
-        $this->iconUrl = $iconUrl;
+        $this->inline = $inline;
 
         return $this;
     }
@@ -33,8 +33,8 @@ class EmbedAuthor
     {
         return array_filter([
             'name' => $this->name,
-            'url' => $this->url,
-            'iconUrl' => $this->iconUrl,
+            'value' => $this->value,
+            'inline' => $this->inline,
         ]);
     }
 

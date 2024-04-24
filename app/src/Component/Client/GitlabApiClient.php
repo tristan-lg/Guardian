@@ -52,7 +52,9 @@ class GitlabApiClient
     public function getBranches(Project $project): array
     {
         return array_map(
-            fn(array $data) => $data['name'],
+            // @phpstan-ignore-next-line
+            fn (array $data) => $data['name'],
+            // @phpstan-ignore-next-line
             json_decode($this->get('projects/' . $project->getProjectId() . '/repository/branches', [
                 'per_page' => 100,
             ])->getContent(), true)
@@ -79,15 +81,16 @@ class GitlabApiClient
     {
         $response = $this->get('projects/' . $project->getProjectId(), [
             'statistics' => false,
-            'simple' => true
+            'simple' => true,
         ]);
 
+        // @phpstan-ignore-next-line
         return json_decode($response->getContent(), true);
     }
 
     public function searchFileOnProject(Project $project, string $filename, ?string $path = null, int $level = 0): ?string
     {
-        //Prevent too many recursions
+        // Prevent too many recursions
         if ($level >= self::MAX_LEVELS) {
             return null;
         }
@@ -99,7 +102,7 @@ class GitlabApiClient
         }
 
         foreach (array_filter($trees, fn ($tree) => 'tree' === $tree['type'] && !in_array($tree['name'], self::EXCLUDED_DIRS)) as $tree) {
-            if ($file = $this->searchFileOnProject($project, $filename, $tree['path'], ($level + 1))) {
+            if ($file = $this->searchFileOnProject($project, $filename, $tree['path'], $level + 1)) {
                 return $file;
             }
         }

@@ -17,5 +17,4 @@ class HomepageController extends AbstractController
             'projects' => $em->getRepository(Project::class)->getProjectOrderedByGrade(),
         ]);
     }
-
 }

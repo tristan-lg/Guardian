@@ -38,6 +38,7 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             IntegerField::new('cveCount', 'Vulnérabilités')
                 ->setTemplatePath('@Admin/field/cve_count_alert.html.twig')
                 ->hideOnForm(),
+            TextField::new('advisoryHash', 'Hash des vulnérabilités')->onlyOnDetail(),
 
             FormField::addTab('Liste des dépendances', 'fas fa-cube'),
             ArrayField::new('packages', false)
@@ -65,7 +66,7 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
 
-            // TODO - Pourquoi la supression marche pas ?
+            ->remove(Crud::PAGE_DETAIL, Action::EDIT)
             ->add(Crud::PAGE_EDIT, Action::DELETE)
         ;
     }

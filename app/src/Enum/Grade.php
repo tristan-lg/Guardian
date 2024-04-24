@@ -23,4 +23,20 @@ enum Grade: int
             default => throw new InvalidArgumentException('Invalid grade'),
         };
     }
+
+    public function toString(): string
+    {
+        return $this->name;
+    }
+
+    public function getEmoji(): string
+    {
+        return match ($this) {
+            self::A => '🟢',
+            self::B => '🟡',
+            self::C => '🟠',
+            self::D => '🔴',
+            self::E => '🔴',
+        };
+    }
 }

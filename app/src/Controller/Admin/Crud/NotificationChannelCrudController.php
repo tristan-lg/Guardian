@@ -21,10 +21,10 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
         return [
             IdField::new('id')->hideOnForm(),
             ChoiceField::new('type', 'Type de notification')
-            ->setFormType(EnumType::class)
-            ->setFormTypeOption('class', NotificationType::class),
+                ->setFormType(EnumType::class)
+                ->setFormTypeOption('class', NotificationType::class),
             TextField::new('value', 'Valeur')
-            ->setHelp('Valeur du canal de notification (email, webhook, etc.)'),
+                ->setHelp('Valeur du canal de notification (email, webhook, etc.)'),
         ];
     }
 }

@@ -11,24 +11,22 @@ readonly class AnalysisDoneListener
 {
     public function __construct(
         private NotificationService $notificationService,
-    ) {
-    }
+    ) {}
 
     #[AsEventListener]
     public function onAnalysisDoneEvent(AnalysisDoneEvent $event): void
     {
-        if (!$event->hasGradeChanged()) {
+        if (!$event->hasGradeChange() && !$event->hasAdvisoriesHashChange()) {
             return;
         }
 
-        if (Grade::fromString($event->getNewGrade()) === Grade::A) {
+        if (Grade::A === Grade::fromString($event->getNewGrade())) {
             return;
         }
 
-        //Send notification for each channel
+        // Send notification for each channel
         $this->notificationService->sendAnalysisDoneNotification(
             $event->getAnalysis()
         );
     }
-
 }

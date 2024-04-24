@@ -8,14 +8,14 @@
 [X] Intégrer la version du projet pour affichage
 
 == v2
-	[ ] Dashboard avec les alertes de toutes nos applications
-	[ ] Rajouter des canaux de communication (discord / email) en cas d'erreur
-	[ ] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons)
+	[x] Dashboard avec les alertes de toutes nos applications
+	[x] Rajouter des canaux de communication (discord / email) en cas d'erreur
+	[x] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons) -> Discord pour l'instant
 	[ ] Programmer une analyse journalière (via Scheduler)
 	[ ] Purger les analyses trop vielles (+ 5 / projet) (via Scheduler)
 
 == v3
-    [ ] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
+    [x] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
     [ ] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
     [ ] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
     [ ] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)

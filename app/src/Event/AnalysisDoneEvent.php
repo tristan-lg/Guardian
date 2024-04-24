@@ -12,7 +12,7 @@ final class AnalysisDoneEvent extends Event
      */
     public function __construct(
         private readonly Analysis $analysis,
-        private readonly ?string $previousGrade
+        private readonly ?Analysis $previousAnalysis
     ) {}
 
     public function getAnalysis(): Analysis
@@ -20,9 +20,9 @@ final class AnalysisDoneEvent extends Event
         return $this->analysis;
     }
 
-    public function getPreviousGrade(): ?string
+    public function getPreviousAnalysis(): ?Analysis
     {
-        return $this->previousGrade;
+        return $this->previousAnalysis;
     }
 
     public function getNewGrade(): string
@@ -30,8 +30,13 @@ final class AnalysisDoneEvent extends Event
         return $this->getAnalysis()->getGrade();
     }
 
-    public function hasGradeChanged(): bool
+    public function hasGradeChange(): bool
     {
-        return $this->getPreviousGrade() !== $this->getNewGrade();
+        return $this->getAnalysis()->getGrade() !== $this->getPreviousAnalysis()?->getGrade();
+    }
+
+    public function hasAdvisoriesHashChange(): bool
+    {
+        return $this->getAnalysis()->getAdvisoryHash() !== $this->getPreviousAnalysis()?->getAdvisoryHash();
     }
 }
