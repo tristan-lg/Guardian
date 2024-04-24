@@ -1,62 +1,114 @@
 monolog:
     channels:
-        - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - access_security #Log access related errors with security urls (401 & 403)
+        - access_notfound #Log access related errors with unknown urls (404 & 405)
+        - messenger #Log messenger issues
 
-when@dev:
-    monolog:
-        handlers:
-            main:
-                type: stream
-                path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: debug
-                channels: ["!event"]
-            # uncomment to get logging in your browser
-            # you may have to allow bigger header sizes in your Web server configuration
-            #firephp:
-            #    type: firephp
-            #    level: info
-            #chromephp:
-            #    type: chromephp
-            #    level: info
-            console:
-                type: console
-                process_psr_3_messages: false
-                channels: ["!event", "!doctrine", "!console"]
+    handlers:
+        #Toplevel handlers
+        errors:
+            type: buffer
+            handler: errors_group
+            channels: ['!access_security', '!security', '!access_notfound', '!messenger']
+            level: critical
+            bubble: false
+
+        security_access:
+            type: buffer
+            handler: security_access_group
+            channels: [ access_security ]
+            level: debug
+            bubble: false
+
+        notfound_access:
+            type: buffer
+            handler: notfound_access_group
+            channels: [ access_notfound ]
+            level: debug
+            bubble: false
+
+        messenger:
+            type: buffer
+            handler: messenger_group
+            level: info
+            channels: [ messenger ]
+            bubble: false
+
+        security:
+            type: buffer
+            handler: security_group
+            level: info
+            channels: [ security ]
+            bubble: false
+
+        # ---- Groups
+        errors_group:
+            type: whatfailuregroup
+            members: [ file_errors, file_errors_expanded, graylog ]
+
+        security_access_group:
+            type: whatfailuregroup
+            members: [ file_security_access, graylog ]
+
+        notfound_access_group:
+            type: whatfailuregroup
+            members: [ file_notfound_access, graylog ]
+
+        messenger_group:
+            type: whatfailuregroup
+            members: [ file_messenger, graylog ]
+
+        security_group:
+            type: whatfailuregroup
+            members: [ file_security, graylog ]
+
+
+        # ---- Nested handlers
+        file_errors:
+            type: rotating_file
+            max_files: 7
+            path: "%kernel.logs_dir%/%kernel.environment%.error.log"
+            level: critical
+            include_stacktraces: false
+
+        file_errors_expanded:
+            type: rotating_file
+            max_files: 7
+            path: "%kernel.logs_dir%/%kernel.environment%.error-full.log"
+            level: critical
+            include_stacktraces: true
+
+        file_security_access:
+            type: rotating_file
+            max_files: 7
+            path: "%kernel.logs_dir%/%kernel.environment%.security_access.log"
+            level: info
+
+        file_notfound_access:
+            type: rotating_file
+            max_files: 7
+            path: "%kernel.logs_dir%/%kernel.environment%.access.log"
+            level: info
+
+        file_messenger:
+            type: rotating_file
+            max_files: 7
+            path: "%kernel.logs_dir%/%kernel.environment%.messenger.log"
+            level: info
+
+        file_security:
+            type: rotating_file
+            max_files: 7
+            path: "%kernel.logs_dir%/%kernel.environment%.security.log"
+            level: info
+
+        graylog:
+            type: stream
+            path: "php://stderr"
+            level: info
 
 when@test:
     monolog:
         handlers:
-            main:
-                type: fingers_crossed
-                action_level: error
-                handler: nested
-                excluded_http_codes: [404, 405]
-                channels: ["!event"]
-            nested:
-                type: stream
-                path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: debug
-
-when@prod:
-    monolog:
-        handlers:
-            main:
-                type: fingers_crossed
-                action_level: error
-                handler: nested
-                excluded_http_codes: [404, 405]
-                buffer_size: 50 # How many messages should be saved? Prevent memory leaks
-            nested:
-                type: stream
-                path: php://stderr
-                level: debug
-                formatter: monolog.formatter.json
-            console:
-                type: console
-                process_psr_3_messages: false
-                channels: ["!event", "!doctrine"]
-            deprecation:
-                type: stream
-                channels: [deprecation]
-                path: php://stderr
-                formatter: monolog.formatter.json
+            graylog:
+                type: 'null'
