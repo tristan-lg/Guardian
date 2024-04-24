@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block body_wrapper %}
+    <body class="d-flex flex-column h-100 text-center text-bg-dark">
+    {{ block('body') }}
+    </body>
+{% endblock %}
+
+{% block body %}
+    <header class="p-3 l__header mb-3">
+        <div class="d-flex justify-content-between ms-5 me-5">
+            <h1 class="h2 mb-0">Guardian</h1>
+
+            <div class="text-end">
+                <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration</a>
+            </div>
+        </div>
+    </header>
+    <section class="d-flex flex-column h-100 flex-grow-1">
+        <div class="container p-3">
+            {{ block('content') }}
+        </div>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-wrap gap-3">
+        {% for project in projects %}
+            {% set grade = project.lastGrade %}
+            {% set borderColor = {
+                'A': 'success',
+                'B': 'warning',
+                'C': 'warning',
+                'D': 'danger',
+                'E': 'danger',
+            }[grade]|default('warning') %}
+
+            <div class="card border-{{ borderColor }}" style="width: 22rem;">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span class="c-grade c-grade--{{ grade|lower }}" aria-current="true">{{ grade }}</span>
+                        {{ project.name }}
+                    </h5>
+                    <div class="card-text d-flex flex-column align-items-baseline">
+                        <div class="">
+                            <span>Dernière analyse : </span>
+                            <strong>{{ project.lastAnalysis.runAt|date('d/m/Y à H:i') }}</strong>
+                        </div>
+                        <div>
+                            <span>Vulnérabilités :</span>
+                            {% set cve = project.lastVulnerabilitiesCount %}
+                            {% if cve is null %}
+                                <span class="badge text-bg-warning rounded-pill">Analyse non réalisée</span>
+                            {% elseif cve == 0 %}
+                                <span class="badge text-bg-success rounded-pill">Aucune</span>
+                            {% else %}
+                                <span class="badge text-bg-danger rounded-pill"><i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;{{ cve }} vulnérabilités</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex flex-row-reverse">
+                        {% if project.gitUrl is not null %}
+                            <a href="{{ project.gitUrl }}" class="">Voir le repository</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+

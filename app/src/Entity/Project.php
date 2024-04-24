@@ -40,6 +40,12 @@ class Project implements NameableEntityInterface
     #[ORM\Column(length: 255)]
     private string $branch;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatarUrl = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $gitUrl = null;
+
     public function __construct()
     {
         $this->analyses = new ArrayCollection();
@@ -176,6 +182,30 @@ class Project implements NameableEntityInterface
     public function setBranch(string $branch): static
     {
         $this->branch = $branch;
+
+        return $this;
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        return $this->avatarUrl;
+    }
+
+    public function setAvatarUrl(?string $avatarUrl): static
+    {
+        $this->avatarUrl = $avatarUrl;
+
+        return $this;
+    }
+
+    public function getGitUrl(): ?string
+    {
+        return $this->gitUrl;
+    }
+
+    public function setGitUrl(?string $gitUrl): static
+    {
+        $this->gitUrl = $gitUrl;
 
         return $this;
     }

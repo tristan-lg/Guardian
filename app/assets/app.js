@@ -1,8 +1,14 @@
 import './bootstrap.js';
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
+
+//Import JS
+import './js/bootstrap.min.js';
+
+//Import CSS
+import './styles/bootstrap.min.css';
 import './styles/app.css';
+import './styles/grade.css';
+
+
+
+
+

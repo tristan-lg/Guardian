@@ -75,6 +75,27 @@ class GitlabApiClient
         return $response->getContent();
     }
 
+    public function getProjectAvatar(Project $project): ?string
+    {
+        $response = $this->get('projects/' . $project->getProjectId(), [
+            'statistics' => false,
+            'simple' => true
+        ]);
+
+        return json_decode($response->getContent(), true)['avatar_url'] ?? null;
+    }
+
+
+    public function getProjectGitUrl(Project $project): ?string
+    {
+        $response = $this->get('projects/' . $project->getProjectId(), [
+            'statistics' => false,
+            'simple' => true
+        ]);
+
+        return json_decode($response->getContent(), true)['web_url'] ?? null;
+    }
+
     public function searchFileOnProject(Project $project, string $filename, ?string $path = null, int $level = 0): ?string
     {
         //Prevent too many recursions

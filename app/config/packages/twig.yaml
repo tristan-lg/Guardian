@@ -2,6 +2,7 @@ twig:
     file_name_pattern: '*.twig'
     paths:
         'templates/admin': 'Admin'
+        'templates/pages': 'Pages'
     form_themes: ['@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig']
     globals:
         APP_VERSION: '%app.version%'

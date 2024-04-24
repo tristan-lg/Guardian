@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,8 +48,8 @@ class ProjectCrudController extends AbstractGuardianCrudController
             TextField::new('name', 'Nom du projet'),
             AssociationField::new('credential', 'Identifiant')
                 ->setTemplatePath('@Admin/field/association_readonly.html.twig')
-                ->hideOnForm(),
-
+                ->onlyOnDetail(),
+            UrlField::new('gitUrl', 'Repository'),
             TextField::new('lastGrade', 'Grade')
                 ->setTemplatePath('@Admin/field/grade_simple.html.twig')
                 ->onlyOnIndex(),
@@ -74,15 +75,15 @@ class ProjectCrudController extends AbstractGuardianCrudController
     public function configureActions(Actions $actions): Actions
     {
         return parent::configureActions($actions)
-            ->add(Crud::PAGE_DETAIL, Action::new('scan', 'Scanner le projet')
+            ->add(Crud::PAGE_DETAIL, Action::new('scan', 'Scanner les fichiers')
                 ->linkToCrudAction('scan')
                 ->setIcon('fa fa-wand-magic-sparkles')
-                ->setCssClass('btn btn-warning')
+                ->setCssClass('btn btn-primary')
             )
             ->add(Crud::PAGE_DETAIL, Action::new('startAnalysis', 'Lancer une analyse')
                 ->linkToCrudAction('startAnalysis')
                 ->setIcon('fa fa-flask')
-                ->setCssClass('btn btn-primary')
+                ->setCssClass('btn btn-warning')
             )
             ->reorder(Crud::PAGE_DETAIL, [Action::INDEX, self::ACTION_START_ANALYSIS, self::ACTION_SCAN, Action::EDIT, Action::DELETE])
             ;

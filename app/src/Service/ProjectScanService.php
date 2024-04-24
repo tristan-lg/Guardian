@@ -23,6 +23,7 @@ class ProjectScanService
 
         $expectedFiles = ['composer.lock', 'composer.json'];
 
+        //Scan files
         $foundFileList = [];
         foreach ($expectedFiles as $file) {
             $found = $client->searchFileOnProject($project, $file);
@@ -34,6 +35,15 @@ class ProjectScanService
         }
 
         $project->setFiles($foundFileList);
+
+        //Scan avatar & gitUrl
+        $project->setAvatarUrl(
+            $client->getProjectAvatar($project)
+        );
+        $project->setGitUrl(
+            $client->getProjectGitUrl($project)
+        );
+
         $this->em->flush();
     }
 

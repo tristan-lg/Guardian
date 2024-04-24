@@ -8,6 +8,7 @@
       <list>
         <twig_namespace custom="true" namespace="Admin" namespaceType="ADD_PATH" path="app/templates/admin" />
         <twig_namespace custom="true" namespace="twig" namespaceType="ADD_PATH" path="app/templates/components" />
+        <twig_namespace custom="true" namespace="Pages" namespaceType="ADD_PATH" path="app/templates/pages" />
       </list>
     </option>
   </component>
