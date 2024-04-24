@@ -23,7 +23,7 @@ RUN composer dump-autoload --no-dev --classmap-authoritative
 RUN composer dump-env prod
 
 # BUILD IMAGE
-FROM registry.ademe.fr/docker/phpfpm:8.2-docker-debian
+FROM registry.ademe.fr/docker/phpfpm:8.3-docker-debian
 
 RUN apt-get update && apt-get install -y libicu-dev zip libzip-dev wait-for-it && apt-get clean
 
