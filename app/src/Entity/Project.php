@@ -46,6 +46,9 @@ class Project implements NameableEntityInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $gitUrl = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $namespace = null;
+
     public function __construct()
     {
         $this->analyses = new ArrayCollection();
@@ -206,6 +209,18 @@ class Project implements NameableEntityInterface
     public function setGitUrl(?string $gitUrl): static
     {
         $this->gitUrl = $gitUrl;
+
+        return $this;
+    }
+
+    public function getNamespace(): ?string
+    {
+        return $this->namespace;
+    }
+
+    public function setNamespace(?string $namespace): static
+    {
+        $this->namespace = $namespace;
 
         return $this;
     }

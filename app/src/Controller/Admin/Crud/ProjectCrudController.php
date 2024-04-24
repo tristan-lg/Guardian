@@ -44,12 +44,14 @@ class ProjectCrudController extends AbstractGuardianCrudController
     {
         return [
             FormField::addTab('Informations générales', 'fas fa-info-circle'),
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->onlyOnDetail(),
+            TextField::new('namespace', 'Groupe'),
             TextField::new('name', 'Nom du projet'),
             AssociationField::new('credential', 'Identifiant')
                 ->setTemplatePath('@Admin/field/association_readonly.html.twig')
                 ->onlyOnDetail(),
             UrlField::new('gitUrl', 'Repository'),
+            UrlField::new('avatarUrl', 'Avatar')->onlyOnDetail(),
             TextField::new('lastGrade', 'Grade')
                 ->setTemplatePath('@Admin/field/grade_simple.html.twig')
                 ->onlyOnIndex(),

@@ -36,13 +36,12 @@ class ProjectScanService
 
         $project->setFiles($foundFileList);
 
-        //Scan avatar & gitUrl
-        $project->setAvatarUrl(
-            $client->getProjectAvatar($project)
-        );
-        $project->setGitUrl(
-            $client->getProjectGitUrl($project)
-        );
+        //Scan avatar & gitUrl & name
+        $projectInfos = $client->getProjectInfos($project);
+        $project->setName(ucfirst($projectInfos['name'] ?? 'Projet inconnu'));
+        $project->setAvatarUrl($projectInfos['avatar_url'] ?? null);
+        $project->setGitUrl($projectInfos['web_url'] ?? null);
+        $project->setNamespace($projectInfos['namespace']['name'] ?? null);
 
         $this->em->flush();
     }

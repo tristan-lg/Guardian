@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component;
+namespace App\Component\Client;
 
 use App\Entity\Credential;
 use App\Entity\DTO\ProjectApiDTO;
@@ -75,25 +75,14 @@ class GitlabApiClient
         return $response->getContent();
     }
 
-    public function getProjectAvatar(Project $project): ?string
+    public function getProjectInfos(Project $project): array
     {
         $response = $this->get('projects/' . $project->getProjectId(), [
             'statistics' => false,
             'simple' => true
         ]);
 
-        return json_decode($response->getContent(), true)['avatar_url'] ?? null;
-    }
-
-
-    public function getProjectGitUrl(Project $project): ?string
-    {
-        $response = $this->get('projects/' . $project->getProjectId(), [
-            'statistics' => false,
-            'simple' => true
-        ]);
-
-        return json_decode($response->getContent(), true)['web_url'] ?? null;
+        return json_decode($response->getContent(), true);
     }
 
     public function searchFileOnProject(Project $project, string $filename, ?string $path = null, int $level = 0): ?string

@@ -25,9 +25,6 @@ class ProjectType extends AbstractType
         $builder = new DynamicFormBuilder($builder);
 
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Nom du projet',
-            ])
             ->add('credential', EntityType::class, [
                 'class' => Credential::class,
                 'empty_data' => null,

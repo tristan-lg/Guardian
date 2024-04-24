@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Component\DiscordApiClient;
+use App\Component\Client\DiscordApiClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class DiscordApiService

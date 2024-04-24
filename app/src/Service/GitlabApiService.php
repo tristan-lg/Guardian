@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Component\GitlabApiClient;
+use App\Component\Client\GitlabApiClient;
 use App\Entity\Credential;
 use InvalidArgumentException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
