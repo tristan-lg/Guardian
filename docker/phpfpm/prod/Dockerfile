@@ -21,9 +21,11 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN composer install --no-interaction --no-dev --no-progress --no-scripts
 RUN composer dump-autoload --no-dev --classmap-authoritative
 RUN composer dump-env prod
+RUN php bin/console assets:install public
+RUN php bin/console asset-map:compile
 
 # BUILD IMAGE
-FROM registry.ademe.fr/docker/phpfpm:8.3-docker-debian
+FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y libicu-dev zip libzip-dev wait-for-it && apt-get clean
 
