@@ -25,7 +25,7 @@ class Advisory implements NameableEntityInterface
     #[ORM\JoinColumn(nullable: false)]
     private Package $package;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1024)]
     private string $title;
 
     #[ORM\Column(length: 1024)]
@@ -34,10 +34,10 @@ class Advisory implements NameableEntityInterface
     #[ORM\Column(length: 255)]
     private string $cve;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 2048)]
     private string $affectedVersions;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1024)]
     private string $source;
 
     #[ORM\Column]

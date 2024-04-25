@@ -158,7 +158,7 @@ class ProjectAnalysisService
     /**
      * Compute the grade for the analysis
      * A (0) => No issue
-     * B (1) => Composer.json is malformed, or at least one of these is not the LTS (PHP / Symfony)
+     * B (1) => Composer.json is malformed
      * C (2) => At least one of these is out of security support (end of support) (PHP / Symfony)
      * D (3) => At least one package has CVE (nothing critical)
      * E (4) => At least one package has critical CVE.

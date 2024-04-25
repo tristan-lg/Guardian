@@ -9,10 +9,14 @@
 {% block body %}
     <header class="p-3 l__header mb-3">
         <div class="d-flex justify-content-between ms-5 me-5">
-            <h1 class="h2 mb-0">Guardian</h1>
+            <h1 class="h2 mb-0">Guardian - {{ APP_VERSION }}</h1>
 
             <div class="text-end">
-                <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration</a>
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration ({{ app.user.email }})</a>
+                {% else %}
+                    <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration</a>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -21,6 +25,15 @@
             {{ block('content') }}
         </div>
     </section>
+    <footer class="p-3 l__footer">
+        <div class="d-flex gap-3 justify-content-between">
+            {{ _self.grade('A', 'Aucune vulnérabilité') }}
+            {{ _self.grade('B', 'Fichier de dépendence incorrect') }}
+            {{ _self.grade('C', 'Au moins une des version (PHP / Symfony) n\'est plus supportée') }}
+            {{ _self.grade('D', 'Au moins une vulnérabilité non critique') }}
+            {{ _self.grade('E', 'Au moins une vulnérabilité critique') }}
+        </div>
+    </footer>
 {% endblock %}
 
 {% block content %}
@@ -76,6 +89,14 @@
         {% endfor %}
     </div>
 {% endblock %}
+
+{% macro grade(grade, description) %}
+    <div>
+        <span class="c-grade c-grade--{{ grade|lower }}" aria-current="true">{{ grade }}</span>
+        <span>{{ description }}</span>
+    </div>
+{% endmacro %}
+
 
 
 
