@@ -18,4 +18,32 @@ footer {
     color: white;
     border-width: 2px;
     min-height: 160px;
+    width: 350px;
 }
+
+.homepage__container.container {
+    max-width: 384px;
+}
+
+/* Size for 2 cards */
+@media (min-width: 752px) {
+    .homepage__container.container {
+        max-width: 752px;
+    }
+}
+
+/* Size for 3 cards */
+@media (min-width: 1120px) {
+    .homepage__container.container {
+        max-width: 1120px;
+    }
+}
+
+/* Size for 4 cards */
+@media (min-width: 1488px) {
+    .homepage__container.container {
+        max-width: 1488px;
+    }
+}
+
+

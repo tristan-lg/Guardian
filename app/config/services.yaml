@@ -6,6 +6,7 @@
 parameters:
     router.request_context.scheme: 'https'
     asset.request_context.secure: true
+    packagist.user_agent: 'Guardian/v%app.version% (%env(PACKAGIST_CONTACT_EMAIL)%)'
 
 services:
     # default configuration for services in *this* file
