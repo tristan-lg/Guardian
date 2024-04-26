@@ -7,20 +7,21 @@
 [X] Faire le Dockerfile et le processus pour livrer le projet (github.com)
 [X] Intégrer la version du projet pour affichage
 
-== v2
+== v1.1.0
 	[x] Dashboard avec les alertes de toutes nos applications
 	[x] Rajouter des canaux de communication (discord / email) en cas d'erreur
 	[x] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons) -> Discord pour l'instant
 	[x] Programmer une analyse journalière (via Scheduler)
 	[x] Purger les analyses trop vielles (+ 5 / projet) (via Scheduler)
+	Lien utile : https://leovoel.github.io/embed-visualizer/
 
-== v3
+== v1.2.0
     [x] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
     [ ] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
     [ ] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
     [ ] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)
     [ ] Permettre l'ajout d'utilisateur
 
-== v4
+== v1.3.0
 	[ ] Vérifier que le fichiers composer est bien écrit
 	[ ] Vérifier aussi les version des librairies js ?
