@@ -3,6 +3,7 @@
 namespace App\Component\Client;
 
 use App\Component\Discord\Embed;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -12,7 +13,8 @@ class DiscordApiClient
 {
     protected function __construct(
         private readonly HttpClientInterface $client,
-        private readonly string $webhook
+        private readonly string $webhook,
+        private readonly LoggerInterface $logger,
     ) {}
 
     public function checkCredentials(): bool
@@ -32,16 +34,30 @@ class DiscordApiClient
      */
     public function sendMessage(array $embeds): void
     {
+        $embedsArray = array_map(fn (Embed $embed) => $embed->toArray(), $embeds);
+        if (count($embedsArray) > 10) {
+            $this->logger->error('DiscordApiClient::sendMessage: too many embeds : ' . count($embedsArray) . ' / 10');
+            return;
+        }
+
+        foreach ($embedsArray as $key => $embed) {
+            if (isset($embed['fields']) && count($embed['fields']) > 25) {
+                $this->logger->error('DiscordApiClient::sendMessage: too many fields in embed ' . $key . ' : ' . count($embed['fields']) . ' / 25');
+                return;
+            }
+        }
+
         $this->post('', [
-            'embeds' => array_map(fn (Embed $embed) => $embed->toArray(), $embeds),
+            'embeds' => $embedsArray,
         ]);
     }
 
     public static function createClient(
         HttpClientInterface $client,
+        LoggerInterface $logger,
         string $webhook,
     ): DiscordApiClient {
-        return new self($client, $webhook);
+        return new self($client, $webhook, $logger);
     }
 
     private function get(string $endpoint, array $options = []): ResponseInterface

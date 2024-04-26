@@ -47,8 +47,11 @@ class NotificationService
             )
         ;
 
-        // Add fields for each CVE
-        foreach ($analysis->getAdvisoriesOrdered() as $advisory) {
+        // Add fields for each CVE (prevent add too many fields)
+        $advisories = $analysis->getAdvisoriesOrdered();
+        $remainingFieldsCount = Embed::MAX_FIELDS - count($embed->getFields());
+        $advisoriesToShow = count($advisories) > $remainingFieldsCount ? ($remainingFieldsCount - 1) : count($advisories);
+        foreach (array_slice($advisories, 0, $advisoriesToShow) as $advisory) {
             $embed->addField(EmbedField::create()
                 ->setName(sprintf('%s [%s] %s',
                     $advisory->getSeverityEnum()->emoji(),
@@ -60,6 +63,14 @@ class NotificationService
                     $advisory->getLink(),
                     $advisory->getReportedAt()->format('d/m/Y')
                 ))
+            );
+        }
+
+        //If there is more advisories that available fields, add a field to indicate it
+        if (count($advisories) !== $advisoriesToShow) {
+            $embed->addField(EmbedField::create()
+                ->setName('...')
+                ->setValue(sprintf('+ %d vulnérabilités supplémentaires', count($advisories) - 24))
             );
         }
 
