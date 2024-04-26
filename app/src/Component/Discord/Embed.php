@@ -6,6 +6,8 @@ use DateTimeInterface;
 
 class Embed
 {
+    public const int MAX_FIELDS = 25;
+
     private string $title;
     private ?string $description = null;
     private ?EmbedColor $color = null;
@@ -57,6 +59,11 @@ class Embed
         $this->fields[] = $field;
 
         return $this;
+    }
+
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 
     public function toArray(): array

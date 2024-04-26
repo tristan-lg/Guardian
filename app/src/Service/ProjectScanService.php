@@ -43,6 +43,10 @@ class ProjectScanService
         $project->setGitUrl($projectInfos['web_url'] ?? null);
         $project->setNamespace($projectInfos['namespace']['name'] ?? null);
 
+        if (!$project->getAlias()) {
+            $project->setAlias($project->getName());
+        }
+
         $this->em->flush();
     }
 

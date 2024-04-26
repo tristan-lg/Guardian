@@ -49,6 +49,9 @@ class Project implements NameableEntityInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $namespace = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $alias = null;
+
     public function __construct()
     {
         $this->analyses = new ArrayCollection();
@@ -221,6 +224,18 @@ class Project implements NameableEntityInterface
     public function setNamespace(?string $namespace): static
     {
         $this->namespace = $namespace;
+
+        return $this;
+    }
+
+    public function getAlias(): ?string
+    {
+        return $this->alias ?? $this->getName();
+    }
+
+    public function setAlias(?string $alias): static
+    {
+        $this->alias = $alias;
 
         return $this;
     }

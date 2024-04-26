@@ -45,12 +45,13 @@ class ProjectCrudController extends AbstractGuardianCrudController
         return [
             FormField::addTab('Informations générales', 'fas fa-info-circle'),
             IdField::new('id')->onlyOnDetail(),
-            TextField::new('namespace', 'Groupe'),
-            TextField::new('name', 'Nom du projet'),
+            TextField::new('namespace', 'Groupe')->setDisabled(),
+            TextField::new('name', 'Nom du projet original')->setDisabled()->hideOnIndex(),
+            TextField::new('alias', 'Nom du projet'),
             AssociationField::new('credential', 'Identifiant')
                 ->setTemplatePath('@Admin/field/association_readonly.html.twig')
                 ->onlyOnDetail(),
-            UrlField::new('gitUrl', 'Repository'),
+            UrlField::new('gitUrl', 'Repository')->setDisabled(),
             UrlField::new('avatarUrl', 'Avatar')->onlyOnDetail(),
             TextField::new('lastGrade', 'Grade')
                 ->setTemplatePath('@Admin/field/grade_simple.html.twig')
@@ -62,12 +63,12 @@ class ProjectCrudController extends AbstractGuardianCrudController
                 ->setTemplatePath('@Admin/field/cve_count_alert.html.twig')
                 ->hideOnForm(),
 
-            FormField::addTab('Fichiers', 'fas fa-file'),
+            FormField::addTab('Fichiers', 'fas fa-file')->onlyOnDetail(),
             ArrayField::new('files', false)
                 ->setTemplatePath('@Admin/field/files.html.twig')
                 ->onlyOnDetail(),
 
-            FormField::addTab('Analyses', 'fas fa-flask'),
+            FormField::addTab('Analyses', 'fas fa-flask')->onlyOnDetail(),
             ArrayField::new('analyses', false)
                 ->setTemplatePath('@Admin/field/analyses.html.twig')
                 ->onlyOnDetail(),
