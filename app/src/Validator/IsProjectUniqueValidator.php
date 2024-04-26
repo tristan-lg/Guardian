@@ -2,9 +2,7 @@
 
 namespace App\Validator;
 
-use App\Entity\Credential;
 use App\Entity\Project;
-use App\Service\GitlabApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
@@ -38,7 +36,7 @@ class IsProjectUniqueValidator extends ConstraintValidator
             return;
         }
 
-        //Ensure project is unique
+        // Ensure project is unique
         $matchingProject = $this->em->getRepository(Project::class)->findOneBy([
             'projectId' => $project->getProjectId(),
             'branch' => $project->getBranch(),

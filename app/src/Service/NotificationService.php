@@ -66,7 +66,7 @@ class NotificationService
             );
         }
 
-        //If there is more advisories that available fields, add a field to indicate it
+        // If there is more advisories that available fields, add a field to indicate it
         if (count($advisories) !== $advisoriesToShow) {
             $embed->addField(EmbedField::create()
                 ->setName('...')

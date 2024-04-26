@@ -8,12 +8,14 @@ use App\Entity\Package;
 use App\Entity\Project;
 use App\Enum\Severity;
 use App\Event\AnalysisDoneEvent;
+use App\Message\ClearProjectAnalyses;
 use App\Message\RunAnalysis;
 use Composer\Semver\Semver;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 
 class ProjectAnalysisService
 {
@@ -27,9 +29,18 @@ class ProjectAnalysisService
         private readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
-    public function scheduleAnalysis(Project $project): void
+    public function scheduleAnalysis(Project $project, bool $async = false): void
     {
-        $this->messageBus->dispatch(new RunAnalysis($project->getId()));
+        $this->messageBus->dispatch(new RunAnalysis($project->getId()), [
+            new TransportNamesStamp([$async ? 'async' : 'sync']),
+        ]);
+    }
+
+    public function scheduleClearAnalyses(Project $project): void
+    {
+        $this->messageBus->dispatch(new ClearProjectAnalyses($project->getId()), [
+            new TransportNamesStamp(['async']),
+        ]);
     }
 
     public function runAnalysis(Project $project): Analysis

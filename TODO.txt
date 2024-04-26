@@ -11,8 +11,8 @@
 	[x] Dashboard avec les alertes de toutes nos applications
 	[x] Rajouter des canaux de communication (discord / email) en cas d'erreur
 	[x] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons) -> Discord pour l'instant
-	[ ] Programmer une analyse journalière (via Scheduler)
-	[ ] Purger les analyses trop vielles (+ 5 / projet) (via Scheduler)
+	[x] Programmer une analyse journalière (via Scheduler)
+	[x] Purger les analyses trop vielles (+ 5 / projet) (via Scheduler)
 
 == v3
     [x] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)

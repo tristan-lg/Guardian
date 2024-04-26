@@ -37,12 +37,14 @@ class DiscordApiClient
         $embedsArray = array_map(fn (Embed $embed) => $embed->toArray(), $embeds);
         if (count($embedsArray) > 10) {
             $this->logger->error('DiscordApiClient::sendMessage: too many embeds : ' . count($embedsArray) . ' / 10');
+
             return;
         }
 
         foreach ($embedsArray as $key => $embed) {
             if (isset($embed['fields']) && count($embed['fields']) > 25) {
                 $this->logger->error('DiscordApiClient::sendMessage: too many fields in embed ' . $key . ' : ' . count($embed['fields']) . ' / 25');
+
                 return;
             }
         }
