@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Credential;
 use App\Entity\Project;
 use App\Service\GitlabApiService;
+use App\Validator\IsProjectUnique;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -73,6 +74,9 @@ class ProjectType extends AbstractType
             $field->add(ChoiceType::class, [
                 'choices' => array_combine($branches, $branches),
                 'label' => 'Branche',
+                'constraints' => [
+                    new IsProjectUnique(),
+                ],
             ]);
         });
     }

@@ -5,7 +5,7 @@ namespace App\Message;
 /**
  * Run an analysis for the given project.
  */
-class RunAnalysis
+class ClearProjectAnalyses
 {
     public function __construct(
         private string $projectId

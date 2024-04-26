@@ -31,8 +31,8 @@ class PackagistApiService
                 'packages' => $packages,
             ],
             'headers' => [
-                'User-Agent' => $this->userAgent
-            ]
+                'User-Agent' => $this->userAgent,
+            ],
         ]);
 
         return $response->toArray()['advisories'];
