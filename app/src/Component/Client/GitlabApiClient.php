@@ -2,6 +2,7 @@
 
 namespace App\Component\Client;
 
+use App\Component\Git\TokenData;
 use App\Entity\Credential;
 use App\Entity\DTO\ProjectApiDTO;
 use App\Entity\Project;
@@ -86,6 +87,22 @@ class GitlabApiClient
 
         // @phpstan-ignore-next-line
         return json_decode($response->getContent(), true);
+    }
+
+    public function getCredentialInfos(): ?TokenData
+    {
+        $response = $this->get('personal_access_tokens');
+
+        try {
+            // @phpstan-ignore-next-line
+            return TokenData::fromArray(json_decode($response->getContent(), true)[0]);
+        } catch (Throwable $t) {
+            if (Response::HTTP_UNAUTHORIZED === $t->getCode()) {
+                return null;
+            }
+
+            throw $t;
+        }
     }
 
     public function searchFileOnProject(Project $project, string $filename, ?string $path = null, int $level = 0): ?string
