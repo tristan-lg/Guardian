@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Interface\NameableEntityInterface;
 use App\Repository\CredentialRepository;
 use App\Validator\IsCredentialValid;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,6 +35,9 @@ class Credential implements NameableEntityInterface
      */
     #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'credential')]
     private Collection $projects;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $expireAt = null;
 
     public function __construct()
     {
@@ -124,5 +128,27 @@ class Credential implements NameableEntityInterface
     public static function getPlural(): string
     {
         return 'Identifiants';
+    }
+
+    public function getExpireAt(): ?DateTimeImmutable
+    {
+        return $this->expireAt;
+    }
+
+    public function setExpireAt(?DateTimeImmutable $expireAt): static
+    {
+        $this->expireAt = $expireAt;
+
+        return $this;
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expireAt && $this->expireAt < new DateTimeImmutable();
+    }
+
+    public function isExpiredIn(int $days): bool
+    {
+        return $this->expireAt && $this->expireAt < (new DateTimeImmutable())->modify('+' . $days . ' days');
     }
 }

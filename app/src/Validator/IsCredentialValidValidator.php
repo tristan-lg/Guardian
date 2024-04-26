@@ -43,6 +43,35 @@ class IsCredentialValidValidator extends ConstraintValidator
                 ->setParameter('{{ host }}', $credentials->getDomain() ?? '')
                 ->addViolation()
             ;
+
+            return;
+        }
+
+        $infos = $client->getCredentialInfos();
+        if (!$infos) {
+            $this->context->buildViolation($constraint->message)
+                ->setParameter('{{ value }}', $value)
+                ->setParameter('{{ host }}', $credentials->getDomain() ?? '')
+                ->addViolation()
+            ;
+        } elseif (!$infos->hasScope('read_api')) {
+            $this->context->buildViolation($constraint->messageMissingScope)
+                ->setParameter('{{ value }}', $value)
+                ->setParameter('{{ scope }}', 'read_api')
+                ->addViolation()
+            ;
+        } elseif (!$infos->hasScope('read_repository')) {
+            $this->context->buildViolation($constraint->messageMissingScope)
+                ->setParameter('{{ value }}', $value)
+                ->setParameter('{{ scope }}', 'read_repository')
+                ->addViolation()
+            ;
+        } elseif ($infos->isExpired()) {
+            $this->context->buildViolation($constraint->messageExpired)
+                ->setParameter('{{ value }}', $value)
+                ->setParameter('{{ scope }}', 'read_repository')
+                ->addViolation()
+            ;
         }
     }
 }
