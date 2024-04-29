@@ -70,6 +70,8 @@ class CredentialCrudController extends AbstractGuardianCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $entityInstance->setLastNotification(null);
+        $this->credentialsService->scheduleCredentialsCheck($entityInstance);
+
         parent::updateEntity($entityManager, $entityInstance);
     }
 

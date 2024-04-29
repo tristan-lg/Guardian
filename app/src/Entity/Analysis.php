@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\DTO\PlatformDTO;
 use App\Entity\Interface\NameableEntityInterface;
 use App\Enum\Grade;
 use App\Repository\AnalysisRepository;
@@ -52,6 +53,9 @@ class Analysis implements NameableEntityInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $advisoryHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $platform = [];
 
     public function __construct()
     {
@@ -209,6 +213,22 @@ class Analysis implements NameableEntityInterface
     public function setAdvisoryHash(?string $advisoryHash): static
     {
         $this->advisoryHash = $advisoryHash;
+
+        return $this;
+    }
+
+    public function getPlatform(): PlatformDTO
+    {
+        return PlatformDTO::fromArray($this->platform ?? []);
+    }
+
+    public function setPlatform(null|array|PlatformDTO $platform): static
+    {
+        if (null === $platform || is_array($platform)) {
+            $this->platform = $platform ?? [];
+        } else {
+            $this->platform = $platform->toArray();
+        }
 
         return $this;
     }

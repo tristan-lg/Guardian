@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Advisory;
 use App\Entity\Analysis;
+use App\Entity\DTO\PlatformDTO;
 use App\Entity\Package;
 use App\Entity\Project;
 use App\Enum\Severity;
@@ -12,6 +13,7 @@ use App\Exception\CredentialsExpiredException;
 use App\Message\ClearProjectAnalyses;
 use App\Message\RunAnalysis;
 use Composer\Semver\Semver;
+use Composer\Semver\VersionParser;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -27,6 +29,7 @@ class ProjectAnalysisService
         private readonly MessageBusInterface $messageBus,
         private readonly ProjectScanService $projectScanService,
         private readonly PackagistApiService $packagistApiService,
+        private readonly EndOfLifeApiService $endOfLifeApiService,
         private readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
@@ -66,6 +69,11 @@ class ProjectAnalysisService
         // Get composer.json and composer.lock content
         $composerJson = $this->projectScanService->getFileJsonContent($project, 'composer.json');
         $composerLock = $this->projectScanService->getFileJsonContent($project, 'composer.lock');
+
+        // Get php & symfony version
+        $analysis->setPlatform(
+            $this->getPlatform($composerJson, $composerLock)
+        );
 
         // Create list of packages & advisories
         $packages = $this->createPackageList($composerJson, $composerLock);
@@ -211,5 +219,43 @@ class ProjectAnalysisService
         }
 
         return ['A', 'B', 'C', 'D', 'E'][$grade];
+    }
+
+    private function getPlatform(array $composerJson, array $composerLock): PlatformDTO
+    {
+        /** @var null|string $phpVersion */
+        $phpVersion = $composerLock['platform']['php'] ?? null;
+        $phpInfos = null;
+
+        /** @var null|string $symfonyVersion */
+        $symfonyVersion = $composerJson['extra']['symfony']['require'] ?? null;
+        $symfonyInfos = null;
+
+        $parser = new VersionParser();
+        if ($phpVersion) {
+            $phpVersion = $parser->parseConstraints($phpVersion)->getLowerBound()->getVersion();
+
+            // Get only the 2 first digits
+            $phpVersion = substr($phpVersion, 0, 3);
+
+            // Get OEL infos
+            $phpInfos = $this->endOfLifeApiService->getPackageVersionInfo('php', $phpVersion);
+        }
+        if ($symfonyVersion) {
+            $symfonyVersion = $parser->parseConstraints($symfonyVersion)->getLowerBound()->getVersion();
+
+            // Get only the 2 first digits
+            $symfonyVersion = substr($symfonyVersion, 0, 3);
+
+            // Get OEL infos
+            $symfonyInfos = $this->endOfLifeApiService->getPackageVersionInfo('symfony', $symfonyVersion);
+        }
+
+        return new PlatformDTO(
+            php: $phpVersion,
+            phpInfos: $phpInfos,
+            symfony: $symfonyVersion,
+            symfonyInfos: $symfonyInfos
+        );
     }
 }
