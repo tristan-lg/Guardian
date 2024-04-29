@@ -25,6 +25,12 @@ class NotificationChannel implements NameableEntityInterface
     #[ORM\Column(length: 1024)]
     private string $value;
 
+    #[ORM\Column(options: ['default' => true])]
+    private bool $working = true;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $name = null;
+
     public function getId(): string
     {
         return $this->id;
@@ -62,5 +68,29 @@ class NotificationChannel implements NameableEntityInterface
     public static function getPlural(): string
     {
         return 'Canaux de notifications';
+    }
+
+    public function isWorking(): bool
+    {
+        return $this->working;
+    }
+
+    public function setWorking(bool $working): static
+    {
+        $this->working = $working;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }

@@ -17,11 +17,16 @@
 
 == v1.2.0
     [x] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
-    [ ] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
-    [ ] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
-    [ ] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)
-    [ ] Permettre l'ajout d'utilisateur
+
+    [X] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
+    [X] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
+    [X] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)
+
+    [x] Permettre l'ajout d'utilisateur
+    [x] Ajouter une notification discord quand les credentials sont sur le point d'expirer (30j, 7j, et expiré)
+    [x] Ajouter dans le crud une ligne pour voir la date d'expiration credentials
 
 == v1.3.0
+    [ ] Ajouter une notification discord pour les versions applicatives
 	[ ] Vérifier que le fichiers composer est bien écrit
 	[ ] Vérifier aussi les version des librairies js ?

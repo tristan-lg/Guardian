@@ -20,4 +20,12 @@ class NotificationChannelRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, NotificationChannel::class);
     }
+
+    /**
+     * @return NotificationChannel[]
+     */
+    public function findExpired(): array
+    {
+        return array_filter($this->findAll(), fn (NotificationChannel $channel) => !$channel->isWorking());
+    }
 }

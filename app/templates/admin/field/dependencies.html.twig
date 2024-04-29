@@ -3,10 +3,80 @@
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
 {# @var package \App\Entity\Package #}
 {# @var advisory \App\Entity\Advisory #}
+{# @var platform \App\Entity\DTO\PlatformDTO #}
 {% if ea.crud.currentAction == 'detail' %}
     {% set dependencies = field.value|sort((a, b) => b.advisories|length <=> a.advisories|length) %}
 
-    <h5>Dépendances</h5>
+    {% set platform = entity.instance.platform %}
+    <h5><i class="fa-brands fa-php fa-fw"></i>&nbsp;Langage et framework</h5>
+    <table class="table mb-5">
+        <thead>
+        <tr>
+            <th>Dependance</th>
+            <th>Version minimale installée</th>
+            <th>LTS ?</th>
+            <th>Fin de vie</th>
+            <th>Etat</th>
+        </tr>
+        </thead>
+        <tbody>
+        {# PHP #}
+        <tr>
+            <td><i class="fa-brands fa-php fa-fw"></i>&nbsp;PHP</td>
+            <td>{{ platform.php|default('Non installé') }}</td>
+            <td>
+                {% if platform.phpInfos.lts %}
+                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                {% else %}
+                    <span class="badge badge-warning">Non</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if date(platform.phpInfos.eol) < date() %}
+                    <span class="badge badge-danger">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                {% else %}
+                    <span class="badge badge-secondary">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if date(platform.phpInfos.eol) > date()  %}
+                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                {% else %}
+                    <span class="badge badge-danger">Version obsolète !</span>
+                {% endif %}
+            </td>
+        </tr>
+
+        {# Symfony #}
+        <tr>
+            <td><i class="fa-brands fa-symfony"></i>&nbsp;Symfony</td>
+            <td>{{ platform.symfony|default('Non installé') }}</td>
+            <td>
+                {% if platform.symfonyInfos.lts %}
+                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                {% else %}
+                    <span class="badge badge-warning">Non</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if date(platform.symfonyInfos.eol) < date() %}
+                    <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                {% else %}
+                    <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if date(platform.symfonyInfos.eol) > date()  %}
+                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                {% else %}
+                    <span class="badge badge-danger">Version obsolète !</span>
+                {% endif %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h5><i class="fas fa-cube fa-fw"></i>&nbsp;Dépendances</h5>
     <table class="table">
         <thead>
         <tr>

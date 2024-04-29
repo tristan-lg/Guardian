@@ -25,6 +25,8 @@ class DashboardController extends AbstractDashboardController
     {
         return $this->render('@Admin/dashboard/dashboard.html.twig', [
             'projects' => $this->em->getRepository(Project::class)->getProjectOrderedByGrade(),
+            'credentials' => $this->em->getRepository(Credential::class)->findAll(),
+            'channels' => $this->em->getRepository(NotificationChannel::class)->findAll(),
         ]);
     }
 
@@ -37,6 +39,9 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
+        $expiredCredentials = count($this->em->getRepository(Credential::class)->findExpired());
+        $expiredChannels = count($this->em->getRepository(NotificationChannel::class)->findExpired());
+
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         yield MenuItem::linkToRoute('Page publique', 'fa fa-eye', 'homepage');
@@ -49,8 +54,18 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
 
-        yield MenuItem::linkToCrud('Identifiants', 'fas fa-user-secret', Credential::class);
+        yield MenuItem::linkToCrud('Identifiants', 'fas fa-user-secret', Credential::class)
+            ->setBadge(
+                $expiredCredentials ? ($expiredCredentials . ' expirés') : 'OK',
+                $expiredCredentials ? 'danger' : 'success'
+            )
+        ;
 
-        yield MenuItem::linkToCrud('Notifications', 'fas fa-bell', NotificationChannel::class);
+        yield MenuItem::linkToCrud('Notifications', 'fas fa-bell', NotificationChannel::class)
+            ->setBadge(
+                $expiredChannels ? ($expiredChannels . ' expirés') : 'OK',
+                $expiredChannels ? 'danger' : 'success'
+            )
+        ;
     }
 }

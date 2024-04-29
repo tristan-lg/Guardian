@@ -8,6 +8,7 @@ use App\Validator\IsCredentialValid;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
 
@@ -38,6 +39,9 @@ class Credential implements NameableEntityInterface
 
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $expireAt = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $lastNotification = null;
 
     public function __construct()
     {
@@ -142,6 +146,11 @@ class Credential implements NameableEntityInterface
         return $this;
     }
 
+    public function isValid(): bool
+    {
+        return !$this->isExpired();
+    }
+
     public function isExpired(): bool
     {
         return $this->expireAt && $this->expireAt < new DateTimeImmutable();
@@ -150,5 +159,17 @@ class Credential implements NameableEntityInterface
     public function isExpiredIn(int $days): bool
     {
         return $this->expireAt && $this->expireAt < (new DateTimeImmutable())->modify('+' . $days . ' days');
+    }
+
+    public function getLastNotification(): ?DateTimeImmutable
+    {
+        return $this->lastNotification;
+    }
+
+    public function setLastNotification(?DateTimeImmutable $lastNotification): static
+    {
+        $this->lastNotification = $lastNotification;
+
+        return $this;
     }
 }

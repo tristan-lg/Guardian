@@ -20,4 +20,12 @@ class CredentialRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Credential::class);
     }
+
+    /**
+     * @return Credential[]
+     */
+    public function findExpired(): array
+    {
+        return array_filter($this->findAll(), fn (Credential $credential) => $credential->isExpired());
+    }
 }
