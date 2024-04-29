@@ -7,15 +7,20 @@ use App\Component\Discord\EmbedAuthor;
 use App\Component\Discord\EmbedColor;
 use App\Component\Discord\EmbedField;
 use App\Entity\Analysis;
+use App\Entity\Credential;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class NotificationService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly DiscordApiService $discordApiService,
+        private readonly LoggerInterface $logger
     ) {}
 
     public function sendAnalysisDoneNotification(Analysis $analysis): void
@@ -80,6 +85,37 @@ class NotificationService
         // TODO - Send email notification
     }
 
+    public function sendCredentialWillExpireNotification(Credential $credential): void
+    {
+        // Build discord notification
+        if (!$credential->getExpireAt()) {
+            return;
+        }
+
+        $embed = Embed::create()
+            ->setColor(EmbedColor::WARNING)
+            ->setTitle(sprintf('⚠️ L\'identifiant "%s" expire dans %d jours',
+                ucfirst($credential->getName() ?? ''),
+                $credential->getExpireAt()->diff(new DateTimeImmutable())->days
+            ))
+        ;
+
+        $this->sendDiscordNotification($embed);
+    }
+
+    public function sendCredentialJustExpiredNotification(Credential $credential): void
+    {
+        // Build discord notification
+        $embed = Embed::create()
+            ->setColor(EmbedColor::DANGER)
+            ->setTitle(sprintf('🚨 L\'identifiant "%s" a expiré !',
+                ucfirst($credential->getName() ?? ''),
+            ))
+        ;
+
+        $this->sendDiscordNotification($embed);
+    }
+
     /**
      * @param Embed|Embed[] $embeds
      */
@@ -90,7 +126,13 @@ class NotificationService
         $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['type' => NotificationType::DISCORD]);
         foreach ($channels as $discordChannel) {
             $client = $this->discordApiService->getClient($discordChannel->getValue());
-            $client->sendMessage($embeds);
+
+            try {
+                $client->sendMessage($embeds);
+            } catch (Throwable $t) {
+                // Log error
+                $this->logger->critical('Error while sending discord notification', ['message' => $t->getMessage()]);
+            }
         }
     }
 }

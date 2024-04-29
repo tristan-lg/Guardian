@@ -9,6 +9,7 @@ use App\Service\ProjectScanService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,11 +67,23 @@ class ScanProjectCommand extends Command
         // Check if project files are scanned
         if (0 === count($project->getFiles())) {
             $io->section('Scan the project files : ' . $project->getName());
-            $this->projectScanService->scanProject($project);
+
+            try {
+                $this->projectScanService->scanProject($project);
+            } catch (Exception $e) {
+                $io->error('Error while scanning project files : ' . $e->getMessage());
+
+                return Command::FAILURE;
+            }
         }
 
         $io->section('Run project analysis for : ' . $project->getName());
         $analysis = $this->projectAnalysisService->runAnalysis($project);
+        if (!$analysis) {
+            $io->error('Analysis failed : Credential expired or not found');
+
+            return Command::FAILURE;
+        }
 
         $urlToAnalysis = $this->adminUrlGenerator
             ->setController(AnalysisCrudController::class)

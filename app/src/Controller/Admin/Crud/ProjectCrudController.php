@@ -45,6 +45,9 @@ class ProjectCrudController extends AbstractGuardianCrudController
         return [
             FormField::addTab('Informations générales', 'fas fa-info-circle'),
             IdField::new('id')->onlyOnDetail(),
+            TextField::new('credentialsStatus', '<i class="fa-brands fa-gitlab" style="color: #ff7800"></i> Gitlab')
+                ->setTemplatePath('@Admin/field/credential_status.html.twig')
+                ->hideOnForm(),
             TextField::new('namespace', 'Groupe')->setDisabled(),
             TextField::new('name', 'Nom du projet original')->setDisabled()->hideOnIndex(),
             TextField::new('alias', 'Nom du projet'),
@@ -150,8 +153,12 @@ class ProjectCrudController extends AbstractGuardianCrudController
     {
         $project = $this->getProject($context);
 
-        $this->projectAnalysisService->scheduleAnalysis($project);
-        $this->addFlash('success', 'L\'analyse du projet a été programmée avec succès');
+        try {
+            $this->projectAnalysisService->scheduleAnalysis($project);
+            $this->addFlash('success', 'L\'analyse du projet a été programmée avec succès');
+        } catch (Exception $e) {
+            $this->addFlash('danger', 'Erreur lors de la programmation de l\'analyse : ' . $e->getMessage());
+        }
 
         return $this->redirect(
             $this->adminUrlGenerator
@@ -165,6 +172,18 @@ class ProjectCrudController extends AbstractGuardianCrudController
     public function viewFile(AdminContext $context): Response
     {
         $project = $this->getProject($context);
+
+        if (!$project->getCredential()?->isValid()) {
+            $this->addFlash('danger', 'Les identifiants du projet sont invalides ou expirés');
+
+            return $this->redirect(
+                $this->adminUrlGenerator
+                    ->setController(ProjectCrudController::class)
+                    ->setAction(Action::DETAIL)
+                    ->setEntityId($project->getId())
+                    ->generateUrl()
+            );
+        }
 
         /** @var null|string $fileKey */
         $fileKey = $context->getRequest()->get('file');

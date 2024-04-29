@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Project;
+use App\Exception\CredentialsExpiredException;
 use App\Exception\ProjectFileNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -16,9 +17,15 @@ class ProjectScanService
 
     /**
      * Scan the project and update the file list.
+     *
+     * @throws CredentialsExpiredException
      */
     public function scanProject(Project $project): void
     {
+        if (!$project->getCredential()?->isValid()) {
+            throw new CredentialsExpiredException();
+        }
+
         $client = $this->clientService->getClient($project->getCredential());
 
         $expectedFiles = ['composer.lock', 'composer.json'];

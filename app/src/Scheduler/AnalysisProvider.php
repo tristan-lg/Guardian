@@ -7,6 +7,8 @@ use App\Entity\Project;
 use App\Service\CredentialsService;
 use App\Service\ProjectAnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Scheduler\Attribute\AsCronTask;
 
 #[AsCronTask(schedule: 'scheduler', expression: '# 7 * * *', jitter: 10, method: 'runGlobalAnalysis')]
@@ -18,12 +20,17 @@ class AnalysisProvider
         private readonly EntityManagerInterface $em,
         private readonly ProjectAnalysisService $projectAnalysisService,
         private readonly CredentialsService $credentialsService,
+        private readonly LoggerInterface $logger
     ) {}
 
     public function runGlobalAnalysis(): void
     {
         foreach ($this->em->getRepository(Project::class)->findAll() as $project) {
-            $this->projectAnalysisService->scheduleAnalysis($project, true);
+            try {
+                $this->projectAnalysisService->scheduleAnalysis($project, true);
+            } catch (Exception $e) {
+                $this->logger->error('Error while scheduling analysis', ['message' => $e->getMessage()]);
+            }
         }
     }
 

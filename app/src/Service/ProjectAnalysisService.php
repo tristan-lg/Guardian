@@ -8,6 +8,7 @@ use App\Entity\Package;
 use App\Entity\Project;
 use App\Enum\Severity;
 use App\Event\AnalysisDoneEvent;
+use App\Exception\CredentialsExpiredException;
 use App\Message\ClearProjectAnalyses;
 use App\Message\RunAnalysis;
 use Composer\Semver\Semver;
@@ -29,8 +30,15 @@ class ProjectAnalysisService
         private readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
+    /**
+     * @throws CredentialsExpiredException
+     */
     public function scheduleAnalysis(Project $project, bool $async = false): void
     {
+        if (!$project->getCredential()?->isValid()) {
+            throw new CredentialsExpiredException();
+        }
+
         $this->messageBus->dispatch(new RunAnalysis($project->getId()), [
             new TransportNamesStamp([$async ? 'async' : 'sync']),
         ]);
@@ -43,8 +51,12 @@ class ProjectAnalysisService
         ]);
     }
 
-    public function runAnalysis(Project $project): Analysis
+    public function runAnalysis(Project $project): ?Analysis
     {
+        if (!$project->getCredential() || $project->getCredential()->isExpired()) {
+            return null;
+        }
+
         $previousAnalysis = $project->getLastAnalysis();
 
         $analysis = new Analysis();
