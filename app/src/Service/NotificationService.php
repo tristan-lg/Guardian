@@ -117,22 +117,36 @@ class NotificationService
     }
 
     /**
+     * Send a discord notification to the specified channel.
+     *
+     * @param Embed|Embed[] $embeds
+     */
+    public function sendDiscordNotificationToChannel(NotificationChannel $channel, array|Embed $embeds): bool
+    {
+        $embeds = is_array($embeds) ? $embeds : [$embeds];
+
+        $client = $this->discordApiService->getClient($channel->getValue());
+
+        try {
+            $client->sendMessage($embeds);
+        } catch (Throwable $t) {
+            // Log error
+            $this->logger->critical('Error while sending discord notification', ['message' => $t->getMessage()]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param Embed|Embed[] $embeds
      */
     private function sendDiscordNotification(array|Embed $embeds): void
     {
-        $embeds = is_array($embeds) ? $embeds : [$embeds];
-
         $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['type' => NotificationType::DISCORD]);
         foreach ($channels as $discordChannel) {
-            $client = $this->discordApiService->getClient($discordChannel->getValue());
-
-            try {
-                $client->sendMessage($embeds);
-            } catch (Throwable $t) {
-                // Log error
-                $this->logger->critical('Error while sending discord notification', ['message' => $t->getMessage()]);
-            }
+            $this->sendDiscordNotificationToChannel($discordChannel, $embeds);
         }
     }
 }

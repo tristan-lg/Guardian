@@ -1,10 +1,14 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
+{% block body_class 'page-content ea-content-width-full' %}
 {% block content_title %}Guardian{% endblock %}
 
 {# project \App\Entity\Project #}
 {% block main %}
-    <div class="d-flex flex-wrap gap-3">
+
+    {# Projects #}
+    <h5>Projets :</h5>
+    <div class="d-flex flex-wrap gap-3 mb-3">
         {% for project in projects %}
             {% set grade = project.lastGrade %}
             {% set borderColor = {
@@ -18,7 +22,7 @@
             <div class="card border-{{ borderColor }}" style="width: 22rem;">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <span class="c-grade c-grade--{{ grade|lower }}" aria-current="true">{{ grade }}</span>
+                        <span class="c-grade c-grade--{{ grade|default('unknown')|lower }} me-2" aria-current="true">{{ grade|default('?') }}</span>
                         {{ project.name }}
                     </h5>
                     <div class="card-text">
@@ -44,6 +48,62 @@
                             .setAction('detail')
                             .setEntityId(project.id)
                         }}" class=""><i class="fas fa-arrow-right fa-fw"></i>&nbsp;Voir le projet</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Credentials #}
+    <h5>Identifiants :</h5>
+    <div class="d-flex flex-wrap gap-3 mb-3">
+        {% for credential in credentials %}
+
+            <div class="card border-{{ credential.isExpired ? 'danger' : 'success' }}" style="width: 22rem;">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span><i class="fas fa-key fa-fw"></i>&nbsp;{{ credential.name|upper }}</span>
+                    </h5>
+
+                    <div class="mt-3 d-flex flex-row justify-content-between">
+                        <a href="{{ ea_url()
+                            .setController('App\\Controller\\Admin\\Crud\\CredentialCrudController')
+                            .setAction('detail')
+                            .setEntityId(credential.id)
+                        }}" class=""><i class="fas fa-arrow-right fa-fw"></i>&nbsp;Voir l'identifiant</a>
+
+                        {% if credential.isExpired %}
+                            <span class="text-danger"><i class="fas fa-times-circle fa-fw"></i>&nbsp;Expiré</span>
+                        {% else %}
+                            <span class="text-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;OK</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <h5>Canaux de notification :</h5>
+    <div class="d-flex flex-wrap gap-3 mb-3">
+        {% for channel in channels %}
+            <div class="card border-{{ channel.isWorking ? 'success' : 'danger' }}" style="width: 22rem;">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span><i class="fas fa-key fa-fw"></i>&nbsp;{{ channel.name|upper }}</span>
+                    </h5>
+
+                    <div class="mt-3 d-flex flex-row justify-content-between">
+                        <a href="{{ ea_url()
+                            .setController('App\\Controller\\Admin\\Crud\\NotificationChannelCrudController')
+                            .setAction('detail')
+                            .setEntityId(channel.id)
+                        }}" class=""><i class="fas fa-arrow-right fa-fw"></i>&nbsp;Voir le canal de notification</a>
+
+                        {% if not channel.isWorking %}
+                            <span class="text-danger"><i class="fas fa-times-circle fa-fw"></i>&nbsp;Expiré</span>
+                        {% else %}
+                            <span class="text-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;OK</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -3,8 +3,10 @@
 namespace App\Scheduler;
 
 use App\Entity\Credential;
+use App\Entity\NotificationChannel;
 use App\Entity\Project;
 use App\Service\CredentialsService;
+use App\Service\NotificationTestService;
 use App\Service\ProjectAnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -14,12 +16,14 @@ use Symfony\Component\Scheduler\Attribute\AsCronTask;
 #[AsCronTask(schedule: 'scheduler', expression: '# 7 * * *', jitter: 10, method: 'runGlobalAnalysis')]
 #[AsCronTask(schedule: 'scheduler', expression: '# 7 * * *', jitter: 10, method: 'purgeProjectsAnalyses')]
 #[AsCronTask(schedule: 'scheduler', expression: '# 7 * * *', jitter: 10, method: 'runCredentialCheck')]
-class AnalysisProvider
+#[AsCronTask(schedule: 'scheduler', expression: '# 7 * * *', jitter: 10, method: 'runNotificationsCheck')]
+class SchedulerProvider
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly ProjectAnalysisService $projectAnalysisService,
         private readonly CredentialsService $credentialsService,
+        private readonly NotificationTestService $notificationTestService,
         private readonly LoggerInterface $logger
     ) {}
 
@@ -45,6 +49,13 @@ class AnalysisProvider
     {
         foreach ($this->em->getRepository(Credential::class)->findAll() as $credential) {
             $this->credentialsService->scheduleCredentialsCheck($credential, true);
+        }
+    }
+
+    public function runNotificationsCheck(): void
+    {
+        foreach ($this->em->getRepository(NotificationChannel::class)->findAll() as $channel) {
+            $this->notificationTestService->performNotificationChannelTest($channel);
         }
     }
 }

@@ -1,12 +1,15 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 {# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
 {# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
-{% if entity.instance.isExpired %}
+{% if not entity.instance.isWorking %}
     <span class="badge badge-danger">
         <i class="fas fa-exclamation-circle fa-fw"></i>&nbsp;
-        Identifiant expiré
+        Non fonctionnel
     </span>
     {% else %}
-        {{ field.formattedValue }}
+        <span class="badge badge-success">
+        <i class="fas fa-check-circle fa-fw"></i>&nbsp;
+        Fonctionnel
+    </span>
 {% endif %}
 
