@@ -27,12 +27,69 @@
                     </h5>
                     <div class="card-text">
                         <div>Dernière analyse : <strong>{{ project.lastAnalysis.runAt|default ? project.lastAnalysis.runAt|date('d/m/Y à H:i') : 'N/D' }}</strong></div>
-                        <div>
-                            Vulnérabilités :
-                            {{ include('@Admin/field/cve_count_alert.html.twig', {
-                                field: {value: project.lastVulnerabilitiesCount}
-                            }) }}
-                        </div>
+
+                        <table class="c__tablelist">
+                            <tr>
+                                <td><i class="fas fa-bug fa-fw"></i>&nbsp;Vulnérabilités :</td>
+                                <td>
+                                    {% set cve = project.lastVulnerabilitiesCount %}
+                                    {% if cve is null %}
+                                        <span class="badge badge-warning">Analyse non réalisée</span>
+                                    {% elseif cve == 0 %}
+                                        <span class="badge badge-success">Aucune</span>
+                                    {% else %}
+                                        <span class="badge badge-danger"><i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;{{ cve }} vulnérabilités</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% set platform = project.lastAnalysis.platform|default %}
+                            <tr>
+                                <td><i class="fab fa-php fa-fw" aria-description="PHP"></i>&nbsp;PHP :</td>
+                                <td>
+                                    {% if platform.php|default %}
+                                        {% if platform.isPhpExpired %}
+                                            <span class="badge badge-warning"
+                                                  title="Expiré le {{ platform.phpInfos.eol ? platform.phpInfos.eol|date('d/m/Y') : 'N/D' }}"
+                                            >
+                                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                                    {{ platform.php }} (obsolète)
+                                                </span>
+                                        {% else %}
+                                            <span class="badge badge-success">
+                                                    {{ platform.php }}
+                                                </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge badge-secondary">
+                                                Non installé
+                                            </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fab fa-symfony fa-fw" aria-description="Symfony"></i>&nbsp;Symfony :</td>
+                                <td>
+                                    {% if platform.symfony|default %}
+                                        {% if platform.isSymfonyExpired %}
+                                            <span class="badge badge-warning"
+                                                  title="Expiré le {{ platform.symfonyInfos.eol ? platform.symfonyInfos.eol|date('d/m/Y') : 'N/D' }}"
+                                            >
+                                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                                    {{ platform.symfony }} (obsolète)
+                                                </span>
+                                        {% else %}
+                                            <span class="badge badge-success">
+                                                {{ platform.symfony }}
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge badge-secondary">
+                                                Non installé
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                     <div class="mt-3 d-flex flex-row justify-content-between">

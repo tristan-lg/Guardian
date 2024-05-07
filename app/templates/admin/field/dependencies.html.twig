@@ -25,24 +25,30 @@
             <td><i class="fa-brands fa-php fa-fw"></i>&nbsp;PHP</td>
             <td>{{ platform.php|default('Non installé') }}</td>
             <td>
-                {% if platform.phpInfos.lts %}
-                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
-                {% else %}
-                    <span class="badge badge-warning">Non</span>
+                {% if platform.phpInfos %}
+                    {% if platform.phpInfos.lts %}
+                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                    {% else %}
+                        <span class="badge badge-warning">Non</span>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>
-                {% if date(platform.phpInfos.eol) < date() %}
-                    <span class="badge badge-danger">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
-                {% else %}
-                    <span class="badge badge-secondary">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                {% if platform.phpInfos %}
+                    {% if date(platform.phpInfos.eol) < date() %}
+                        <span class="badge badge-danger">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                    {% else %}
+                        <span class="badge badge-secondary">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>
-                {% if date(platform.phpInfos.eol) > date()  %}
-                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
-                {% else %}
-                    <span class="badge badge-danger">Version obsolète !</span>
+                {% if platform.phpInfos %}
+                    {% if date(platform.phpInfos.eol) > date()  %}
+                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                    {% else %}
+                        <span class="badge badge-danger">Version obsolète !</span>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>
@@ -52,24 +58,30 @@
             <td><i class="fa-brands fa-symfony"></i>&nbsp;Symfony</td>
             <td>{{ platform.symfony|default('Non installé') }}</td>
             <td>
-                {% if platform.symfonyInfos.lts %}
-                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
-                {% else %}
-                    <span class="badge badge-warning">Non</span>
+                {% if platform.symfonyInfos %}
+                    {% if platform.symfonyInfos.lts %}
+                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                    {% else %}
+                        <span class="badge badge-warning">Non</span>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>
-                {% if date(platform.symfonyInfos.eol) < date() %}
-                    <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
-                {% else %}
-                    <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                {% if platform.symfonyInfos %}
+                    {% if date(platform.symfonyInfos.eol) < date() %}
+                        <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                    {% else %}
+                        <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>
-                {% if date(platform.symfonyInfos.eol) > date()  %}
-                    <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
-                {% else %}
-                    <span class="badge badge-danger">Version obsolète !</span>
+                {% if platform.symfonyInfos %}
+                    {% if date(platform.symfonyInfos.eol) > date()  %}
+                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                    {% else %}
+                        <span class="badge badge-danger">Version obsolète !</span>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>
