@@ -13,6 +13,23 @@ readonly class EndOfLifeCycleDto
         public ?string $support
     ) {}
 
+    public function toArray(): array
+    {
+        return [
+            'releaseDate' => $this->releaseDate,
+            'eol' => $this->eol,
+            'latest' => $this->latest,
+            'latestReleaseDate' => $this->latestReleaseDate,
+            'lts' => $this->lts,
+            'support' => $this->support,
+        ];
+    }
+
+    public function isExpired(): bool
+    {
+        return null !== $this->eol && strtotime($this->eol) < time();
+    }
+
     public static function fromArray(array $data): self
     {
         return new self(

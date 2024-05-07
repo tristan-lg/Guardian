@@ -1,0 +1,9 @@
+.c__tablelist {
+    td:not(:first-child) {
+        padding-left: 1rem;
+    }
+
+    td:first-child {
+        text-align: left;
+    }
+}

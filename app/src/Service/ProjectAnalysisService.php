@@ -7,6 +7,7 @@ use App\Entity\Analysis;
 use App\Entity\DTO\PlatformDTO;
 use App\Entity\Package;
 use App\Entity\Project;
+use App\Enum\Grade;
 use App\Enum\Severity;
 use App\Event\AnalysisDoneEvent;
 use App\Exception\CredentialsExpiredException;
@@ -196,29 +197,68 @@ class ProjectAnalysisService
      */
     private function getGrade(Analysis $analysis): string
     {
-        $grade = 0;
+        $grade = Grade::A->value;
         foreach ($analysis->getPackages() as $package) {
             // Check if package is malformated
             if ($package->isVersionMalformated()) {
-                $grade = max($grade, 1);
+                $grade = max($grade, Grade::B->value);
             }
-
-            // TODO - Check at least one of these is not the LTS (PHP / Symfony) => GRADE B (1)
-
-            // TODO - Check at least one of these is out of security support (end of support) (PHP / Symfony) => GRADE C (2)
 
             // Check if package has advisories
             if ($package->getAdvisories()->count() > 0) {
-                $grade = max($grade, 3);
+                $grade = max($grade, Grade::D->value);
             }
 
             // Check if at least one critical severity
             if ($package->getAdvisories()->filter(fn (Advisory $adv) => Severity::CRITICAL === $adv->getSeverityEnum())->count() > 0) {
-                $grade = max($grade, 4);
+                $grade = max($grade, Grade::E->value);
             }
         }
 
-        return ['A', 'B', 'C', 'D', 'E'][$grade];
+        // Check at least one of these is out of security support (end of support) (PHP / Symfony)
+        if ($analysis->getPlatform()->isPhpExpired() || $analysis->getPlatform()->isSymfonyExpired()) {
+            $grade = max($grade, Grade::C->value);
+        }
+
+        return Grade::from($grade)->name;
+    }
+
+    private function getPlatform(array $composerJson, array $composerLock): PlatformDTO
+    {
+        /** @var null|string $phpVersion */
+        $phpVersion = $composerLock['platform']['php'] ?? null;
+        $phpInfos = null;
+
+        /** @var null|string $symfonyVersion */
+        $symfonyVersion = $composerJson['extra']['symfony']['require'] ?? null;
+        $symfonyInfos = null;
+
+        $parser = new VersionParser();
+        if ($phpVersion) {
+            $phpVersion = $parser->parseConstraints($phpVersion)->getLowerBound()->getVersion();
+
+            // Get only the 2 first digits
+            $phpVersion = substr($phpVersion, 0, 3);
+
+            // Get OEL infos
+            $phpInfos = $this->endOfLifeApiService->getPackageVersionInfo('php', $phpVersion);
+        }
+        if ($symfonyVersion) {
+            $symfonyVersion = $parser->parseConstraints($symfonyVersion)->getLowerBound()->getVersion();
+
+            // Get only the 2 first digits
+            $symfonyVersion = substr($symfonyVersion, 0, 3);
+
+            // Get OEL infos
+            $symfonyInfos = $this->endOfLifeApiService->getPackageVersionInfo('symfony', $symfonyVersion);
+        }
+
+        return new PlatformDTO(
+            php: $phpVersion,
+            phpInfos: $phpInfos,
+            symfony: $symfonyVersion,
+            symfonyInfos: $symfonyInfos
+        );
     }
 
     private function getPlatform(array $composerJson, array $composerLock): PlatformDTO

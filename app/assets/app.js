@@ -7,7 +7,7 @@ import './js/bootstrap.min.js';
 import './styles/bootstrap.min.css';
 import './styles/app.css';
 import './styles/grade.css';
-
+import './styles/c-tablelist.css';
 
 
 

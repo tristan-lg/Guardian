@@ -11,13 +11,23 @@ readonly class PlatformDTO
         public ?EndOfLifeCycleDto $symfonyInfos
     ) {}
 
+    public function isPhpExpired(): bool
+    {
+        return $this->phpInfos?->isExpired() ?? false;
+    }
+
+    public function isSymfonyExpired(): bool
+    {
+        return $this->symfonyInfos?->isExpired() ?? false;
+    }
+
     public function toArray(): array
     {
         return [
             'php' => $this->php,
-            'phpInfos' => $this->phpInfos,
+            'phpInfos' => $this->phpInfos?->toArray() ?? null,
             'symfony' => $this->symfony,
-            'symfonyInfos' => $this->symfonyInfos,
+            'symfonyInfos' => $this->symfonyInfos?->toArray() ?? null,
         ];
     }
 

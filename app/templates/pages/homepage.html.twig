@@ -56,19 +56,79 @@
                     </h5>
                     <div class="card-text d-flex flex-column align-items-baseline">
                         <div class="">
-                            <span>Dernière analyse : </span>
-                            <strong>{{ project.lastAnalysis.runAt|default ? project.lastAnalysis.runAt|date('d/m/Y à H:i') : 'N/D' }}</strong>
+                            {% if project.lastAnalysis.runAt|default %}
+                                <div>
+                                    Dernière analyse le <strong>{{ project.lastAnalysis.runAt|date('d/m/Y à H:i') }}</strong>
+                                </div>
+                            {% else %}
+                                <div>
+                                    <i class="fas fa-times text-danger fa-fw"></i>&nbsp;Aucune analyse n'a été réalisée
+                                </div>
+                            {% endif %}
                         </div>
                         <div>
-                            <span>Vulnérabilités :</span>
-                            {% set cve = project.lastVulnerabilitiesCount %}
-                            {% if cve is null %}
-                                <span class="badge text-bg-warning rounded-pill">Analyse non réalisée</span>
-                            {% elseif cve == 0 %}
-                                <span class="badge text-bg-success rounded-pill">Aucune</span>
-                            {% else %}
-                                <span class="badge text-bg-danger rounded-pill"><i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;{{ cve }} vulnérabilités</span>
-                            {% endif %}
+                            <table class="c__tablelist">
+                                <tr>
+                                    <td><i class="fas fa-bug fa-fw"></i>&nbsp;Vulnérabilités :</td>
+                                    <td>
+                                        {% set cve = project.lastVulnerabilitiesCount %}
+                                        {% if cve is null %}
+                                            <span class="badge text-bg-warning rounded-pill">Analyse non réalisée</span>
+                                        {% elseif cve == 0 %}
+                                            <span class="badge text-bg-success rounded-pill">Aucune</span>
+                                        {% else %}
+                                            <span class="badge text-bg-danger rounded-pill"><i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;{{ cve }} vulnérabilités</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% set platform = project.lastAnalysis.platform|default %}
+                                <tr>
+                                    <td><i class="fab fa-php fa-fw" aria-description="PHP"></i>&nbsp;PHP :</td>
+                                    <td>
+                                        {% if platform.php|default %}
+                                            {% if platform.isPhpExpired %}
+                                                <span class="badge text-bg-warning rounded-pill"
+                                                      title="Expiré le {{ platform.phpInfos.eol ? platform.phpInfos.eol|date('d/m/Y') : 'N/D' }}"
+                                                >
+                                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                                    {{ platform.php }} (obsolète)
+                                                </span>
+                                            {% else %}
+                                                <span class="badge text-bg-success rounded-pill">
+                                                    {{ platform.php }}
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge text-bg-secondary rounded-pill">
+                                                Non installé
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fab fa-symfony fa-fw" aria-description="Symfony"></i>&nbsp;Symfony :</td>
+                                    <td>
+                                        {% if platform.symfony|default %}
+                                            {% if platform.isSymfonyExpired %}
+                                                <span class="badge text-bg-warning rounded-pill"
+                                                      title="Expiré le {{ platform.symfonyInfos.eol ? platform.symfonyInfos.eol|date('d/m/Y') : 'N/D' }}"
+                                                >
+                                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                                    {{ platform.symfony }} (obsolète)
+                                                </span>
+                                            {% else %}
+                                                <span class="badge text-bg-success rounded-pill">
+                                                    {{ platform.symfony }}
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge text-bg-secondary rounded-pill">
+                                                Non installé
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
 
 {#                        TODO - Gerer l'affichage en fonction de l'état de la version #}
@@ -84,14 +144,14 @@
 
                     <div class="mt-3 d-flex flex-row-reverse justify-content-between">
                         {% if project.gitUrl is not null %}
-                            <a href="{{ project.gitUrl }}" class="">Voir le repository</a>
+                            <a href="{{ project.gitUrl }}" class=""><i class="fab fa-gitlab fa-fw" style="color: #ff7800"></i>&nbsp;Repository</a>
                         {% endif %}
                         {% if is_granted('ROLE_USER') and project.lastAnalysis %}
                             <a href="{{ ea_url()
                                 .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
                                 .setAction('detail')
                                 .setEntityId(project.lastAnalysis.id)
-                            }}" class=""><i class="fas fa-eye fa-fw"></i>&nbsp;Voir la dernière analyse</a>
+                            }}" class=""><i class="fa-solid fa-eye fa-fw"></i>&nbsp;Voir la dernière analyse</a>
                         {% endif %}
                     </div>
                 </div>
