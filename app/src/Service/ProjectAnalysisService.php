@@ -260,42 +260,4 @@ class ProjectAnalysisService
             symfonyInfos: $symfonyInfos
         );
     }
-
-    private function getPlatform(array $composerJson, array $composerLock): PlatformDTO
-    {
-        /** @var null|string $phpVersion */
-        $phpVersion = $composerLock['platform']['php'] ?? null;
-        $phpInfos = null;
-
-        /** @var null|string $symfonyVersion */
-        $symfonyVersion = $composerJson['extra']['symfony']['require'] ?? null;
-        $symfonyInfos = null;
-
-        $parser = new VersionParser();
-        if ($phpVersion) {
-            $phpVersion = $parser->parseConstraints($phpVersion)->getLowerBound()->getVersion();
-
-            // Get only the 2 first digits
-            $phpVersion = substr($phpVersion, 0, 3);
-
-            // Get OEL infos
-            $phpInfos = $this->endOfLifeApiService->getPackageVersionInfo('php', $phpVersion);
-        }
-        if ($symfonyVersion) {
-            $symfonyVersion = $parser->parseConstraints($symfonyVersion)->getLowerBound()->getVersion();
-
-            // Get only the 2 first digits
-            $symfonyVersion = substr($symfonyVersion, 0, 3);
-
-            // Get OEL infos
-            $symfonyInfos = $this->endOfLifeApiService->getPackageVersionInfo('symfony', $symfonyVersion);
-        }
-
-        return new PlatformDTO(
-            php: $phpVersion,
-            phpInfos: $phpInfos,
-            symfony: $symfonyVersion,
-            symfonyInfos: $symfonyInfos
-        );
-    }
 }
