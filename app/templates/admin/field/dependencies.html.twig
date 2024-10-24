@@ -5,130 +5,140 @@
 {# @var advisory \App\Entity\Advisory #}
 {# @var platform \App\Entity\DTO\PlatformDTO #}
 {% if ea.crud.currentAction == 'detail' %}
-    {% set dependencies = field.value|sort((a, b) => b.advisories|length <=> a.advisories|length) %}
+    {% if field.value %}
+        {% set dependencies = field.value|sort((a, b) => b.advisories|length <=> a.advisories|length) %}
 
-    {% set platform = entity.instance.platform %}
-    <h5><i class="fa-brands fa-php fa-fw"></i>&nbsp;Langage et framework</h5>
-    <table class="table mb-5">
-        <thead>
-        <tr>
-            <th>Dependance</th>
-            <th>Version minimale installée</th>
-            <th>LTS ?</th>
-            <th>Fin de vie</th>
-            <th>Etat</th>
-        </tr>
-        </thead>
-        <tbody>
-        {# PHP #}
-        <tr>
-            <td><i class="fa-brands fa-php fa-fw"></i>&nbsp;PHP</td>
-            <td>{{ platform.php|default('Non installé') }}</td>
-            <td>
-                {% if platform.phpInfos %}
-                    {% if platform.phpInfos.lts %}
-                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
-                    {% else %}
-                        <span class="badge badge-warning">Non</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-            <td>
-                {% if platform.phpInfos %}
-                    {% if date(platform.phpInfos.eol) < date() %}
-                        <span class="badge badge-danger">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
-                    {% else %}
-                        <span class="badge badge-secondary">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-            <td>
-                {% if platform.phpInfos %}
-                    {% if date(platform.phpInfos.eol) > date()  %}
-                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
-                    {% else %}
-                        <span class="badge badge-danger">Version obsolète !</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-
-        {# Symfony #}
-        <tr>
-            <td><i class="fa-brands fa-symfony"></i>&nbsp;Symfony</td>
-            <td>{{ platform.symfony|default('Non installé') }}</td>
-            <td>
-                {% if platform.symfonyInfos %}
-                    {% if platform.symfonyInfos.lts %}
-                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
-                    {% else %}
-                        <span class="badge badge-warning">Non</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-            <td>
-                {% if platform.symfonyInfos %}
-                    {% if date(platform.symfonyInfos.eol) < date() %}
-                        <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
-                    {% else %}
-                        <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-            <td>
-                {% if platform.symfonyInfos %}
-                    {% if date(platform.symfonyInfos.eol) > date()  %}
-                        <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
-                    {% else %}
-                        <span class="badge badge-danger">Version obsolète !</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <h5><i class="fas fa-cube fa-fw"></i>&nbsp;Dépendances</h5>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Dependance</th>
-            <th>Version requise</th>
-            <th>Version installée</th>
-            <th>Vulnérabilités</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for package in dependencies %}
+        {% set platform = entity.instance.platform %}
+        <h5><i class="fa-brands fa-php fa-fw"></i>&nbsp;Langage et framework</h5>
+        <table class="table mb-5">
+            <thead>
             <tr>
-                <td>{{ package.name }}</td>
-                <td>{{ package.requiredVersion|default('') }}</td>
-                <td>{{ package.installedVersion }}</td>
+                <th>Dependance</th>
+                <th>Version minimale installée</th>
+                <th>LTS ?</th>
+                <th>Fin de vie</th>
+                <th>Etat</th>
+            </tr>
+            </thead>
+            <tbody>
+            {# PHP #}
+            <tr>
+                <td><i class="fa-brands fa-php fa-fw"></i>&nbsp;PHP</td>
+                <td>{{ platform.php|default('Non installé') }}</td>
                 <td>
-                    {% if package.advisories|length > 0 %}
-                        {% for advisory in package.advisories %}
-                            <a href="{{ advisory.link }}" target="_blank">
-                                {% if advisory.severity|lower == 'low' or advisory.severity|lower == 'medium' %}
-                                    <span class="badge badge-warning">
-                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
-                                    [{{ advisory.severity|upper }}] {{ advisory.title }}
-                                </span>
-                                {% else %}
-                                    <span class="badge badge-danger">
-                                    <i class="fas fa-exclamation-circle fa-fw"></i>&nbsp;
-                                    [{{ advisory.severity|upper }}] {{ advisory.title }}
-                                </span>
-                                {% endif %}
-                            </a><br />
-                        {% endfor %}
-                    {% else %}
-                        <span class="badge badge-success">Aucunes</span>
+                    {% if platform.phpInfos %}
+                        {% if platform.phpInfos.lts %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                        {% else %}
+                            <span class="badge badge-warning">Non</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if platform.phpInfos %}
+                        {% if date(platform.phpInfos.eol) < date() %}
+                            <span class="badge badge-danger">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ platform.phpInfos.eol|date('d/m/Y') }}</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if platform.phpInfos %}
+                        {% if date(platform.phpInfos.eol) > date()  %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                        {% else %}
+                            <span class="badge badge-danger">Version obsolète !</span>
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
+            {# Symfony #}
+            <tr>
+                <td><i class="fa-brands fa-symfony"></i>&nbsp;Symfony</td>
+                <td>{{ platform.symfony|default('Non installé') }}</td>
+                <td>
+                    {% if platform.symfonyInfos %}
+                        {% if platform.symfonyInfos.lts %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                        {% else %}
+                            <span class="badge badge-warning">Non</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if platform.symfonyInfos %}
+                        {% if date(platform.symfonyInfos.eol) < date() %}
+                            <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if platform.symfonyInfos %}
+                        {% if date(platform.symfonyInfos.eol) > date()  %}
+                            <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                        {% else %}
+                            <span class="badge badge-danger">Version obsolète !</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h5><i class="fas fa-cube fa-fw"></i>&nbsp;Dépendances</h5>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Dependance</th>
+                <th>Version requise</th>
+                <th>Version installée</th>
+                <th>Vulnérabilités</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for package in dependencies %}
+                <tr>
+                    <td>{{ package.name }}</td>
+                    <td>{{ package.requiredVersion|default('') }}</td>
+                    <td>{{ package.installedVersion }}</td>
+                    <td>
+                        {% if package.advisories|length > 0 %}
+                            {% for advisory in package.advisories %}
+                                <a href="{{ advisory.link }}" target="_blank">
+                                    {% if advisory.severity|lower == 'low' or advisory.severity|lower == 'medium' %}
+                                        <span class="badge badge-warning">
+                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                    [{{ advisory.severity|upper }}] {{ advisory.title }}
+                                </span>
+                                    {% else %}
+                                        <span class="badge badge-danger">
+                                    <i class="fas fa-exclamation-circle fa-fw"></i>&nbsp;
+                                    [{{ advisory.severity|upper }}] {{ advisory.title }}
+                                </span>
+                                    {% endif %}
+                                </a><br />
+                            {% endfor %}
+                        {% else %}
+                            <span class="badge badge-success">Aucunes</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="row">
+            <div class="col-sm">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle fa-fw"></i>&nbsp;Vous devez lancer une analyse pour afficher les résultats
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% else %}
     {{ field.formattedValue }}
 {% endif %}

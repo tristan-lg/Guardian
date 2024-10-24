@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Project;
-use App\Service\ProjectAnalysisService;
+use App\Service\AnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,7 +19,7 @@ class PurgeProjectCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly ProjectAnalysisService $projectAnalysisService,
+        private readonly AnalysisService $projectAnalysisService,
     ) {
         parent::__construct();
     }
@@ -49,7 +49,7 @@ class PurgeProjectCommand extends Command
             $io->writeln("Purge project : {$project->getName()}");
             $this->projectAnalysisService->clearOutdatedAnalysis(
                 $project,
-                $purgeAll ? 0 : ProjectAnalysisService::ANALYSYS_TO_KEEP
+                $purgeAll ? 0 : AnalysisService::ANALYSYS_TO_KEEP
             );
         }
 

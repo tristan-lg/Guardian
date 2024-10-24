@@ -1,0 +1,17 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Créer un audit de projet{% endblock %}
+
+{% block page_content %}
+    <div>
+        {{ form_start(form) }}
+        <div class="col-md-6 col-xxl-5">
+            {{ form_widget(form) }}
+        </div>
+
+        <button class="btn btn-primary" data-loading="hide">Créer l'audit</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+

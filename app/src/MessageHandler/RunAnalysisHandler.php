@@ -4,7 +4,7 @@ namespace App\MessageHandler;
 
 use App\Entity\Project;
 use App\Message\RunAnalysis;
-use App\Service\ProjectAnalysisService;
+use App\Service\AnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -12,7 +12,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 class RunAnalysisHandler
 {
     public function __construct(
-        private readonly ProjectAnalysisService $projectAnalysisService,
+        private readonly AnalysisService $projectAnalysisService,
         private readonly EntityManagerInterface $em
     ) {}
 

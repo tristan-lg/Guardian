@@ -24,8 +24,12 @@ class Analysis implements NameableEntityInterface
     private string $id;
 
     #[ORM\ManyToOne(inversedBy: 'analyses')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Project $project;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Project $project = null;
+
+    #[ORM\ManyToOne(inversedBy: 'analyses')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Audit $audit = null;
 
     #[ORM\Column]
     private DateTimeImmutable $runAt;
@@ -69,14 +73,26 @@ class Analysis implements NameableEntityInterface
         return $this->id;
     }
 
-    public function getProject(): Project
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    public function setProject(Project $project): static
+    public function setProject(?Project $project): static
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getAudit(): ?Audit
+    {
+        return $this->audit;
+    }
+
+    public function setAudit(?Audit $audit): static
+    {
+        $this->audit = $audit;
 
         return $this;
     }
@@ -231,5 +247,10 @@ class Analysis implements NameableEntityInterface
         }
 
         return $this;
+    }
+
+    public function getAnalysableTargetName(): string
+    {
+        return $this->project?->getName() ?? $this->audit?->getName() ?? '';
     }
 }

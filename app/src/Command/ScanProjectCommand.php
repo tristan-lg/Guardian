@@ -4,7 +4,7 @@ namespace App\Command;
 
 use App\Controller\Admin\Crud\AnalysisCrudController;
 use App\Entity\Project;
-use App\Service\ProjectAnalysisService;
+use App\Service\AnalysisService;
 use App\Service\ProjectScanService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -25,7 +25,7 @@ class ScanProjectCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly ProjectAnalysisService $projectAnalysisService,
+        private readonly AnalysisService $projectAnalysisService,
         private readonly ProjectScanService $projectScanService,
         private readonly AdminUrlGenerator $adminUrlGenerator
     ) {

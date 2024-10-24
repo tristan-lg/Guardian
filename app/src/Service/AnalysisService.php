@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Advisory;
 use App\Entity\Analysis;
+use App\Entity\Audit;
 use App\Entity\DTO\PlatformDTO;
 use App\Entity\Package;
 use App\Entity\Project;
@@ -21,7 +22,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 
-class ProjectAnalysisService
+class AnalysisService
 {
     public const int ANALYSYS_TO_KEEP = 5;
 
@@ -31,7 +32,8 @@ class ProjectAnalysisService
         private readonly ProjectScanService $projectScanService,
         private readonly PackagistApiService $packagistApiService,
         private readonly EndOfLifeApiService $endOfLifeApiService,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly FileService $fileService,
     ) {}
 
     /**
@@ -55,21 +57,30 @@ class ProjectAnalysisService
         ]);
     }
 
-    public function runAnalysis(Project $project): ?Analysis
+    public function runAnalysis(Audit|Project $analysable): ?Analysis
     {
-        if (!$project->getCredential() || $project->getCredential()->isExpired()) {
+        if ($analysable instanceof Project && (!$analysable->getCredential() || $analysable->getCredential()->isExpired())) {
             return null;
         }
 
-        $previousAnalysis = $project->getLastAnalysis();
+        $previousAnalysis = $analysable instanceof Project ? $analysable->getLastAnalysis() : null;
 
         $analysis = new Analysis();
-        $analysis->setProject($project);
+        if ($analysable instanceof Project) {
+            $analysis->setProject($analysable);
+        } elseif ($analysable instanceof Audit) {
+            $analysis->setAudit($analysable);
+        }
         $analysis->setRunAt(new DateTimeImmutable());
 
         // Get composer.json and composer.lock content
-        $composerJson = $this->projectScanService->getFileJsonContent($project, 'composer.json');
-        $composerLock = $this->projectScanService->getFileJsonContent($project, 'composer.lock');
+        if ($analysable instanceof Project) {
+            $composerJson = $this->projectScanService->getFileJsonContent($analysable, 'composer.json');
+            $composerLock = $this->projectScanService->getFileJsonContent($analysable, 'composer.lock');
+        } elseif ($analysable instanceof Audit) {
+            $composerJson = $this->fileService->readJsonFile($analysable->getFileComposerJson());
+            $composerLock = $this->fileService->readJsonFile($analysable->getFileComposerLock());
+        }
 
         // Get php & symfony version
         $analysis->setPlatform(
@@ -128,7 +139,7 @@ class ProjectAnalysisService
         return $analysis;
     }
 
-    public function clearOutdatedAnalysis(Project $project, int $analysesToKeep = self::ANALYSYS_TO_KEEP): void
+    public function clearOutdatedAnalysis(Audit|Project $project, int $analysesToKeep = self::ANALYSYS_TO_KEEP): void
     {
         $analyses = $project->getAnalyses();
         if ($analyses->count() <= $analysesToKeep) {

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Analysis;
+use App\Entity\Audit;
 use App\Entity\Credential;
 use App\Entity\NotificationChannel;
 use App\Entity\Project;
@@ -49,6 +50,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Projets', 'fas fa-list', Project::class);
 
         yield MenuItem::linkToCrud('Analyses', 'fas fa-flask', Analysis::class);
+
+        yield MenuItem::section('Gestion des audits');
+
+        yield MenuItem::linkToCrud('Audits', 'fas fa-magnifying-glass', Audit::class);
 
         yield MenuItem::section('Gestion des accès');
 

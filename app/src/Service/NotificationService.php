@@ -25,6 +25,10 @@ class NotificationService
 
     public function sendAnalysisDoneNotification(Analysis $analysis): void
     {
+        if (!$analysis->getProject()) {
+            return;
+        }
+
         // Build discord notification
         $embed = Embed::create()
             ->setAuthor(

@@ -5,7 +5,7 @@ namespace App\Controller\Admin\Crud;
 use App\Controller\Admin\DashboardController;
 use App\Entity\Project;
 use App\Form\ProjectType;
-use App\Service\ProjectAnalysisService;
+use App\Service\AnalysisService;
 use App\Service\ProjectScanService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -32,7 +32,7 @@ class ProjectCrudController extends AbstractGuardianCrudController
         private readonly EntityManagerInterface $em,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly ProjectScanService $projectScanService,
-        private readonly ProjectAnalysisService $projectAnalysisService
+        private readonly AnalysisService $projectAnalysisService
     ) {}
 
     public static function getEntityFqcn(): string

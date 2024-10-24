@@ -26,7 +26,11 @@
     [x] Ajouter une notification discord quand les credentials sont sur le point d'expirer (30j, 7j, et expiré)
     [x] Ajouter dans le crud une ligne pour voir la date d'expiration credentials
 
+
 == v1.3.0
+    [ ] Module audit de code
+
+== v1.4.0
     [ ] Ajouter une notification discord pour les versions applicatives
 	[ ] Vérifier que le fichiers composer est bien écrit
 	[ ] Vérifier aussi les version des librairies js ?

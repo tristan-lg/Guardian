@@ -7,6 +7,7 @@ parameters:
     router.request_context.scheme: 'https'
     asset.request_context.secure: true
     packagist.user_agent: 'Guardian/v%app.version% (%env(PACKAGIST_CONTACT_EMAIL)%)'
+    uploaded_files_directory: '%env(resolve:UPLOAD_DIR)%'
 
 services:
     # default configuration for services in *this* file
