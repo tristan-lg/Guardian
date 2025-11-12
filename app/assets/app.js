@@ -1,10 +1,7 @@
 import './bootstrap.js';
 
-//Import JS
-import './js/bootstrap.min.js';
-
-//Import CSS
-import './styles/bootstrap.min.css';
+//Import style
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
 import './styles/grade.css';
 import './styles/c-tablelist.css';

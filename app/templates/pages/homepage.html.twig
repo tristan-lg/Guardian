@@ -39,14 +39,14 @@
             'E': 'danger',
         }[grade]|default('warning') %}
 
-        <div class="card border-{{ borderColor }}" style="width: 22rem;">
+        <div class="card border-{{ borderColor }}" style="width: 24rem;">
             <div class="card-body">
                 <h5 class="card-title">
                     <span class="c-grade c-grade--{{ grade|default('unknown')|lower }}" aria-current="true">{{ grade|default('?') }}</span>
                     {{ project.alias }}
                 </h5>
                 <div class="card-text d-flex flex-column align-items-baseline">
-                    <div class="">
+                    <div class="mb-2">
                         {% if project.lastAnalysis.runAt|default %}
                             <div>
                                 Dernière analyse le <strong>{{ project.lastAnalysis.runAt|date('d/m/Y à H:i') }}</strong>

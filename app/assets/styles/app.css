@@ -70,22 +70,32 @@ footer {
 }
 
 /* Size for 2 cards */
-@media (min-width: 752px) {
+@media (min-width: 816px) {
     .homepage__container {
-        max-width: 752px;
+        max-width: 816px;
     }
 }
 
 /* Size for 3 cards */
-@media (min-width: 1120px) {
+@media (min-width: 1216px) {
     .homepage__container {
-        max-width: 1120px;
+        max-width: 1216px;
     }
 }
 
 /* Size for 4 cards */
-@media (min-width: 1488px) {
+@media (min-width: 1616px) {
     .homepage__container {
-        max-width: 1488px;
+        max-width: 1616px;
     }
+}
+
+.card {
+    width: 22rem;
+}
+
+.card-text {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
 }

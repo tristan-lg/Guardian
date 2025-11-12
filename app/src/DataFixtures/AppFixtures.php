@@ -27,8 +27,20 @@ class AppFixtures extends Fixture
     {
         $admin = $this->createAdmin($manager);
         $creds = $this->createFakeCredentials($manager);
-        $project = $this->createFakeProject($manager, $creds);
-        $this->createFakeAnalysis($manager, $project);
+
+        $projects = [
+            'Project 1' => 'A',
+            'Project 2' => 'B',
+            'Project 3' => 'C',
+            'Project 4' => 'D',
+            'Project 5' => 'E',
+        ];
+
+        foreach ($projects as $projectName => $grade) {
+            $project = $this->createFakeProject($manager, $creds);
+            $project->setName($projectName);
+            $this->createFakeAnalysis($manager, $project, $grade);
+        }
 
         $manager->flush();
     }
@@ -71,7 +83,7 @@ class AppFixtures extends Fixture
         return $project;
     }
 
-    private function createFakeAnalysis(ObjectManager $manager, Project $project)
+    private function createFakeAnalysis(ObjectManager $manager, Project $project, string $grade): void
     {
         $audit = new Audit();
         $audit->setFileComposerJson($this->createFile($manager))
@@ -95,10 +107,11 @@ class AppFixtures extends Fixture
             lts: false,
             support: 'Security fixes only',
         );
+
         $analysis = new Analysis();
         $analysis->setProject($project)
             ->setRunAt(new DateTimeImmutable())
-            ->setGrade('A')
+            ->setGrade($grade)
             ->setEndAt(new DateTimeImmutable('+2 seconds'))
             ->setCveCount(0)
             ->setAdvisoryHash('fake-hash')
@@ -108,8 +121,6 @@ class AppFixtures extends Fixture
 
         $manager->persist($audit);
         $manager->persist($analysis);
-
-        return $analysis;
     }
 
     private function createFile(ObjectManager $manager): File
