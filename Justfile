@@ -30,6 +30,9 @@ security:
     just composer audit
     just console importmap:audit
 
+db-reset:
+    just php bin/console doc:fix:load -n
+
 # Install asset
 require-asset +ARGS:
     just console importmap:require {{ARGS}}

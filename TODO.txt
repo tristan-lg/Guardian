@@ -26,11 +26,18 @@
     [x] Ajouter une notification discord quand les credentials sont sur le point d'expirer (30j, 7j, et expiré)
     [x] Ajouter dans le crud une ligne pour voir la date d'expiration credentials
 
-
 == v1.3.0
-    [ ] Module audit de code
+[ ] Retirer webpack au profit de asset_mapper (https://symfony.com/doc/current/frontend/asset_mapper.html)
+    [ ] Installer bootstrap via assetmapper (https://symfony.com/doc/current/frontend/asset_mapper.html#importing-3rd-party-javascript-packages)
+    [ ] Retirer webpack et les dépendances associées (package.json, webpack.config.js, etc...)
+[ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
+[ ] Revoir l'interface pour simplifier l'intégration (renseigner l'url directe vers le composer.lock, etc)
+
 
 == v1.4.0
+    [ ] Module audit de code
+
+== v1.5.0
     [ ] Ajouter une notification discord pour les versions applicatives
 	[ ] Vérifier que le fichiers composer est bien écrit
 	[ ] Vérifier aussi les version des librairies js ?
