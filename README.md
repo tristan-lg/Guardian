@@ -16,7 +16,7 @@ Before all install [just](https://github.com/casey/just)
 
 ### Install
 1. `just install` to install the project.
-2. `docker compose up -d` then go on `https://localhost/`, to see the index page.
+2. `docker compose up -d` then go on `http://guardian.localhost`, to see the index page.
 
 
 ## Git best practices

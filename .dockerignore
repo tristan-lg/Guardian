@@ -1,1 +1,5 @@
 docs/
+app/var/
+app/vendor/
+app/tests/
+app/coverage/
