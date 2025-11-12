@@ -7,4 +7,15 @@
     <span class="badge badge-success">Aucune</span>
 {% else %}
     <span class="badge badge-danger"><i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;{{ field.value }} vulnérabilités</span>
+    {% if ea.crud.currentAction == 'detail' and entity.instance.getLastAnalysis is defined %}
+        {% set lastAnalysis = entity.instance.getLastAnalysis %}
+        {% if lastAnalysis is not null %}
+            <a href="{{
+            ea_url()
+                .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
+                .setAction('detail')
+                .setEntityId(lastAnalysis.id)
+            }}" class="ms-3">Voir la dernière analyse</a>
+        {% endif %}
+    {% endif %}
 {% endif %}

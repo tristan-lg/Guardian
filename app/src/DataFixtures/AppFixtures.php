@@ -49,7 +49,7 @@ class AppFixtures extends Fixture
     {
         $admin = new User();
         $admin->setEmail('test');
-        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setRoles(['ROLE_USER']);
         $admin->setPassword($this->hasher->hashPassword($admin, 'test'));
 
         $manager->persist($admin);
