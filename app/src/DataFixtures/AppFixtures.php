@@ -115,7 +115,7 @@ class AppFixtures extends Fixture
             ->setEndAt(new DateTimeImmutable('+2 seconds'))
             ->setCveCount(0)
             ->setAdvisoryHash('fake-hash')
-            ->setPlatform(new PlatformDTO('8.3', $eolPhp, '6.4', $eolSf))
+            ->setPlatform(new PlatformDTO('8.3', $eolPhp, '6.4', $eolSf, null, null))
             ->setAudit($audit)
         ;
 

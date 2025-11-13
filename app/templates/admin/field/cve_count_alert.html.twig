@@ -15,7 +15,7 @@
                 .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
                 .setAction('detail')
                 .setEntityId(lastAnalysis.id)
-            }}" class="ms-3">Voir la dernière analyse</a>
+            }}" class="ms-3">Voir la dernière analyse ({{ lastAnalysis.endAt|date('d/m/Y H:i') }})</a>
         {% endif %}
     {% endif %}
 {% endif %}

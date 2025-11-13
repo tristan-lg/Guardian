@@ -8,7 +8,9 @@ readonly class PlatformDTO
         public ?string $php,
         public ?EndOfLifeCycleDto $phpInfos,
         public ?string $symfony,
-        public ?EndOfLifeCycleDto $symfonyInfos
+        public ?EndOfLifeCycleDto $symfonyInfos,
+        public ?string $drupal,
+        public ?EndOfLifeCycleDto $drupalInfos,
     ) {}
 
     public function isPhpExpired(): bool
@@ -21,6 +23,11 @@ readonly class PlatformDTO
         return $this->symfonyInfos?->isExpired() ?? false;
     }
 
+    public function isDrupalExpired(): bool
+    {
+        return $this->drupalInfos?->isExpired() ?? false;
+    }
+
     public function toArray(): array
     {
         return [
@@ -28,6 +35,8 @@ readonly class PlatformDTO
             'phpInfos' => $this->phpInfos?->toArray() ?? null,
             'symfony' => $this->symfony,
             'symfonyInfos' => $this->symfonyInfos?->toArray() ?? null,
+            'drupal' => $this->drupal,
+            'drupalInfos' => $this->drupalInfos?->toArray() ?? null,
         ];
     }
 
@@ -35,9 +44,11 @@ readonly class PlatformDTO
     {
         return new self(
             $data['php'] ?? null,
-            array_key_exists('phpInfos', $data) ? EndOfLifeCycleDto::fromArray($data['phpInfos']) : null,
+            (array_key_exists('phpInfos', $data) && $data['phpInfos']) ? EndOfLifeCycleDto::fromArray($data['phpInfos']) : null,
             $data['symfony'] ?? null,
-            array_key_exists('symfonyInfos', $data) ? EndOfLifeCycleDto::fromArray($data['symfonyInfos']) : null,
+            (array_key_exists('symfonyInfos', $data) && $data['symfonyInfos']) ? EndOfLifeCycleDto::fromArray($data['symfonyInfos']) : null,
+            $data['drupal'] ?? null,
+            (array_key_exists('drupalInfos', $data) && $data['drupalInfos']) ? EndOfLifeCycleDto::fromArray($data['drupalInfos']) : null
         );
     }
 }

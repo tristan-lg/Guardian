@@ -41,7 +41,7 @@
 
         <div class="card border-{{ borderColor }}" style="width: 24rem;">
             <div class="card-body">
-                <h5 class="card-title">
+                <h5 class="card-title card-title--ellipsis">
                     <span class="c-grade c-grade--{{ grade|default('unknown')|lower }}" aria-current="true">{{ grade|default('?') }}</span>
                     {{ project.alias }}
                 </h5>
@@ -96,29 +96,44 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            <tr>
-                                <td><i class="fab fa-symfony fa-fw" aria-description="Symfony"></i>&nbsp;Symfony :</td>
-                                <td>
-                                    {% if platform.symfony|default %}
+                            {% if platform.symfony|default %}
+                                <tr>
+                                    <td><i class="fab fa-symfony fa-fw" aria-description="Symfony"></i>&nbsp;Symfony :</td>
+                                    <td>
                                         {% if platform.isSymfonyExpired %}
                                             <span class="badge text-bg-warning rounded-pill"
                                                   title="Expiré le {{ platform.symfonyInfos.eol ? platform.symfonyInfos.eol|date('d/m/Y') : 'N/D' }}"
                                             >
-                                                    <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
-                                                    {{ platform.symfony }} (obsolète)
-                                                </span>
+                                                <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                                {{ platform.symfony }} (obsolète)
+                                            </span>
                                         {% else %}
                                             <span class="badge text-bg-success rounded-pill">
-                                                    {{ platform.symfony }}
-                                                </span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="badge text-bg-secondary rounded-pill">
-                                                Non installé
+                                                {{ platform.symfony }}
                                             </span>
-                                    {% endif %}
-                                </td>
-                            </tr>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if platform.drupal|default %}
+                                <tr>
+                                    <td><i class="fab fa-drupal fa-fw" aria-description="Symfony"></i>&nbsp;Drupal :</td>
+                                    <td>
+                                        {% if platform.isDrupalExpired %}
+                                            <span class="badge text-bg-warning rounded-pill"
+                                                  title="Expiré le {{ platform.drupalInfos.eol ? platform.drupalInfos.eol|date('d/m/Y') : 'N/D' }}"
+                                            >
+                                                <i class="fas fa-exclamation-triangle fa-fw"></i>&nbsp;
+                                                {{ platform.drupal }} (obsolète)
+                                            </span>
+                                        {% else %}
+                                            <span class="badge text-bg-success rounded-pill">
+                                                {{ platform.drupal }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                         </table>
                     </div>
                 </div>

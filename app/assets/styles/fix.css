@@ -1,0 +1,5 @@
+.card-title--ellipsis {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

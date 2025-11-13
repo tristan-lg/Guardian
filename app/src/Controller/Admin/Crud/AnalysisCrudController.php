@@ -48,8 +48,8 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             FormField::addTab('Résultats de l\'analyse', 'fas fa-flask'),
             IdField::new('id')->hideOnForm(),
             AssociationField::new('project', 'Projet')->hideOnForm(),
-            DateTimeField::new('runAt', 'Date de début')->hideOnForm(),
-            DateTimeField::new('endAt', 'Date de fin')->hideOnForm(),
+            DateTimeField::new('runAt', 'Date de l\'analyse')->hideOnForm(),
+//            DateTimeField::new('endAt', 'Date de fin')->hideOnForm(),
             TextField::new('grade', 'Grade')
                 ->setTemplatePath('@Admin/field/grade.html.twig')
                 ->hideOnForm(),
@@ -57,7 +57,7 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             IntegerField::new('cveCount', 'Vulnérabilités')
                 ->setTemplatePath('@Admin/field/cve_count_alert.html.twig')
                 ->hideOnForm(),
-            TextField::new('advisoryHash', 'Hash des vulnérabilités')->onlyOnDetail(),
+//            TextField::new('advisoryHash', 'Hash des vulnérabilités')->onlyOnDetail(),
 
             FormField::addTab('Liste des dépendances', 'fas fa-cube'),
             ArrayField::new('packages', false)

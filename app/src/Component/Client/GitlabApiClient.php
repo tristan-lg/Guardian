@@ -41,9 +41,8 @@ class GitlabApiClient
     public function getAssociatedProjects(): array
     {
         $projects = json_decode($this->get('projects', [
-            'min_access_level' => 10,
             'simple' => true,
-            'per_page' => 100,
+            'per_page' => 20,
         ])->getContent(), true);
 
         // @phpstan-ignore-next-line
@@ -91,11 +90,11 @@ class GitlabApiClient
 
     public function getCredentialInfos(): ?TokenData
     {
-        $response = $this->get('personal_access_tokens');
+        $response = $this->get('personal_access_tokens/self');
 
         try {
             // @phpstan-ignore-next-line
-            return TokenData::fromArray(json_decode($response->getContent(), true)[0]);
+            return TokenData::fromArray(json_decode($response->getContent(), true));
         } catch (Throwable $t) {
             if (Response::HTTP_UNAUTHORIZED === $t->getCode()) {
                 return null;
