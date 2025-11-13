@@ -27,8 +27,6 @@ class EndOfLifeApiService
 
     private function requestPackageVersionInfo(string $package, string $version): EndOfLifeCycleDto
     {
-        $version = substr($version, 0, 3);
-
         $response = $this->client->request('GET', "https://endoflife.date/api/{$package}/{$version}.json");
 
         return EndOfLifeCycleDto::fromArray($response->toArray());

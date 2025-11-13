@@ -2,16 +2,16 @@ monolog:
     channels:
         - access_security #Log access related errors with security urls (401 & 403)
         - access_notfound #Log access related errors with unknown urls (404 & 405)
-        - messenger #Log messenger issues
 
     handlers:
         #Toplevel handlers
         errors:
-            type: buffer
+            type: fingers_crossed
+            action_level: critical
             handler: errors_group
-            channels: ['!access_security', '!security', '!access_notfound', '!messenger']
-            level: critical
-            bubble: false
+            excluded_http_codes: [ 404, 405 ]
+            channels: [ '!access_security', '!security', '!access_notfound' ]
+            buffer_size: 50 # How many messages should be saved? Prevent memory leaks
 
         security_access:
             type: buffer
@@ -27,13 +27,6 @@ monolog:
             level: debug
             bubble: false
 
-        messenger:
-            type: buffer
-            handler: messenger_group
-            level: info
-            channels: [ messenger ]
-            bubble: false
-
         security:
             type: buffer
             handler: security_group
@@ -41,74 +34,79 @@ monolog:
             channels: [ security ]
             bubble: false
 
+        notices:
+            type: buffer
+            handler: notice_group
+            channels: [ '!access_security', '!security', '!access_notfound', '!deprecation' ]
+            level: notice
+            bubble: false
+
+
         # ---- Groups
         errors_group:
-            type: whatfailuregroup
-            members: [ file_errors, file_errors_expanded, graylog ]
+            type: group
+            members: [ file_errors, file_errors_expanded ]
 
         security_access_group:
-            type: whatfailuregroup
-            members: [ file_security_access, graylog ]
+            type: group
+            members: [ file_security_access ]
 
         notfound_access_group:
-            type: whatfailuregroup
-            members: [ file_notfound_access, graylog ]
-
-        messenger_group:
-            type: whatfailuregroup
-            members: [ file_messenger, graylog ]
+            type: group
+            members: [ file_notfound_access ]
 
         security_group:
-            type: whatfailuregroup
-            members: [ file_security, graylog ]
+            type: group
+            members: [ file_security ]
 
+        notice_group:
+            type: group
+            members: [ file_notice ]
 
         # ---- Nested handlers
         file_errors:
             type: rotating_file
-            max_files: 7
+            max_files: 30
             path: "%kernel.logs_dir%/%kernel.environment%.error.log"
             level: critical
             include_stacktraces: false
 
         file_errors_expanded:
             type: rotating_file
-            max_files: 7
+            max_files: 30
             path: "%kernel.logs_dir%/%kernel.environment%.error-full.log"
             level: critical
             include_stacktraces: true
 
         file_security_access:
             type: rotating_file
-            max_files: 7
+            max_files: 30
             path: "%kernel.logs_dir%/%kernel.environment%.security_access.log"
             level: info
 
         file_notfound_access:
             type: rotating_file
-            max_files: 7
+            max_files: 30
             path: "%kernel.logs_dir%/%kernel.environment%.access.log"
-            level: info
-
-        file_messenger:
-            type: rotating_file
-            max_files: 7
-            path: "%kernel.logs_dir%/%kernel.environment%.messenger.log"
             level: info
 
         file_security:
             type: rotating_file
-            max_files: 7
+            max_files: 30
             path: "%kernel.logs_dir%/%kernel.environment%.security.log"
             level: info
 
-        graylog:
-            type: stream
-            path: "php://stderr"
-            level: info
+        file_notice:
+            type: rotating_file
+            max_files: 30
+            path: "%kernel.logs_dir%/%kernel.environment%.logs.log"
+            level: debug
 
-when@test:
+when@dev:
     monolog:
         handlers:
-            graylog:
-                type: 'null'
+            notices:
+                type: stream
+                path: "php://stdout"
+                level: info
+                channels: [ "!event", "!doctrine" ]
