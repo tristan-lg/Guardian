@@ -7,24 +7,33 @@ use App\Component\Discord\EmbedColor;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class NotificationTestService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly DiscordApiService $discordApiService,
-        private readonly NotificationService $notificationService
+        private readonly NotificationService $notificationService,
+        private readonly ValidatorInterface $validator
     ) {}
 
     /**
      * Test the notification channel.
-     * Updates the working status according to the test result.
      *
-     * @param bool $sendTestNotification If true, a real notification is sent
+     * @param bool $sendTestNotification    If true, a real notification is sent
+     * @param bool $updateStatus            If true, the channel status is updated in the database
      *
      * @return bool True if the notification was sent successfully
      */
-    public function performNotificationChannelTest(NotificationChannel $channel, bool $sendTestNotification = false): bool
+    public function performNotificationChannelTest(
+        NotificationChannel $channel,
+        bool $sendTestNotification = false,
+        bool $updateStatus = true
+    ): bool
     {
         // First step - Check credentials for the channel
         $status = match ($channel->getType()) {
@@ -43,7 +52,7 @@ class NotificationTestService
         // Second step - Send a test notification
         if ($sendTestNotification) {
             return match ($channel->getType()) {
-                NotificationType::DISCORD => $this->notificationService->sendDiscordNotificationToChannel($channel, Embed::create()
+                NotificationType::Discord => $this->notificationService->sendDiscordNotificationToChannel($channel, Embed::create()
                     ->setTitle('Test de notification')
                     ->setDescription('La configuration de notification est correcte')
                     ->setColor(EmbedColor::SUCCESS)
@@ -57,15 +66,17 @@ class NotificationTestService
 
     private function checkDiscordWebbhook(NotificationChannel $channel): bool
     {
-        $client = $this->discordApiService->getClient($channel->getValue());
+        return $this->discordApiService->getClient($channel->getValue())->checkCredentials();
+    }
 
-        if (!$client->checkCredentials()) {
-            $channel->setWorking(false);
-            $this->em->flush();
+    private function checkEmailChannel(NotificationChannel $channel): bool
+    {
+        $errors = $this->validator->validate($channel->getValue(), [
+            new NotBlank(),
+            new Email(mode: Email::VALIDATION_MODE_HTML5),
+            new Length(max: 180),
+        ]);
 
-            return false;
-        }
-
-        return true;
+        return count($errors) === 0;
     }
 }

@@ -148,7 +148,7 @@ class NotificationService
      */
     private function sendDiscordNotification(array|Embed $embeds): void
     {
-        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['type' => NotificationType::DISCORD]);
+        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['type' => NotificationType::Discord]);
         foreach ($channels as $discordChannel) {
             $this->sendDiscordNotificationToChannel($discordChannel, $embeds);
         }

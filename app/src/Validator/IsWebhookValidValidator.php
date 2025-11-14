@@ -37,7 +37,7 @@ class IsWebhookValidValidator extends ConstraintValidator
             return;
         }
 
-        if (NotificationType::DISCORD !== $channel->getType()) {
+        if (NotificationType::Discord !== $channel->getType()) {
             return;
         }
 
