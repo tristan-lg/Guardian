@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Notification;
 
 use App\Component\Discord\Embed;
 use App\Component\Discord\EmbedAuthor;
@@ -10,6 +10,7 @@ use App\Entity\Analysis;
 use App\Entity\Credential;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
+use App\Service\Api\Message\DiscordApiService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

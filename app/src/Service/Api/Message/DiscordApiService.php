@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Api\Message;
 
-use App\Component\Client\DiscordApiClient;
+use App\Component\Client\Message\DiscordApiClient;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

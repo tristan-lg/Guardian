@@ -4,7 +4,7 @@ namespace App\Validator;
 
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
-use App\Service\DiscordApiService;
+use App\Service\Api\Message\DiscordApiService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;

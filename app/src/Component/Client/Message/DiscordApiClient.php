@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Client;
+namespace App\Component\Client\Message;
 
 use App\Component\Discord\Embed;
 use Psr\Log\LoggerInterface;
@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Throwable;
 
-class DiscordApiClient
+class DiscordApiClient implements MessageClient
 {
     protected function __construct(
         private readonly HttpClientInterface $client,

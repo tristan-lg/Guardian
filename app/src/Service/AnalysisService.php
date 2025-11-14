@@ -14,6 +14,8 @@ use App\Event\AnalysisDoneEvent;
 use App\Exception\CredentialsExpiredException;
 use App\Message\ClearProjectAnalyses;
 use App\Message\RunAnalysis;
+use App\Service\Api\EndOfLifeApiService;
+use App\Service\Api\PackagistApiService;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use DateTimeImmutable;

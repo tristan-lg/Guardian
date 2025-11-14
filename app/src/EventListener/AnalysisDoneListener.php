@@ -4,7 +4,7 @@ namespace App\EventListener;
 
 use App\Enum\Grade;
 use App\Event\AnalysisDoneEvent;
-use App\Service\NotificationService;
+use App\Service\Notification\NotificationService;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 readonly class AnalysisDoneListener

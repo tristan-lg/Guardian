@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Api;
 
 use App\Component\Client\GitlabApiClient;
 use App\Entity\Credential;

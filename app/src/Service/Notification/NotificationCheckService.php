@@ -1,45 +1,50 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Notification;
 
 use App\Component\Discord\Embed;
 use App\Component\Discord\EmbedColor;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
+use App\Service\Api\Message\DiscordApiService;
+use App\Service\Api\Message\MattermostApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class NotificationTestService
+class NotificationCheckService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly DiscordApiService $discordApiService,
+        private readonly MattermostApiService $mattermostApiService,
         private readonly NotificationService $notificationService,
         private readonly ValidatorInterface $validator
     ) {}
 
+    public function isNotificationChannelValid(NotificationChannel $channel): bool
+    {
+        return match ($channel->getType()) {
+            NotificationType::Discord => $this->checkDiscordWebbhook($channel),
+            NotificationType::Email => $this->checkEmailChannel($channel), // Email channels are always considered valid
+            NotificationType::Mattermost => $this->checkMattermostWebhook($channel), //Impossible to check Mattermost webhook validity
+            default => false,
+        };
+    }
+
     /**
      * Test the notification channel.
+     * Updates the working status according to the test result.
      *
      * @param bool $sendTestNotification    If true, a real notification is sent
-     * @param bool $updateStatus            If true, the channel status is updated in the database
      *
      * @return bool True if the notification was sent successfully
      */
-    public function performNotificationChannelTest(
-        NotificationChannel $channel,
-        bool $sendTestNotification = false,
-        bool $updateStatus = true
-    ): bool
+    public function performNotificationChannelTest(NotificationChannel $channel, bool $sendTestNotification = false): bool
     {
-        // First step - Check credentials for the channel
-        $status = match ($channel->getType()) {
-            NotificationType::DISCORD => $this->checkDiscordWebbhook($channel),
-            default => false,
-        };
+        $status = $this->isNotificationChannelValid($channel);
 
         // Update channel status
         $channel->setWorking($status);
@@ -57,6 +62,11 @@ class NotificationTestService
                     ->setDescription('La configuration de notification est correcte')
                     ->setColor(EmbedColor::SUCCESS)
                 ),
+                NotificationType::Mattermost => $this->notificationService->sendDiscordNotificationToChannel($channel, Embed::create()
+                    ->setTitle('Test de notification')
+                    ->setDescription('La configuration de notification est correcte')
+                    ->setColor(EmbedColor::SUCCESS)
+                ),
                 default => false,
             };
         }
@@ -67,6 +77,11 @@ class NotificationTestService
     private function checkDiscordWebbhook(NotificationChannel $channel): bool
     {
         return $this->discordApiService->getClient($channel->getValue())->checkCredentials();
+    }
+
+    private function checkMattermostWebhook(NotificationChannel $channel): bool
+    {
+        return $this->mattermostApiService->getClient($channel->getValue())->checkCredentials();
     }
 
     private function checkEmailChannel(NotificationChannel $channel): bool

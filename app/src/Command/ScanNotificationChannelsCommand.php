@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\NotificationChannel;
-use App\Service\NotificationTestService;
+use App\Service\Notification\NotificationCheckService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,7 +19,7 @@ class ScanNotificationChannelsCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly NotificationTestService $notificationTestService
+        private readonly NotificationCheckService $notificationTestService
     ) {
         parent::__construct();
     }

@@ -6,6 +6,7 @@ use App\Entity\Credential;
 use App\Event\CredentialJustExpiredEvent;
 use App\Event\CredentialWillExpireEvent;
 use App\Message\RunCredentialCheck;
+use App\Service\Api\GitlabApiService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;

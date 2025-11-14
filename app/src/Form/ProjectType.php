@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Credential;
 use App\Entity\Project;
-use App\Service\GitlabApiService;
+use App\Service\Api\GitlabApiService;
 use App\Validator\IsProjectUnique;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

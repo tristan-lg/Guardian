@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Api;
 
 use App\Entity\DTO\EndOfLifeCycleDto;
 use Psr\Log\LoggerInterface;

@@ -7,7 +7,7 @@ use App\Entity\NotificationChannel;
 use App\Entity\Project;
 use App\Service\AnalysisService;
 use App\Service\CredentialsService;
-use App\Service\NotificationTestService;
+use App\Service\Notification\NotificationCheckService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -23,7 +23,7 @@ class SchedulerProvider
         private readonly EntityManagerInterface $em,
         private readonly AnalysisService $projectAnalysisService,
         private readonly CredentialsService $credentialsService,
-        private readonly NotificationTestService $notificationTestService,
+        private readonly NotificationCheckService $notificationTestService,
         private readonly LoggerInterface $logger
     ) {}
 

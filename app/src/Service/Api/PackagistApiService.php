@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Api;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

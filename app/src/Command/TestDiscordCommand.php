@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Analysis;
-use App\Service\NotificationService;
+use App\Service\Notification\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
