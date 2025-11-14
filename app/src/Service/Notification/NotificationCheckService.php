@@ -27,7 +27,9 @@ class NotificationCheckService
         return match ($channel->getType()) {
             NotificationType::Discord => $this->checkDiscordWebbhook($channel),
             NotificationType::Email => $this->checkEmailChannel($channel), // Email channels are always considered valid
-            NotificationType::Mattermost => $this->checkMattermostWebhook($channel), //Impossible to check Mattermost webhook validity
+            NotificationType::Mattermost => $this->checkMattermostWebhook($channel), // Impossible to check Mattermost webhook validity
+
+            // @phpstan-ignore-next-line I prefer to have a default case here
             default => false,
         };
     }
@@ -36,7 +38,7 @@ class NotificationCheckService
      * Test the notification channel.
      * Updates the working status according to the test result.
      *
-     * @param bool $sendTestNotification    If true, a real notification is sent
+     * @param bool $sendTestNotification If true, a real notification is sent
      *
      * @return bool True if the notification was sent successfully
      */
@@ -86,6 +88,6 @@ class NotificationCheckService
             new Length(max: 180),
         ]);
 
-        return count($errors) === 0;
+        return 0 === count($errors);
     }
 }

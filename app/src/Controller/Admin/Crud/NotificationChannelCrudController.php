@@ -67,7 +67,7 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
                 ->setCssClass('btn btn-warning')
             )
             ->reorder(Crud::PAGE_DETAIL, [Action::INDEX, self::ACTION_TEST_CHANNEL, Action::EDIT, Action::DELETE])
-            ;
+        ;
     }
 
     public function checkChannel(AdminContext $context): Response

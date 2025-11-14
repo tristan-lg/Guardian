@@ -17,11 +17,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-
     public function __construct(
         private readonly UserPasswordHasherInterface $hasher,
-    ) {
-    }
+    ) {}
 
     public function load(ObjectManager $manager): void
     {
@@ -89,7 +87,8 @@ class AppFixtures extends Fixture
         $audit->setFileComposerJson($this->createFile($manager))
             ->setFileComposerLock($this->createFile($manager))
             ->setName('Fake audit')
-            ->setDescription('Fake audit desc');
+            ->setDescription('Fake audit desc')
+        ;
 
         $eolPhp = new EndOfLifeCycleDto(
             releaseDate: '2021-11-25',

@@ -44,9 +44,9 @@ class ProjectType extends AbstractType
 
             // Fetch projects available for the selected credential
             $client = $this->gitlabApiService->getClient($credential);
-            $projectsData = $client->getAssociatedProjects(); //TODO
+            $projectsData = $client->getAssociatedProjects(); // TODO
 
-//            $projectsData = [];
+            //            $projectsData = [];
 
             // Transform as int => string array
             $projects = [];

@@ -9,6 +9,6 @@ class UnsupportedApiException extends Exception
 {
     public function __construct(NotificationType $type)
     {
-        parent::__construct("No API is supported for this notification channel type : " . $type->value, 400);
+        parent::__construct('No API is supported for this notification channel type : ' . $type->value, 400);
     }
 }

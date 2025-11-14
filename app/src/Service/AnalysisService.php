@@ -252,7 +252,6 @@ class AnalysisService
             ?? $this->searchForDrupalVersion($composerLock);
         $drupalInfos = null;
 
-
         if ($phpVersion) {
             $phpVersion = $this->extractVersion($phpVersion);
 
@@ -299,7 +298,7 @@ class AnalysisService
     {
         // Check for package "drupal/core"
         foreach ($composerLock['packages'] as $package) {
-            if ($package['name'] === 'drupal/core') {
+            if ('drupal/core' === $package['name']) {
                 return $package['version'];
             }
         }

@@ -50,7 +50,7 @@ class ScanProjectCommand extends Command
         } else {
             $question = new ChoiceQuestion(
                 'Please select the project you want to scan',
-                array_map(fn (Project $project) => $project->getName(), $projectList),
+                array_map(fn (Project $project) => $project->getName() ?? '<empty name>', $projectList),
             );
 
             $projectKey = $io->askQuestion($question);

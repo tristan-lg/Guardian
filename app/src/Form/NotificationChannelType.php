@@ -44,7 +44,7 @@ class NotificationChannelType extends AbstractType
                 'label' => $notificationType->getTokenLabel(),
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['max' => $notificationType === NotificationType::Email ? 255 : 1024]),
+                    new Length(['max' => NotificationType::Email === $notificationType ? 255 : 1024]),
                 ],
             ]);
         });

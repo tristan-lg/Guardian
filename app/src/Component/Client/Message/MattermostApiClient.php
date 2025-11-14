@@ -18,7 +18,7 @@ class MattermostApiClient implements MessageClient
 
     public function checkCredentials(): bool
     {
-        //For now, we assume the webhook is always valid (no way to check it with Mattermost API)
+        // For now, we assume the webhook is always valid (no way to check it with Mattermost API)
         return true;
     }
 
@@ -33,8 +33,16 @@ class MattermostApiClient implements MessageClient
                 'priority' => 'urgent|important|standard',
                 'request_ack' => false,
             ],
-            'attachments' => array_map(fn (Embed $embed) => $this->embedToArray($embed), $embeds)
+            'attachments' => array_map(fn (Embed $embed) => $this->embedToArray($embed), $embeds),
         ]);
+    }
+
+    public static function createClient(
+        HttpClientInterface $client,
+        LoggerInterface $logger,
+        string $webhook,
+    ): MattermostApiClient {
+        return new self($client, $webhook);
     }
 
     private function embedToArray(Embed $embed): array
@@ -57,14 +65,6 @@ class MattermostApiClient implements MessageClient
                 ? sprintf('Vérification effectuée le %s', $embed->getTimestamp()->format('d/m/Y à H:i'))
                 : null,
         ]);
-    }
-
-    public static function createClient(
-        HttpClientInterface $client,
-        LoggerInterface $logger,
-        string $webhook,
-    ): MattermostApiClient {
-        return new self($client, $webhook);
     }
 
     private function post(string $endpoint, array $jsonBody = []): ResponseInterface

@@ -238,7 +238,7 @@ class Analysis implements NameableEntityInterface
         return PlatformDTO::fromArray($this->platform ?? []);
     }
 
-    public function setPlatform(array|PlatformDTO $platform): static
+    public function setPlatform(array|PlatformDTO|null $platform): static
     {
         if (null === $platform || is_array($platform)) {
             $this->platform = $platform ?? [];

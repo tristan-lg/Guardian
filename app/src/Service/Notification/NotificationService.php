@@ -9,8 +9,6 @@ use App\Component\Message\EmbedField;
 use App\Entity\Analysis;
 use App\Entity\Credential;
 use App\Entity\NotificationChannel;
-use App\Enum\Grade;
-use App\Enum\NotificationType;
 use App\Enum\Priority;
 use App\Service\Api\Message\MessageApiService;
 use DateTimeImmutable;
@@ -138,7 +136,7 @@ class NotificationService
             $this->logger->critical('Error while sending notification', [
                 'channelType' => $channel->getType()->value,
                 'channelId' => $channel->getId(),
-                'error' => $t->getMessage()
+                'error' => $t->getMessage(),
             ]);
 
             return false;
