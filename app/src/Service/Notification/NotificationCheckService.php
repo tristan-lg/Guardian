@@ -6,8 +6,7 @@ use App\Component\Discord\Embed;
 use App\Component\Discord\EmbedColor;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
-use App\Service\Api\Message\DiscordApiService;
-use App\Service\Api\Message\MattermostApiService;
+use App\Service\Api\Message\MessageApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
@@ -18,10 +17,10 @@ class NotificationCheckService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly DiscordApiService $discordApiService,
-        private readonly MattermostApiService $mattermostApiService,
+        private readonly MessageApiService $discordApiService,
         private readonly NotificationService $notificationService,
-        private readonly ValidatorInterface $validator
+        private readonly ValidatorInterface $validator,
+        private readonly MessageApiService $messageApiService
     ) {}
 
     public function isNotificationChannelValid(NotificationChannel $channel): bool
@@ -76,12 +75,12 @@ class NotificationCheckService
 
     private function checkDiscordWebbhook(NotificationChannel $channel): bool
     {
-        return $this->discordApiService->getClient($channel->getValue())->checkCredentials();
+        return $this->messageApiService->getClientByChannel($channel)->checkCredentials();
     }
 
     private function checkMattermostWebhook(NotificationChannel $channel): bool
     {
-        return $this->mattermostApiService->getClient($channel->getValue())->checkCredentials();
+        return $this->messageApiService->getClientByChannel($channel)->checkCredentials();
     }
 
     private function checkEmailChannel(NotificationChannel $channel): bool

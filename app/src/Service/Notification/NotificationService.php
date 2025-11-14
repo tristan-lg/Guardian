@@ -10,7 +10,7 @@ use App\Entity\Analysis;
 use App\Entity\Credential;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
-use App\Service\Api\Message\DiscordApiService;
+use App\Service\Api\Message\MessageApiService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -20,7 +20,7 @@ class NotificationService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly DiscordApiService $discordApiService,
+        private readonly MessageApiService $discordApiService,
         private readonly LoggerInterface $logger
     ) {}
 
@@ -130,7 +130,7 @@ class NotificationService
     {
         $embeds = is_array($embeds) ? $embeds : [$embeds];
 
-        $client = $this->discordApiService->getClient($channel->getValue());
+        $client = $this->discordApiService->getClientByChannel($channel);
 
         try {
             $client->sendMessage($embeds);
