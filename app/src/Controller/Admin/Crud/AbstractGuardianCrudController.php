@@ -14,17 +14,20 @@ abstract class AbstractGuardianCrudController extends AbstractCrudController
     {
         return parent::configureActions($actions)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+
             ->add(Crud::PAGE_EDIT, Action::INDEX)
             ->add(Crud::PAGE_EDIT, Action::DETAIL)
+            ->add(Crud::PAGE_EDIT, Action::DELETE)
+            ->remove(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE)
+
             ->update(Crud::PAGE_DETAIL, Action::EDIT, function (Action $action) {
                 return $action->setIcon('fa fa-edit');
-            })
-            ->update(Crud::PAGE_DETAIL, Action::DELETE, function (Action $action) {
-                return $action->setIcon('fa fa-trash')->setCssClass('btn btn-danger text-white action-delete');
             })
             ->update(Crud::PAGE_EDIT, Action::DETAIL, function (Action $action) {
                 return $action->setIcon('fa fa-eye');
             })
+
             ->reorder(Crud::PAGE_DETAIL, [Action::INDEX, Action::EDIT, Action::DELETE])
             ->reorder(Crud::PAGE_EDIT, [Action::INDEX])
         ;

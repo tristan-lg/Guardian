@@ -19,10 +19,10 @@
             {{ block('content') }}
         </div>
     </section>
-    <footer>
+    <footer class="ps-5 pe-5">
         {{ _self.grade('A', 'Aucune vulnérabilité') }}
         {{ _self.grade('B', 'Fichier de dépendence incorrect') }}
-        {{ _self.grade('C', 'Au moins une des version (PHP / Symfony) n\'est plus supportée') }}
+        {{ _self.grade('C', 'Au moins une des version n\'est plus maintenue') }}
         {{ _self.grade('D', 'Au moins une vulnérabilité non critique') }}
         {{ _self.grade('E', 'Au moins une vulnérabilité critique') }}
     </footer>

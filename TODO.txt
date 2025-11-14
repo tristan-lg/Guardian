@@ -27,11 +27,9 @@
     [x] Ajouter dans le crud une ligne pour voir la date d'expiration credentials
 
 == v1.3.0
-[ ] Retirer webpack au profit de asset_mapper (https://symfony.com/doc/current/frontend/asset_mapper.html)
-    [ ] Installer bootstrap via assetmapper (https://symfony.com/doc/current/frontend/asset_mapper.html#importing-3rd-party-javascript-packages)
-    [ ] Retirer webpack et les dépendances associées (package.json, webpack.config.js, etc...)
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
-[ ] Revoir l'interface pour simplifier l'intégration (renseigner l'url directe vers le composer.lock, etc)
+[ ] Revoir l'interface pour simplifier l'intégration (autocomplete pour recherche projet)
+[ ] Ajouter mattermost en canal de diffusion
 
 
 == v1.4.0

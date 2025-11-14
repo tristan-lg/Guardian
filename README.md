@@ -1,4 +1,4 @@
-# PoolPHP Guardian
+# Guardian
 A [Symfony 7](https://symfony.com/) project running on [docker](https://www.docker.com/)
 on a PHP 8.3 server.
 
