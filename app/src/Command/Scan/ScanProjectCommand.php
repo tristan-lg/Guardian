@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Scan;
 
 use App\Controller\Admin\Crud\AnalysisCrudController;
 use App\Entity\Project;

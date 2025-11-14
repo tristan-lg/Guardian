@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Discord;
+namespace App\Component\Message;
 
 class EmbedField
 {
@@ -27,6 +27,21 @@ class EmbedField
         $this->inline = $inline;
 
         return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function isInline(): bool
+    {
+        return $this->inline;
     }
 
     public function toArray(): array

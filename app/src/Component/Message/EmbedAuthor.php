@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Discord;
+namespace App\Component\Message;
 
 class EmbedAuthor
 {
@@ -27,6 +27,21 @@ class EmbedAuthor
         $this->iconUrl = $iconUrl;
 
         return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function getIconUrl(): ?string
+    {
+        return $this->iconUrl;
     }
 
     public function toArray(): array

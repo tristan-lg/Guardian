@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Scan;
 
 use App\Entity\Credential;
 use App\Service\CredentialsService;

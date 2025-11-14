@@ -28,8 +28,10 @@
 
 == v1.3.0
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
+
 [ ] Revoir l'interface pour simplifier l'intégration (autocomplete pour recherche projet)
-[ ] Ajouter mattermost en canal de diffusion
+
+[ ] Ajouter mail en canal de diffusion
 
 
 == v1.4.0

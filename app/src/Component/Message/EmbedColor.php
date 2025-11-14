@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Discord;
+namespace App\Component\Message;
 
 enum EmbedColor: string
 {
@@ -14,5 +14,10 @@ enum EmbedColor: string
     public function getDecimal(): int
     {
         return (int) hexdec($this->value);
+    }
+
+    public function getHex(): string
+    {
+        return $this->value;
     }
 }

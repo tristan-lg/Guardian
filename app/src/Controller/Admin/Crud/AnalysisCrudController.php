@@ -86,7 +86,6 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
 
             ->remove(Crud::PAGE_DETAIL, Action::EDIT)
-            ->add(Crud::PAGE_EDIT, Action::DELETE)
         ;
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Service\Notification;
 
-use App\Component\Discord\Embed;
-use App\Component\Discord\EmbedColor;
+use App\Component\Message\Embed;
+use App\Component\Message\EmbedColor;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
 use App\Service\Api\Message\MessageApiService;
@@ -17,7 +17,6 @@ class NotificationCheckService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly MessageApiService $discordApiService,
         private readonly NotificationService $notificationService,
         private readonly ValidatorInterface $validator,
         private readonly MessageApiService $messageApiService
@@ -56,12 +55,8 @@ class NotificationCheckService
         // Second step - Send a test notification
         if ($sendTestNotification) {
             return match ($channel->getType()) {
-                NotificationType::Discord => $this->notificationService->sendDiscordNotificationToChannel($channel, Embed::create()
-                    ->setTitle('Test de notification')
-                    ->setDescription('La configuration de notification est correcte')
-                    ->setColor(EmbedColor::SUCCESS)
-                ),
-                NotificationType::Mattermost => $this->notificationService->sendDiscordNotificationToChannel($channel, Embed::create()
+                NotificationType::Discord,
+                NotificationType::Mattermost => $this->notificationService->sendNotificationToChannel($channel, Embed::create()
                     ->setTitle('Test de notification')
                     ->setDescription('La configuration de notification est correcte')
                     ->setColor(EmbedColor::SUCCESS)

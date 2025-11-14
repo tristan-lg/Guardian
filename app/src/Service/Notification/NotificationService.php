@@ -2,14 +2,16 @@
 
 namespace App\Service\Notification;
 
-use App\Component\Discord\Embed;
-use App\Component\Discord\EmbedAuthor;
-use App\Component\Discord\EmbedColor;
-use App\Component\Discord\EmbedField;
+use App\Component\Message\Embed;
+use App\Component\Message\EmbedAuthor;
+use App\Component\Message\EmbedColor;
+use App\Component\Message\EmbedField;
 use App\Entity\Analysis;
 use App\Entity\Credential;
 use App\Entity\NotificationChannel;
+use App\Enum\Grade;
 use App\Enum\NotificationType;
+use App\Enum\Priority;
 use App\Service\Api\Message\MessageApiService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +22,7 @@ class NotificationService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly MessageApiService $discordApiService,
+        private readonly MessageApiService $messageApiService,
         private readonly LoggerInterface $logger
     ) {}
 
@@ -30,7 +32,7 @@ class NotificationService
             return;
         }
 
-        // Build discord notification
+        // Build notification
         $embed = Embed::create()
             ->setAuthor(
                 EmbedAuthor::create()
@@ -84,10 +86,7 @@ class NotificationService
             );
         }
 
-        $this->sendDiscordNotification($embed);
-
-        // Build email notification
-        // TODO - Send email notification
+        $this->sendGlobalNotification($embed, $analysis->getGradeEnum()->getPriority());
     }
 
     public function sendCredentialWillExpireNotification(Credential $credential): void
@@ -105,7 +104,7 @@ class NotificationService
             ))
         ;
 
-        $this->sendDiscordNotification($embed);
+        $this->sendGlobalNotification($embed, Priority::Important);
     }
 
     public function sendCredentialJustExpiredNotification(Credential $credential): void
@@ -118,25 +117,29 @@ class NotificationService
             ))
         ;
 
-        $this->sendDiscordNotification($embed);
+        $this->sendGlobalNotification($embed, Priority::Important);
     }
 
     /**
-     * Send a discord notification to the specified channel.
+     * Send a notification to the specified channel.
      *
      * @param Embed|Embed[] $embeds
      */
-    public function sendDiscordNotificationToChannel(NotificationChannel $channel, array|Embed $embeds): bool
+    public function sendNotificationToChannel(NotificationChannel $channel, array|Embed $embeds, Priority $priority = Priority::Standard): bool
     {
         $embeds = is_array($embeds) ? $embeds : [$embeds];
 
-        $client = $this->discordApiService->getClientByChannel($channel);
+        $client = $this->messageApiService->getClientByChannel($channel);
 
         try {
-            $client->sendMessage($embeds);
+            $client->sendMessage($embeds, $priority);
         } catch (Throwable $t) {
             // Log error
-            $this->logger->critical('Error while sending discord notification', ['message' => $t->getMessage()]);
+            $this->logger->critical('Error while sending notification', [
+                'channelType' => $channel->getType()->value,
+                'channelId' => $channel->getId(),
+                'error' => $t->getMessage()
+            ]);
 
             return false;
         }
@@ -147,11 +150,16 @@ class NotificationService
     /**
      * @param Embed|Embed[] $embeds
      */
-    private function sendDiscordNotification(array|Embed $embeds): void
+    private function sendGlobalNotification(array|Embed $embeds, Priority $priority = Priority::Standard): void
     {
-        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['type' => NotificationType::Discord]);
-        foreach ($channels as $discordChannel) {
-            $this->sendDiscordNotificationToChannel($discordChannel, $embeds);
+        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['working' => true]);
+        foreach ($channels as $channel) {
+            $this->logger->info('Sending notification to channel : ' . $channel->getName(), [
+                'channelType' => $channel->getType()->value,
+                'channelId' => $channel->getId(),
+            ]);
+
+            $this->sendNotificationToChannel($channel, $embeds, $priority);
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Notification;
 
 use App\Entity\Analysis;
 use App\Service\Notification\NotificationService;
@@ -12,10 +12,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:notification:test',
+    name: 'app:notification:send-test',
     description: 'Run a project scan',
 )]
-class TestDiscordCommand extends Command
+class SendNotificationCommand extends Command
 {
     public function __construct(
         private readonly NotificationService $notificationService,
@@ -28,7 +28,7 @@ class TestDiscordCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title('Test Discord notification');
+        $io->title('Sending test notification');
 
         // Set the project
         $analysis = $this->em->getRepository(Analysis::class)->findOneBy(['grade' => 'E']);
@@ -38,7 +38,7 @@ class TestDiscordCommand extends Command
             return Command::FAILURE;
         }
 
-        $io->writeln('Send notification...');
+        $io->writeln('Sending notification...');
         $this->notificationService->sendAnalysisDoneNotification($analysis);
 
         return Command::SUCCESS;

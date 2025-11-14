@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component\Discord;
+namespace App\Component\Message;
 
 use DateTimeInterface;
 
@@ -76,6 +76,31 @@ class Embed
             'timestamp' => $this->timestamp?->format('c') ?? null,
             'fields' => array_map(fn (EmbedField $field) => $field->toArray(), $this->fields),
         ]);
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getColor(): ?EmbedColor
+    {
+        return $this->color;
+    }
+
+    public function getAuthor(): ?EmbedAuthor
+    {
+        return $this->author;
+    }
+
+    public function getTimestamp(): ?DateTimeInterface
+    {
+        return $this->timestamp;
     }
 
     public static function create(): self

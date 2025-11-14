@@ -2,7 +2,8 @@
 
 namespace App\Component\Client\Message;
 
-use App\Component\Discord\Embed;
+use App\Component\Message\Embed;
+use App\Enum\Priority;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -32,7 +33,7 @@ class DiscordApiClient implements MessageClient
      *
      * @param Embed[] $embeds
      */
-    public function sendMessage(array $embeds): void
+    public function sendMessage(array $embeds, Priority $priority): void
     {
         $embedsArray = array_map(fn (Embed $embed) => $embed->toArray(), $embeds);
         if (count($embedsArray) > 10) {
