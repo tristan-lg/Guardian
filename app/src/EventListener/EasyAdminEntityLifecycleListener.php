@@ -15,6 +15,7 @@ final class EasyAdminEntityLifecycleListener
     {
         $entity = $event->getEntityInstance();
 
+        // @phpstan-ignore-next-line
         $entityName = $entity instanceof NameableEntityInterface ? $entity::getSingular() : (string) $entity;
 
         // @phpstan-ignore-next-line
@@ -26,6 +27,7 @@ final class EasyAdminEntityLifecycleListener
     {
         $entity = $event->getEntityInstance();
 
+        // @phpstan-ignore-next-line
         $entityName = $entity instanceof NameableEntityInterface ? $entity::getSingular() : (string) $entity;
 
         // @phpstan-ignore-next-line
@@ -37,6 +39,7 @@ final class EasyAdminEntityLifecycleListener
     {
         $entity = $event->getEntityInstance();
 
+        // @phpstan-ignore-next-line
         $entityName = $entity instanceof NameableEntityInterface ? $entity::getSingular() : (string) $entity;
 
         // @phpstan-ignore-next-line

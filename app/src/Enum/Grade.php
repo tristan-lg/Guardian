@@ -39,4 +39,13 @@ enum Grade: int
             self::E => '🔴',
         };
     }
+
+    public function getPriority(): Priority
+    {
+        return match ($this) {
+            self::A, self::B => Priority::Standard,
+            self::C => Priority::Important,
+            self::D, self::E => Priority::Urgent
+        };
+    }
 }

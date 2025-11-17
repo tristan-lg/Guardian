@@ -1,12 +1,10 @@
 parameters:
-    level: max
+    level: 9
     paths:
         - src/
         - bin/
         - config/
         - public/
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
     disallowedFunctionCalls:
             -
                 function:
@@ -15,9 +13,22 @@ parameters:
                     - 'dump()'
                     - 'dd()'
                 message: 'only allowed for debugging purpose'
+    ignoreErrors:
+            - identifier: missingType.iterableValue
+            - identifier: missingType.generics
 
+    checkMissingTypehints: true
+    checkExplicitMixed: true
+    checkExplicitMixedMissingReturn: true
+    checkInternalClassCaseSensitivity: true
+    checkDynamicProperties: true
+
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
 
 includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
     - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-doctrine/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon

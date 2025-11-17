@@ -43,9 +43,20 @@ class Credential implements NameableEntityInterface
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $lastNotification = null;
 
+    /**
+     * @var Collection<int, CredentialProject>
+     */
+    #[ORM\OneToMany(targetEntity: CredentialProject::class, mappedBy: 'credential')]
+    private Collection $apiProjects;
+
+    #[ORM\Column]
+    private DateTimeImmutable $updatedAt;
+
     public function __construct()
     {
         $this->projects = new ArrayCollection();
+        $this->apiProjects = new ArrayCollection();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function __toString(): string
@@ -169,6 +180,50 @@ class Credential implements NameableEntityInterface
     public function setLastNotification(?DateTimeImmutable $lastNotification): static
     {
         $this->lastNotification = $lastNotification;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CredentialProject>
+     */
+    public function getApiProjects(): Collection
+    {
+        return $this->apiProjects;
+    }
+
+    public function addApiProject(CredentialProject $apiProject): static
+    {
+        if (!$this->apiProjects->contains($apiProject)) {
+            $this->apiProjects->add($apiProject);
+            $apiProject->setCredential($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApiProject(CredentialProject $apiProject): static
+    {
+        $this->apiProjects->removeElement($apiProject);
+
+        return $this;
+    }
+
+    public function emptyApiProjects(): static
+    {
+        $this->apiProjects = new ArrayCollection();
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

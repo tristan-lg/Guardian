@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Project;
 use App\Exception\CredentialsExpiredException;
 use App\Exception\ProjectFileNotFoundException;
+use App\Service\Api\GitlabApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 

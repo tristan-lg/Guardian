@@ -4,7 +4,7 @@ namespace App\EventListener;
 
 use App\Event\CredentialJustExpiredEvent;
 use App\Event\CredentialWillExpireEvent;
-use App\Service\NotificationService;
+use App\Service\Notification\NotificationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
