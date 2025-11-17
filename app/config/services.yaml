@@ -6,6 +6,7 @@
 parameters:
     packagist.user_agent: 'Guardian/v%app.version% (%env(PACKAGIST_CONTACT_EMAIL)%)'
     uploaded_files_directory: '%env(resolve:UPLOAD_DIR)%'
+    app.homepage_require_login: '%env(bool:HOMEPAGE_REQUIRE_LOGIN)%'
 
 services:
     # default configuration for services in *this* file
