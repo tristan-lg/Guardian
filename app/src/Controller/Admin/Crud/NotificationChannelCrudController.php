@@ -45,7 +45,7 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
                 ->setChoices([
                     'Discord' => NotificationType::Discord,
                     'Mattermost' => NotificationType::Mattermost,
-                    'Email' => NotificationType::Email,
+//                    'Email' => NotificationType::Email,
                 ]),
             TextField::new('name', 'Libellé')
                 ->setHelp('Nom du canal de notification à titre informatif')

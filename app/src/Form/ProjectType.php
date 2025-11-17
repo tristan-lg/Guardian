@@ -42,23 +42,17 @@ class ProjectType extends AbstractType
                 return;
             }
 
-            // Fetch projects available for the selected credential
-            $client = $this->gitlabApiService->getClient($credential);
-            $projectsData = $client->getAssociatedProjects(); // TODO
-
-            //            $projectsData = [];
-
-            // Transform as int => string array
             $projects = [];
-            foreach ($projectsData as $project) {
-                $projects[sprintf('%d - %s', $project->id, $project->name)] = $project->id;
+            foreach ($credential->getApiProjects() as $project) {
+                $projects[sprintf('%d - %s', $project->getGitlabId(), $project->getName())] = $project->getGitlabId();
             }
 
             $field->add(ChoiceType::class, [
                 'empty_data' => null,
+                'label' => 'Projet git associé',
                 'placeholder' => 'Selectionner un projet',
                 'choices' => $projects,
-                'label' => 'Projet git associé',
+                'autocomplete' => true,
             ]);
         });
 

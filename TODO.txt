@@ -30,13 +30,10 @@
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
     [ ] J'ai peut être documenté une partie (avec les Scheduler), a voir ce qu'il faut rajouter
 
-[ ] Revoir l'interface pour simplifier l'intégration (autocomplete pour recherche projet)
-
-[ ] Ajouter mail en canal de diffusion
-
 
 == v1.4.0
     [ ] Module audit de code
+    [ ] Ajouter mail en canal de diffusion
 
 == v1.5.0
     [ ] Ajouter une notification discord pour les versions applicatives
