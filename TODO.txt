@@ -28,6 +28,7 @@
 
 == v1.3.0
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
+    [ ] J'ai peut être documenté une partie (avec les Scheduler), a voir ce qu'il faut rajouter
 
 [ ] Revoir l'interface pour simplifier l'intégration (autocomplete pour recherche projet)
 

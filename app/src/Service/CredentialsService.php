@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Credential;
+use App\Entity\CredentialProject;
 use App\Event\CredentialJustExpiredEvent;
 use App\Event\CredentialWillExpireEvent;
 use App\Message\RunCredentialCheck;
@@ -27,6 +28,28 @@ class CredentialsService
         $this->messageBus->dispatch(new RunCredentialCheck($credential->getId()), [
             new TransportNamesStamp([$async ? 'async' : 'sync']),
         ]);
+    }
+
+    public function scanCredentialProjects(Credential $credential): void
+    {
+        $client = $this->gitlabApiService->getClient($credential);
+        $projects = $client->getAssociatedProjects();
+        if (count($projects) === 0) {
+            return;
+        }
+
+        $credential->emptyApiProjects();
+        foreach ($projects as $projectData) {
+            $credentialProject = (new CredentialProject())
+                ->setName($projectData->name)
+                ->setGitlabId($projectData->id);
+
+            $this->em->persist($credentialProject);
+            $credential->addApiProject($credentialProject);
+        }
+
+        $credential->setUpdatedAt(new DateTimeImmutable());
+        $this->em->flush();
     }
 
     public function runCredentialCheck(Credential $credential): void
