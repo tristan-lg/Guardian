@@ -2,9 +2,11 @@
 
 namespace App\Controller\Admin\Crud;
 
+use App\Controller\Admin\DashboardController;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
-use App\Service\NotificationTestService;
+use App\Form\NotificationChannelType;
+use App\Service\Notification\NotificationCheckService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -23,8 +25,9 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
     private const string ACTION_TEST_CHANNEL = 'checkChannel';
 
     public function __construct(
-        private readonly NotificationTestService $notificationService,
-        private readonly AdminUrlGenerator $adminUrlGenerator
+        private readonly NotificationCheckService $notificationService,
+        private readonly AdminUrlGenerator $adminUrlGenerator,
+        private readonly EntityManagerInterface $em
     ) {}
 
     public static function getEntityFqcn(): string
@@ -40,8 +43,9 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
                 ->setFormType(EnumType::class)
                 ->setFormTypeOption('class', NotificationType::class)
                 ->setChoices([
-                    'Discord' => NotificationType::DISCORD,
-                    // 'Email' => NotificationType::EMAIL,
+                    'Discord' => NotificationType::Discord,
+                    'Mattermost' => NotificationType::Mattermost,
+//                    'Email' => NotificationType::Email,
                 ]),
             TextField::new('name', 'Libellé')
                 ->setHelp('Nom du canal de notification à titre informatif')
@@ -70,7 +74,7 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
     {
         $channel = $this->getNotificationChannel($context);
 
-        if ($this->notificationService->performNotificationChannelTest($channel, true)) {
+        if ($this->notificationService->performNotificationChannelTest($channel, sendTestNotification: true)) {
             $this->addFlash('success', 'La notification de test a été envoyée avec succès');
         } else {
             $this->addFlash('danger', 'Impossible d\'envoyer la notification de test');
@@ -83,6 +87,37 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
                 ->setEntityId($channel->getId())
                 ->generateUrl()
         );
+    }
+
+    public function new(AdminContext $context): Response
+    {
+        $request = $context->getRequest();
+
+        $notificationChannel = new NotificationChannel();
+        $form = $this->createForm(NotificationChannelType::class, $notificationChannel);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->notificationService->isNotificationChannelValid($notificationChannel)) {
+                $this->em->persist($notificationChannel);
+                $this->em->flush();
+
+                return $this->redirect(
+                    $this->adminUrlGenerator
+                        ->setDashboard(DashboardController::class)
+                        ->setController(NotificationChannelCrudController::class)
+                        ->setAction(Action::INDEX)
+                        ->generateUrl()
+                );
+            }
+
+            $this->addFlash('danger', 'Impossible de se connecter au canal de communication, vérifiez les informations fournies.');
+        }
+
+        return $this->render('@Admin/crud/notification_channel/new.html.twig', [
+            'notificationChannel' => $notificationChannel,
+            'form' => $form,
+        ]);
     }
 
     /**

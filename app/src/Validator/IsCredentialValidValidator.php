@@ -3,7 +3,7 @@
 namespace App\Validator;
 
 use App\Entity\Credential;
-use App\Service\GitlabApiService;
+use App\Service\Api\GitlabApiService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;

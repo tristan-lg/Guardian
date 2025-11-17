@@ -4,7 +4,7 @@ namespace App\Validator;
 
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
-use App\Service\DiscordApiService;
+use App\Service\Api\Message\MessageApiService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -12,7 +12,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 class IsWebhookValidValidator extends ConstraintValidator
 {
     public function __construct(
-        private readonly DiscordApiService $discordApiService
+        private readonly MessageApiService $discordApiService
     ) {}
 
     /**
@@ -37,11 +37,13 @@ class IsWebhookValidValidator extends ConstraintValidator
             return;
         }
 
-        if (NotificationType::DISCORD !== $channel->getType()) {
+        if (NotificationType::Discord !== $channel->getType()
+            && NotificationType::Mattermost !== $channel->getType()
+        ) {
             return;
         }
 
-        $client = $this->discordApiService->getClient($value);
+        $client = $this->discordApiService->getClientByChannel($channel);
         if (!$client->checkCredentials()) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation()

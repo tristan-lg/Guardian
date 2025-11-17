@@ -1,0 +1,13 @@
+<div {{ attributes }}>
+
+    {{ form_start(form) }}
+    <div class="col-md-6 col-xxl-5">
+        {{ form_widget(form) }}
+    </div>
+
+    <button class="btn btn-primary" data-loading="hide">Ajouter le canal de notification</button>
+    {{ form_end(form) }}
+    <div class="spinner-border" role="status" data-loading>
+        <span class="visually-hidden">Chargement...</span>
+    </div>
+</div>

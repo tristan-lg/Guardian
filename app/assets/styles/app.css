@@ -3,13 +3,49 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    color: white;
+    background-color: #212529
 }
 
 header {
     background-color: rgba(24, 28, 58, 0.75);
+    padding: 1rem;
+    margin-bottom: 1rem;
 }
 
+.l__header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 3rem;
+}
+
+header h1 {
+    font-size: calc(1.325rem + 0.9vw);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--bs-heading-color);
+    margin: 0
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+
 footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+
+    padding: 1rem;
     border-top: 1px solid rgba(24, 28, 58, 0.75);
 }
 
@@ -21,27 +57,45 @@ footer {
     width: 350px;
 }
 
-.homepage__container.container {
+.homepage__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
     max-width: 384px;
+    width: 100%;
+
+    margin: 0 auto;
+    padding: 1rem;
 }
 
 /* Size for 2 cards */
-@media (min-width: 752px) {
-    .homepage__container.container {
-        max-width: 752px;
+@media (min-width: 816px) {
+    .homepage__container {
+        max-width: 816px;
     }
 }
 
 /* Size for 3 cards */
-@media (min-width: 1120px) {
-    .homepage__container.container {
-        max-width: 1120px;
+@media (min-width: 1216px) {
+    .homepage__container {
+        max-width: 1216px;
     }
 }
 
 /* Size for 4 cards */
-@media (min-width: 1488px) {
-    .homepage__container.container {
-        max-width: 1488px;
+@media (min-width: 1616px) {
+    .homepage__container {
+        max-width: 1616px;
     }
+}
+
+.card {
+    width: 22rem;
+}
+
+.card-text {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
 }

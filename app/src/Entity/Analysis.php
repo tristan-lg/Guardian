@@ -58,8 +58,8 @@ class Analysis implements NameableEntityInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $advisoryHash = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?array $platform = [];
+    #[ORM\Column(nullable: false)]
+    private array $platform = [];
 
     public function __construct()
     {
@@ -238,7 +238,7 @@ class Analysis implements NameableEntityInterface
         return PlatformDTO::fromArray($this->platform ?? []);
     }
 
-    public function setPlatform(null|array|PlatformDTO $platform): static
+    public function setPlatform(array|PlatformDTO|null $platform): static
     {
         if (null === $platform || is_array($platform)) {
             $this->platform = $platform ?? [];

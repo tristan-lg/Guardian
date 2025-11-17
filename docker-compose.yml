@@ -1,93 +1,84 @@
-version: '3.4'
-
 services:
   # Application entrypoint (reverse-proxy)
   traefik:
-    build:
-      context: ./docker/traefik/local
+    image: traefik:v3.0
+    command:
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+      - --api.dashboard=true
+      - --api.insecure=true
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik_dashboard_router.rule=Host(`traefik.guardian.localhost`)
+      - traefik.http.routers.traefik_dashboard_router.service=traefik_dashboard_service
+      - traefik.http.services.traefik_dashboard_service.loadbalancer.server.port=8080
     ports:
       - "8080:8080" #Traefik admin page
-      - "443:443" #Entrypoint for https
+      - "80:80" #Entrypoint
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - local
 
-  httpd:
-    build:
-      context: ./app/public
-      dockerfile: ../../docker/httpd/local/Dockerfile
-    volumes:
-      - ./app/public:/var/www/html/public
-      - ./docker/httpd/local/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./docker/httpd/local/conf/vhost.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
-    environment:
-      - PHP_FPM_SERVER=phpfpmcontainer
-    working_dir: /var/www/html
-    labels:
-      - "traefik.enable=true"
-      # Service
-      - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.sticky.cookie.secure=true"
-      - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.sticky.cookie.httpOnly=true"
-      - "traefik.http.services.${PROJECT_NAME:-guardian}_httpd.loadbalancer.server.port=80"
-      # Router
-      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.rule=Host(`localhost`)"
-      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.entrypoints=${TRAEFIK_ENTRYPOINTS:-https}"
-      - "traefik.http.routers.${PROJECT_NAME:-guardian}_httpd.tls=${TRAEFIK_TLS:-true}"
-    networks:
-      local:
-        aliases:
-          - httpdcontainer
-
-  phpfpm:
+  # Php container to serve php files
+  app:
     build:
       context: ./app
-      dockerfile: ../docker/phpfpm/local/Dockerfile
+      dockerfile: ../docker/app/dev/Dockerfile
     depends_on:
       - database
     volumes:
       - ./app:/var/www/html/
-      - ./docker/phpfpm/local/conf.d/php.ini:/usr/local/etc/php/conf.d/99-php.ini
-      - ./docker/phpfpm/local/conf.d/dev.ini:/usr/local/etc/php/conf.d/99-dev.ini
-      - ./docker/phpfpm/local/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/99-xdebug.ini
+      - ./docker/app/dev/config/apache/apache2.conf:/etc/apache2/apache2.conf
+      - ./docker/app/dev/config/apache/vhost.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./docker/app/dev/config/php/php.ini:/usr/local/etc/php/conf.d/99-php.ini
+      - ./docker/app/dev/config/php/dev.ini:/usr/local/etc/php/conf.d/99-dev.ini
+      - ./docker/app/dev/config/php/opcache.ini:/usr/local/etc/php/conf.d/99-opcache.ini
     environment:
       - APP_ENV=dev
     labels:
-      - "traefik.enable=false"
+      - traefik.enable=true
+      - traefik.http.routers.app_router.rule=Host(`guardian.localhost`)
+      - traefik.http.routers.app_router.service=front_service
+      - traefik.http.services.front_service.loadbalancer.sticky.cookie.secure=true
+      - traefik.http.services.front_service.loadbalancer.sticky.cookie.httpOnly=true
+      - traefik.http.services.front_service.loadbalancer.server.port=80
     networks:
-      local:
-        aliases:
-          - phpfpmcontainer
+      - local
 
   # Database container
   database:
-    image: mysql:8.0
-    ports:
-      - '33061:3306'
-    volumes:
-      - db_data:/var/lib/mysql
+    image: mariadb:10.11
     environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_USER: 'guardian'
-      MYSQL_PASSWORD: 'guardian'
-      MYSQL_DATABASE: 'guardian'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "guardian"
+      MYSQL_USER: "guardian"
+      MYSQL_PASSWORD: "guardian"
+    ports:
+      - '3306:3306'
+    volumes:
+      - database_data:/var/lib/mysql
     labels:
-        - "traefik.enable=false"
+      - traefik.enable=false
     networks:
       - local
 
   # Mailcatcher
-  mailcatcher:
-    image: schickling/mailcatcher
-    ports:
-      - "1080:1080"
+  mail:
+    image: axllent/mailpit:v1.21
     labels:
-      - "traefik.enable=false"
+      - traefik.enable=true
+      - traefik.http.routers.mail_router.rule=Host(`mail.guardian.localhost`)
+      - traefik.http.routers.mail_router.service=mail_service
+      - traefik.http.services.mail_service.loadbalancer.server.port=8025
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
     networks:
       - local
 
 volumes:
-  db_data:
+  database_data:
 
 networks:
   local:

@@ -14,6 +14,8 @@ use App\Event\AnalysisDoneEvent;
 use App\Exception\CredentialsExpiredException;
 use App\Message\ClearProjectAnalyses;
 use App\Message\RunAnalysis;
+use App\Service\Api\EndOfLifeApiService;
+use App\Service\Api\PackagistApiService;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use DateTimeImmutable;
@@ -82,7 +84,7 @@ class AnalysisService
             $composerLock = $this->fileService->readJsonFile($analysable->getFileComposerLock());
         }
 
-        // Get php & symfony version
+        // Get platform versions
         $analysis->setPlatform(
             $this->getPlatform($composerJson, $composerLock)
         );
@@ -227,7 +229,7 @@ class AnalysisService
         }
 
         // Check at least one of these is out of security support (end of support) (PHP / Symfony)
-        if ($analysis->getPlatform()->isPhpExpired() || $analysis->getPlatform()->isSymfonyExpired()) {
+        if ($analysis->getPlatform()->isPhpExpired() || $analysis->getPlatform()->isSymfonyExpired() || $analysis->getPlatform()->isDrupalExpired()) {
             $grade = max($grade, Grade::C->value);
         }
 
@@ -244,31 +246,63 @@ class AnalysisService
         $symfonyVersion = $composerJson['extra']['symfony']['require'] ?? null;
         $symfonyInfos = null;
 
-        $parser = new VersionParser();
-        if ($phpVersion) {
-            $phpVersion = $parser->parseConstraints($phpVersion)->getLowerBound()->getVersion();
+        /** @var null|string $drupalVersion */
+        $drupalVersion = $composerJson['extra']['drupal']['require']
+            ?? $composerJson['require']['drupal/core']
+            ?? $this->searchForDrupalVersion($composerLock);
+        $drupalInfos = null;
 
-            // Get only the 2 first digits
-            $phpVersion = substr($phpVersion, 0, 3);
+        if ($phpVersion) {
+            $phpVersion = $this->extractVersion($phpVersion);
 
             // Get OEL infos
             $phpInfos = $this->endOfLifeApiService->getPackageVersionInfo('php', $phpVersion);
         }
         if ($symfonyVersion) {
-            $symfonyVersion = $parser->parseConstraints($symfonyVersion)->getLowerBound()->getVersion();
-
-            // Get only the 2 first digits
-            $symfonyVersion = substr($symfonyVersion, 0, 3);
+            $symfonyVersion = $this->extractVersion($symfonyVersion);
 
             // Get OEL infos
             $symfonyInfos = $this->endOfLifeApiService->getPackageVersionInfo('symfony', $symfonyVersion);
+        }
+        if ($drupalVersion) {
+            $drupalVersion = $this->extractVersion($drupalVersion);
+
+            // Get OEL infos
+            $drupalInfos = $this->endOfLifeApiService->getPackageVersionInfo('drupal', $drupalVersion);
         }
 
         return new PlatformDTO(
             php: $phpVersion,
             phpInfos: $phpInfos,
             symfony: $symfonyVersion,
-            symfonyInfos: $symfonyInfos
+            symfonyInfos: $symfonyInfos,
+            drupal: $drupalVersion,
+            drupalInfos: $drupalInfos,
         );
+    }
+
+    private function extractVersion(string $version): string
+    {
+        $parser = new VersionParser();
+        $versionLowerBound = $parser->parseConstraints($version)->getLowerBound()->getVersion();
+
+        // Extract the version number using regex (ex 11.31.2 => 11.31)
+        if (preg_match('/(\d+(\.\d+){0,1})/', $versionLowerBound, $matches)) {
+            return $matches[1];
+        }
+
+        return $versionLowerBound;
+    }
+
+    private function searchForDrupalVersion(array $composerLock): ?string
+    {
+        // Check for package "drupal/core"
+        foreach ($composerLock['packages'] as $package) {
+            if ('drupal/core' === $package['name']) {
+                return $package['version'];
+            }
+        }
+
+        return null;
     }
 }

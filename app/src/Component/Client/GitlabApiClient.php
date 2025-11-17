@@ -6,6 +6,7 @@ use App\Component\Git\TokenData;
 use App\Entity\Credential;
 use App\Entity\DTO\ProjectApiDTO;
 use App\Entity\Project;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -37,16 +38,42 @@ class GitlabApiClient
 
     /**
      * @return ProjectApiDTO[]
+     *
+     * @throws ClientException
      */
     public function getAssociatedProjects(): array
     {
-        $projects = json_decode($this->get('projects', [
-            'min_access_level' => 10,
-            'simple' => true,
-            'per_page' => 100,
-        ])->getContent(), true);
+        $page = 1;
+        $maxPage = 2500;
+        $projects = [];
 
-        // @phpstan-ignore-next-line
+        do {
+            $fetchedProjects = $this->fetchProjectsPage($page);
+            $projects = array_merge($projects, $fetchedProjects);
+            $page++;
+        } while($page < $maxPage && count($fetchedProjects) > 0);
+
+        return $projects;
+    }
+
+    /**
+     * @return ProjectApiDTO[]
+     */
+    private function fetchProjectsPage(int $page): array
+    {
+        $response = $this->get('projects', [
+            'simple' => true,
+            'archived' => false,
+            'page' => $page,
+            'per_page' => 20,
+        ]);
+
+        $projects = json_decode($response->getContent(), true);
+
+        if (empty($projects)) {
+            return [];
+        }
+
         return array_map(fn ($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
     }
 
@@ -91,11 +118,11 @@ class GitlabApiClient
 
     public function getCredentialInfos(): ?TokenData
     {
-        $response = $this->get('personal_access_tokens');
+        $response = $this->get('personal_access_tokens/self');
 
         try {
             // @phpstan-ignore-next-line
-            return TokenData::fromArray(json_decode($response->getContent(), true)[0]);
+            return TokenData::fromArray(json_decode($response->getContent(), true));
         } catch (Throwable $t) {
             if (Response::HTTP_UNAUTHORIZED === $t->getCode()) {
                 return null;

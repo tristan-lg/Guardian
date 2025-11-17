@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}PoolPHP Guardian{% endblock %}</title>
+        <title>{% block title %}Guardian{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('font-awesome/css/all.css') }}">
         {% endblock %}
@@ -13,9 +13,7 @@
             {% endblock %}
         {% endblock %}
     </head>
-    {% block body_wrapper %}
-        <body>
-        {% block body %}{% endblock %}
-        </body>
-    {% endblock %}
+    <body>
+    {% block body %}{% endblock %}
+    </body>
 </html>

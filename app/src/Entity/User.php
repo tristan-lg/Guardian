@@ -79,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
 
     public function getUserIdentifier(): string
     {
+        // @phpstan-ignore-next-line
         return $this->getEmail();
     }
 

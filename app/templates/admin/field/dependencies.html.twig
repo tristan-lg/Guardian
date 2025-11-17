@@ -13,7 +13,7 @@
         <table class="table mb-5">
             <thead>
             <tr>
-                <th>Dependance</th>
+                <th>Dépendance</th>
                 <th>Version minimale installée</th>
                 <th>LTS ?</th>
                 <th>Fin de vie</th>
@@ -55,45 +55,90 @@
             </tr>
 
             {# Symfony #}
-            <tr>
-                <td><i class="fa-brands fa-symfony"></i>&nbsp;Symfony</td>
-                <td>{{ platform.symfony|default('Non installé') }}</td>
-                <td>
-                    {% if platform.symfonyInfos %}
-                        {% if platform.symfonyInfos.lts %}
-                            <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
-                        {% else %}
-                            <span class="badge badge-warning">Non</span>
+            {% if platform.symfony|default %}
+                <tr>
+                    <td><i class="fa-brands fa-symfony"></i>&nbsp;Symfony</td>
+                    <td>{{ platform.symfony|default('Non installé') }}</td>
+                    <td>
+                        {% if platform.symfonyInfos %}
+                            {% if platform.symfonyInfos.lts %}
+                                <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                            {% else %}
+                                <span class="badge badge-warning">Non</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if platform.symfonyInfos %}
-                        {% if date(platform.symfonyInfos.eol) < date() %}
-                            <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
-                        {% else %}
-                            <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                    </td>
+                    <td>
+                        {% if platform.symfonyInfos %}
+                            {% if platform.symfonyInfos.eol is null %}
+                                <span class="badge badge-warning"> Inconnu </span>
+                            {% elseif date(platform.symfonyInfos.eol) < date() %}
+                                <span class="badge badge-danger">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ platform.symfonyInfos.eol|date('d/m/Y') }}</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if platform.symfonyInfos %}
-                        {% if date(platform.symfonyInfos.eol) > date()  %}
-                            <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
-                        {% else %}
-                            <span class="badge badge-danger">Version obsolète !</span>
+                    </td>
+                    <td>
+                        {% if platform.symfonyInfos %}
+                            {% if platform.symfonyInfos.eol is null %}
+                                <span class="badge badge-warning"> Inconnu </span>
+                            {% elseif date(platform.symfonyInfos.eol) > date()  %}
+                                <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                            {% else %}
+                                <span class="badge badge-danger">Version obsolète !</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            {% endif %}
+
+            {# Drupal #}
+            {% if platform.drupal|default %}
+                <tr>
+                    <td><i class="fa-brands fa-drupal"></i>&nbsp;Drupal</td>
+                    <td>{{ platform.drupal|default('Non installé') }}</td>
+                    <td>
+                        {% if platform.drupalInfos %}
+                            {% if platform.drupalInfos.lts %}
+                                <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;LTS</span>
+                            {% else %}
+                                <span class="badge badge-warning">Non</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if platform.drupalInfos %}
+                            {% if platform.drupalInfos.eol is null %}
+                                <span class="badge badge-warning"> Inconnu </span>
+                            {% elseif date(platform.drupalInfos.eol) < date() %}
+                                <span class="badge badge-danger">{{ platform.drupalInfos.eol|date('d/m/Y') }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ platform.drupalInfos.eol|date('d/m/Y') }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if platform.drupalInfos %}
+                            {% if platform.drupalInfos.eol is null %}
+                                <span class="badge badge-warning"> Inconnu </span>
+                            {% elseif date(platform.drupalInfos.eol) > date()  %}
+                                <span class="badge badge-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;A jour</span>
+                            {% else %}
+                                <span class="badge badge-danger">Version obsolète !</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
 
-        <h5><i class="fas fa-cube fa-fw"></i>&nbsp;Dépendances</h5>
+        <h5><i class="fas fa-cube fa-fw"></i>&nbsp;Dépendances ({{ dependencies|length }})</h5>
         <table class="table">
             <thead>
             <tr>
-                <th>Dependance</th>
+                <th>Dépendance</th>
                 <th>Version requise</th>
                 <th>Version installée</th>
                 <th>Vulnérabilités</th>

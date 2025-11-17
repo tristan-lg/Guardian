@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -37,6 +38,8 @@ class CredentialCrudController extends AbstractGuardianCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('name', 'Libellé de l\'identifiant'),
             TextField::new('domain', 'Domaine (exemple : gitlab.com)'),
+            CollectionField::new('apiProjects', 'Projets git')
+                ->setTemplatePath('@Admin/field/credential_projects_count.html.twig'),
             DateField::new('expireAt', 'Date d\'expiration')
                 ->setTemplatePath('@Admin/field/expiration.html.twig')->hideOnForm(),
 
@@ -52,6 +55,11 @@ class CredentialCrudController extends AbstractGuardianCrudController
                 ->linkToCrudAction('checkCredential')
                 ->setIcon('fa fa-key')
                 ->setCssClass('btn btn-warning')
+            )
+            ->add(Crud::PAGE_DETAIL, Action::new('scanProjects', 'Détecter les projets')
+                ->linkToCrudAction('scanProjects')
+                ->setIcon('fa fa-sync')
+                ->setCssClass('btn btn-info')
             )
             ->reorder(Crud::PAGE_DETAIL, [Action::INDEX, self::ACTION_CHECK_CREDENTIAL, Action::EDIT, Action::DELETE])
         ;
@@ -75,12 +83,46 @@ class CredentialCrudController extends AbstractGuardianCrudController
         parent::updateEntity($entityManager, $entityInstance);
     }
 
+    /**
+     * @param Credential $entityInstance
+     */
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        parent::persistEntity($entityManager, $entityInstance);
+
+        try {
+            $this->credentialsService->scanCredentialProjects($entityInstance);
+        } catch (Exception) {
+            $this->addFlash('warning', "La détection des projets associés a échoué, l'identifiant est invalide ou le serveur est introuvable.");
+        }
+    }
+
     public function checkCredential(AdminContext $context): Response
     {
         $credential = $this->getCredential($context);
 
         $this->credentialsService->scheduleCredentialsCheck($credential);
         $this->addFlash('success', 'L\'analyse des identifiants a été réalisée');
+
+        return $this->redirect(
+            $this->adminUrlGenerator
+                ->setController(CredentialCrudController::class)
+                ->setAction(Action::DETAIL)
+                ->setEntityId($credential->getId())
+                ->generateUrl()
+        );
+    }
+
+    public function scanProjects(AdminContext $context): Response
+    {
+        $credential = $this->getCredential($context);
+
+        try {
+            $this->credentialsService->scanCredentialProjects($credential);
+            $this->addFlash('success', 'L\'analyse des projects a été réalisée');
+        } catch (Exception) {
+            $this->addFlash('warning', "La détection des projets associés a échoué, l'identifiant est invalide ou le serveur est introuvable.");
+        }
 
         return $this->redirect(
             $this->adminUrlGenerator
