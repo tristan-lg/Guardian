@@ -29,7 +29,10 @@
 == v1.3.0
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
     [ ] J'ai peut être documenté une partie (avec les Scheduler), a voir ce qu'il faut rajouter
-
+[ ] Ajouter le fichier de deploiement pour le MEAE
+[ ] Ajouter la 2FA sur Guardian
+[ ] Ajouter les notifications email
+[ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
 
 == v1.4.0
     [ ] Module audit de code
