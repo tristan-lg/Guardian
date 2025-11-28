@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Component\Mail\MailableUser;
+use App\Component\SecureLink\SecureLinkEntityInterface;
 use App\Entity\Interface\NameableEntityInterface;
 use App\Enum\Role;
 use App\Repository\UserRepository;
@@ -16,7 +18,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface, TwoFactorInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface, TwoFactorInterface, MailableUser, SecureLinkEntityInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -133,5 +135,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
         $this->totpSecret = $totpSecret;
 
         return $this;
+    }
+
+    public function getSecureLinkProperties(): array
+    {
+        return ['id' => $this->getId(), 'email' => $this->getEmail()];
+    }
+
+    public function getSecureLinkIdentifier(): string
+    {
+        return $this->getUserIdentifier();
     }
 }
