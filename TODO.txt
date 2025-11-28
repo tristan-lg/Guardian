@@ -34,7 +34,9 @@
 [ ] Ajouter les notifications email
 [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
 [ ] Merger cette branche dans main
-
+     //TODO - Implementer la logique de première connexion (prendre le package symfonycast reset password)
+     //TODO - Implementer la logique de reset password (prendre le package symfonycast reset password)
+     //TODO - Implementer la 2FA
 == v1.4.0
     [ ] Module audit de code
     [ ] Ajouter mail en canal de diffusion
