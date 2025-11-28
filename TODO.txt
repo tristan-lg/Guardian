@@ -33,6 +33,7 @@
 [ ] Ajouter la 2FA sur Guardian
 [ ] Ajouter les notifications email
 [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
+[ ] Merger cette branche dans main
 
 == v1.4.0
     [ ] Module audit de code
