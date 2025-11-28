@@ -57,7 +57,5 @@ class FirstLoginController extends AbstractController
             'user' => $user,
             'resetForm' => $form,
         ]);
-
-
     }
 }
