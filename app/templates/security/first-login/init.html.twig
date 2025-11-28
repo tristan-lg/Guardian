@@ -1,0 +1,32 @@
+{% block title %}Initialiser votre mot de passe{% endblock %}
+
+---TODO ----
+
+
+{% block body %}
+    <h1 class="u-heading-3">Initialiser votre mot de passe</h1>
+
+    <p>
+        Bonjour <strong>{{ user.fullname }}</strong>, bienvenue sur la plateforme <strong>{{ APP_NAME }}</strong>.
+    </p>
+    <p>
+        Pour commencer, merci de choisir votre mot de passe :
+    </p>
+
+    {{ form_start(resetForm) }}
+    <fieldset class="fr-fieldset u-padding--0">
+
+        <div class="fr-fieldset__element u-padding--0">
+            {{ form_widget(resetForm) }}
+        </div>
+
+        <div class="fr-fieldset__element u-padding--0">
+            <ul class="fr-btns-group u-padding--0">
+                <li>
+                    <button class="fr-mt-2v fr-btn" type="submit">Enregistrer</button>
+                </li>
+            </ul>
+        </div>
+    </fieldset>
+    {{ form_end(resetForm) }}
+{% endblock %}

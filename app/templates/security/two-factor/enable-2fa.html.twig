@@ -1,0 +1,60 @@
+{# TODO -- TEMPLATE #}
+
+{% block title %}{{ 'page.private.two_factor.enable.page_title'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="u-heading-3 u-margin-bottom--3">
+        <span class="fr-icon-lock-line"></span>
+        {{ 'page.private.two_factor.enable.title'|trans }}
+    </h1>
+    <p>
+        {{ 'page.private.two_factor.enable.description'|trans }}
+    </p>
+
+
+    <h2 class="u-heading-6 u-margin-bottom--3">
+        {{ 'page.private.two_factor.enable.steps.one.title'|trans }}
+    </h2>
+    <p>
+        {{ 'page.private.two_factor.enable.steps.one.description'|trans }}
+        <a href="https://play.google.com/store/apps/details?id=com.beemdevelopment.aegis">
+            <span class="fr-icon-google-play-line fr-icon--smd"></span> Aegis Authenticator
+        </a>
+        {{ 'page.private.two_factor.enable.steps.one.description_or'|trans }}
+        <a href="https://apps.apple.com/fr/app/tofu-authenticator/id1082229305">
+            <span class="fr-icon-app-store-line fr-icon--smd"></span> Tofu Authenticator
+        </a>
+        .
+    </p>
+
+    <h2 class="u-heading-6 u-margin-bottom--3">
+        {{ 'page.private.two_factor.enable.steps.two.title'|trans }}
+    </h2>
+    <p>
+        {{ 'page.private.two_factor.enable.steps.two.description'|trans }}
+    </p>
+    <div class="u-margin-bottom--4">
+        <img src="{{ qr_code_data_uri(qrCode, 'default', {size: 400 }) }}" style="margin: auto" class="c-qrcode" alt=""/>
+    </div>
+
+
+    <h2 class="u-heading-6 u-margin-bottom--3">
+        {{ 'page.private.two_factor.enable.steps.three.title'|trans }}
+    </h2>
+    {{ form_start(form) }}
+    <fieldset class="fr-fieldset u-padding--0">
+
+        <div class="fr-fieldset__element u-padding--0">
+            {{ form_row(form.code) }}
+        </div>
+
+        <div class="fr-fieldset__element u-padding--0">
+            <ul class="fr-btns-group u-padding--0">
+                <li>
+                    <button class="fr-mt-2v fr-btn" type="submit">{{ 'page.private.two_factor.enable.button'|trans }}</button>
+                </li>
+            </ul>
+        </div>
+    </fieldset>
+    {{ form_end(form) }}
+{% endblock %}

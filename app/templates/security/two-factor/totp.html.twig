@@ -1,0 +1,76 @@
+{% block title %}{{ 'page.private.two_factor.login.page_title'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="u-heading-3 u-margin-bottom--3">
+        <span class="fr-icon-lock-line"></span>
+        {{ 'page.private.two_factor.login.title'|trans }}
+    </h1>
+    <p>
+        {{ 'page.private.two_factor.login.description'|trans({provider: twoFactorProvider})  }}
+    </p>
+
+    {# Let the user select the authentication method #}
+    {% if availableTwoFactorProviders|length > 1 %}
+        <p>{{ "choose_provider"|trans({}, 'SchebTwoFactorBundle') }}:
+            {% for provider in availableTwoFactorProviders %}
+                <a href="{{ path("2fa_login", {"preferProvider": provider}) }}">{{ provider }}</a>
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    <form class="form" action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post">
+        <fieldset class="fr-fieldset u-padding--0 u-margin-bottom--0">
+
+            <div class="fr-fieldset__element u-padding--0 u-margin-bottom--4">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="{{ authCodeParameterName }}">
+                        {{ 'page.private.two_factor.login.field.code'|trans }}
+                    </label>
+                    <input
+                            id="_auth_code"
+                            class="fr-input"
+                            type="text"
+                            name="{{ authCodeParameterName }}"
+                            aria-required="true"
+                            autocomplete="one-time-code"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            maxlength="6"
+                            required=""
+                            autofocus
+                    />
+                </div>
+
+                {# Authentication errors #}
+                {% if authenticationError %}
+                    <div class="fr-messages-group" id="login-messages" aria-live="assertive" style="padding: 0!important;">
+                        <p class="fr-message fr-message--error u-font-size--default">
+                            {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if displayTrustedOption %}
+                <div class="fr-checkbox-group fr-checkbox-group--sm u-margin-bottom--4">
+                    <input name="{{ trustedParameterName }}" id="_trusted" type="checkbox">
+                    <label class="fr-label" for="_trusted">{{ "page.security.totp.trusted"|trans }}</label>
+                </div>
+            {% endif %}
+            {% if isCsrfProtectionEnabled %}
+                <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+            {% endif %}
+
+            <div class="fr-fieldset__element u-padding--0">
+                <ul class="fr-btns-group u-padding--0">
+                    <li>
+                        <button class="fr-mt-2v fr-btn" type="submit">{{ 'page.private.two_factor.login.button'|trans }}</button>
+                    </li>
+                    <li class="u-d-lg--none">
+                        <a class="fr-mt-2v fr-btn fr-btn--secondary" href="{{ logoutPath }}">{{ 'utils.cancel'|trans }}</a>
+                    </li>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

@@ -13,12 +13,13 @@ use Ramsey\Uuid\Doctrine\UuidV7Generator;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
 use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\TrustedDeviceInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface, TwoFactorInterface, MailableUser, SecureLinkEntityInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface, TwoFactorInterface, MailableUser, SecureLinkEntityInterface, TrustedDeviceInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -145,5 +146,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
     public function getSecureLinkIdentifier(): string
     {
         return $this->getUserIdentifier();
+    }
+
+    public function getTrustedTokenVersion(): int
+    {
+        return 1; //Change to invalidate existing trusted devices
     }
 }

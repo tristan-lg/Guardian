@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/activation-2fa')]
 class EnableTwoFactorController extends AbstractController
@@ -17,6 +18,7 @@ class EnableTwoFactorController extends AbstractController
         private readonly TwoFactorService $twoFactorService,
     ) {}
 
+    #[IsGranted('IS_AUTHENTICATED')]
     #[Route('', name: 'app_2fa_enable')]
     public function index(Request $request): Response
     {
