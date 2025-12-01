@@ -7,6 +7,7 @@ twig:
     form_themes: ['@EasyAdmin/symfony-form-themes/bootstrap_5_layout.html.twig']
     globals:
         APP_VERSION: '%app.version%'
+        APP_NAME: '%app.name%'
 when@test:
     twig:
         strict_variables: true
