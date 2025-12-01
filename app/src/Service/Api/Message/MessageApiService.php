@@ -9,6 +9,7 @@ use App\Component\Client\Message\MessageClient;
 use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
 use App\Exception\UnsupportedApiException;
+use App\Service\Mail\MailService;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -16,6 +17,7 @@ class MessageApiService
 {
     public function __construct(
         private readonly HttpClientInterface $client,
+        private readonly MailService $mailService,
         private readonly LoggerInterface $logger
     ) {}
 
@@ -29,7 +31,7 @@ class MessageApiService
         return match ($type) {
             NotificationType::Discord => DiscordApiClient::createClient($this->client, $this->logger, $webhook),
             NotificationType::Mattermost => MattermostApiClient::createClient($this->client, $this->logger, $webhook),
-            NotificationType::Email => EmailClient::createClient($this->client, $this->logger, $webhook),
+            NotificationType::Email => EmailClient::createClient($this->mailService, $webhook),
 
             // Future types can be added here
             default => throw new UnsupportedApiException($type)

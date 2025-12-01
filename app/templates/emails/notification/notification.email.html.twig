@@ -1,0 +1,52 @@
+{% extends '@emails/email.base.html.twig' %}
+
+{# Objet : Votre compte a été créé #}
+{# Envoyé à un utilisateur DCP quand son compte a été créé #}
+
+{% block content %}
+    {% if embed.author %}
+        <tr>
+            <td style="padding-top: 8px;">
+                <h2>{{ embed.author.name }}</h2>
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td style="padding-top: 8px;">
+            <h3>{{ embed.title }}</h3>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 8px;">
+            {{ embed.description }}
+        </td>
+    </tr>
+
+    {% set toAdd = [] %}
+    {% for field in embed.fields %}
+        {% set toAdd = toAdd|merge(field) %}
+        {% if field.inline or loop.last %}
+            <tr>
+                <td style="padding-top: 8px;">
+                    <table>
+                        <tr>
+                            {% for item in toAdd %}
+                                <td style="padding-right: 10px; vertical-align: top;">
+                                    <strong>{{ item.name }}</strong><br/>
+                                    {{ item.value }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% set toAdd = [] %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block footer %}
+    <p>Vérification effectuée le {{ embed.timestamp|date('d/m/Y à H:i') }}</p>
+    {{ parent() }}
+{% endblock %}
+

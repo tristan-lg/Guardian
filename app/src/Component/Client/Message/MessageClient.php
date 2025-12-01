@@ -11,10 +11,4 @@ interface MessageClient
     public function checkCredentials(): bool;
 
     public function sendMessage(array $embeds, Priority $priority): void;
-
-    public static function createClient(
-        HttpClientInterface $client,
-        LoggerInterface $logger,
-        string $webhook,
-    ): MessageClient;
 }
