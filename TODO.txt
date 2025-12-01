@@ -29,23 +29,20 @@
 == v1.3.0
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
     [ ] J'ai peut être documenté une partie (avec les Scheduler), a voir ce qu'il faut rajouter
-[ ] Ajouter le fichier de deploiement
+    [ ] Ajouter le fichier de deploiement
 
 [ ] Ajouter les notifications email
+   [ ] Ajouter mail en canal de diffusion
 
-[ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
 [ ] Merger cette branche dans main
 
-[ ] Finir la fonctionnalité de premiere connexion
-    [ ] Ne plus choisir le mot de passe à la création d'un utilisateur mais envoyer un mail
-    [ ] Mettre en forme le mail
-    [ ] Mettre en forme le design de la page (init.html.twig)
-
 == v1.4.0
-    [ ] Module audit de code
-    [ ] Ajouter mail en canal de diffusion
+    [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
+
+
 
 == v1.5.0
-    [ ] Ajouter une notification discord pour les versions applicatives
+    [ ] Module audit de code
+    [ ] Ajouter une notification discord pour les versions applicatives (mises à jour dispo)
 	[ ] Vérifier que le fichiers composer est bien écrit
 	[ ] Vérifier aussi les version des librairies js ?

@@ -3,6 +3,7 @@
 namespace App\Service\Api\Message;
 
 use App\Component\Client\Message\DiscordApiClient;
+use App\Component\Client\Message\EmailClient;
 use App\Component\Client\Message\MattermostApiClient;
 use App\Component\Client\Message\MessageClient;
 use App\Entity\NotificationChannel;
@@ -28,6 +29,7 @@ class MessageApiService
         return match ($type) {
             NotificationType::Discord => DiscordApiClient::createClient($this->client, $this->logger, $webhook),
             NotificationType::Mattermost => MattermostApiClient::createClient($this->client, $this->logger, $webhook),
+            NotificationType::Email => EmailClient::createClient($this->client, $this->logger, $webhook),
 
             // Future types can be added here
             default => throw new UnsupportedApiException($type)

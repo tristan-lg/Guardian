@@ -8,6 +8,7 @@ use App\Entity\NotificationChannel;
 use App\Enum\NotificationType;
 use App\Service\Api\Message\MessageApiService;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -30,7 +31,7 @@ class NotificationCheckService
             NotificationType::Mattermost => $this->checkMattermostWebhook($channel), // Impossible to check Mattermost webhook validity
 
             // @phpstan-ignore-next-line I prefer to have a default case here
-            default => false,
+            default => throw new InvalidArgumentException('Unknown notification channel type'),
         };
     }
 
@@ -58,7 +59,8 @@ class NotificationCheckService
         if ($sendTestNotification) {
             return match ($channel->getType()) {
                 NotificationType::Discord,
-                NotificationType::Mattermost => $this->notificationService->sendNotificationToChannel($channel, Embed::create()
+                NotificationType::Mattermost,
+                NotificationType::Email => $this->notificationService->sendNotificationToChannel($channel, Embed::create()
                     ->setTitle('Test de notification')
                     ->setDescription('La configuration de notification est correcte')
                     ->setColor(EmbedColor::SUCCESS)

@@ -1,31 +1,35 @@
-{% block title %}Initialiser votre mot de passe{% endblock %}
+{% extends '@!EasyAdmin/page/login.html.twig' %}
 
----TODO ----
+{% block page_title %}Initialiser votre mot de passe{% endblock %}
 
+{% block header_logo %}
+    {% if ea is defined and ea is not null %}
+        <a class="logo logo-long text-center mb-3" title="Guardian" href="{{ path(ea.dashboardRouteName) }}">
+            <img src="{{ asset('imgs/guardian_logo.png') }}" alt="Guardian">
+        </a>
+    {% else %}
+        <div class="logo logo-long text-center mb-3 mt-3">
+            <img src="{{ asset('imgs/guardian_logo.png') }}" alt="Guardian">
+        </div>
+    {% endif %}
+{% endblock header_logo %}
 
-{% block body %}
-    <h1 class="u-heading-3">Initialiser votre mot de passe</h1>
-
-    <p>
-        Bonjour <strong>{{ user.fullname }}</strong>, bienvenue sur la plateforme <strong>{{ APP_NAME }}</strong>.
-    </p>
+{% block login_form_wrapper %}
+    <h2 class="h4 mb-3">Initialiser votre mot de passe</h2>
+    <p>Bienvenue sur <strong>{{ APP_NAME }}</strong>.</p>
     <p>
         Pour commencer, merci de choisir votre mot de passe :
     </p>
 
     {{ form_start(resetForm) }}
-    <fieldset class="fr-fieldset u-padding--0">
 
-        <div class="fr-fieldset__element u-padding--0">
+    <fieldset>
+        <div class="mb-3">
             {{ form_widget(resetForm) }}
         </div>
 
-        <div class="fr-fieldset__element u-padding--0">
-            <ul class="fr-btns-group u-padding--0">
-                <li>
-                    <button class="fr-mt-2v fr-btn" type="submit">Enregistrer</button>
-                </li>
-            </ul>
+        <div class="d-grid gap-2">
+            <twig:ea:Button type="submit" variant="primary" size="lg" isBlock htmlAttributes="{class: 'btn-block'}">Enregistrer</twig:ea:Button>
         </div>
     </fieldset>
     {{ form_end(resetForm) }}
