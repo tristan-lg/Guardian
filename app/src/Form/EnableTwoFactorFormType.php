@@ -20,7 +20,7 @@ class EnableTwoFactorFormType extends AbstractType
         $builder
             ->add('totpSecret', HiddenType::class) // Needed to ensure code do not change on form rerender
             ->add('code', TextType::class, [
-                'label' => 'form.two_factor.code',
+                'label' => "Renseignez le code affiché sur l'application",
                 'attr' => [
                     'autocomplete' => 'one-time-code',
                     'inputmode' => 'numeric',
