@@ -82,8 +82,6 @@ class MailService
             foreach ($builder->getFiles($options) as $file) {
                 $email->addPart($file);
             }
-
-            // @phpstan-ignore-next-line (Can throw template exception)
         } catch (Error|Throwable $e) {
             $this->logger->critical("Impossible d'envoyer l'email {$builderClass} : {$e->getMessage()}");
 

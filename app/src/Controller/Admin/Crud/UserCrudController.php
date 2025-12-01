@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UserCrudController extends AbstractGuardianCrudController
@@ -33,7 +34,8 @@ class UserCrudController extends AbstractGuardianCrudController
         $resetPassword = Action::new('resetPassword', 'Réinitialiser le mot de passe')
             ->linkToCrudAction('resetPassword')
             ->setIcon('fa fa-key')
-            ->setCssClass('btn btn-warning');
+            ->setCssClass('btn btn-warning')
+        ;
 
         return parent::configureActions($actions)
             ->remove(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER)
@@ -73,7 +75,7 @@ class UserCrudController extends AbstractGuardianCrudController
         try {
             $this->userService->resetUserPassword($user);
             $this->addFlash('success', sprintf('Le mot de passe de l\'utilisateur "%s" a été réinitialisé. Un email a été envoyé.', $user->getEmail()));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', sprintf('Erreur lors de la réinitialisation du mot de passe : %s', $e->getMessage()));
         }
 
@@ -81,7 +83,8 @@ class UserCrudController extends AbstractGuardianCrudController
             ->setController(self::class)
             ->setAction(Action::DETAIL)
             ->setEntityId($user->getId())
-            ->generateUrl();
+            ->generateUrl()
+        ;
 
         return $this->redirect($url);
     }

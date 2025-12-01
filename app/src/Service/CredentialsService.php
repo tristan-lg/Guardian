@@ -34,7 +34,7 @@ class CredentialsService
     {
         $client = $this->gitlabApiService->getClient($credential);
         $projects = $client->getAssociatedProjects();
-        if (count($projects) === 0) {
+        if (0 === count($projects)) {
             return;
         }
 
@@ -42,7 +42,8 @@ class CredentialsService
         foreach ($projects as $projectData) {
             $credentialProject = (new CredentialProject())
                 ->setName($projectData->name)
-                ->setGitlabId($projectData->id);
+                ->setGitlabId($projectData->id)
+            ;
 
             $this->em->persist($credentialProject);
             $credential->addApiProject($credentialProject);

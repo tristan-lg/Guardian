@@ -26,7 +26,7 @@ class EmailClient implements MessageClient
     {
         foreach ($embeds as $embed) {
             $this->mailService->send($this->email, NotificationEmail::class, [
-                NotificationEmail::EMBED => $embed
+                NotificationEmail::EMBED => $embed,
             ]);
         }
     }

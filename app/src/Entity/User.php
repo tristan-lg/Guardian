@@ -150,6 +150,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
 
     public function getTrustedTokenVersion(): int
     {
-        return 1; //Change to invalidate existing trusted devices
+        return 1; // Change to invalidate existing trusted devices
     }
 }

@@ -3,8 +3,6 @@
 namespace App\Component\Client\Message;
 
 use App\Enum\Priority;
-use Psr\Log\LoggerInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface MessageClient
 {

@@ -65,7 +65,9 @@ class NotificationCheckService
                     ->setDescription('La configuration de notification est correcte')
                     ->setColor(EmbedColor::SUCCESS)
                 ),
-                default => false,
+
+                // @phpstan-ignore-next-line
+                default => throw new InvalidArgumentException('Unknown notification channel type'),
             };
         }
 

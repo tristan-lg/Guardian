@@ -45,7 +45,6 @@ class MattermostApiClient implements MessageClient
         return new self($client, $webhook);
     }
 
-
     private function embedToArray(Embed $embed): array
     {
         return array_filter([

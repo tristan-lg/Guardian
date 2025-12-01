@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -92,7 +93,8 @@ class AnalysisCrudController extends AbstractGuardianCrudController
         $sendNotification = Action::new('sendNotification', 'Envoyer la notification')
             ->linkToCrudAction('sendNotification')
             ->setIcon('fa fa-bell')
-            ->setCssClass('btn btn-info');
+            ->setCssClass('btn btn-info')
+        ;
 
         return parent::configureActions($actions)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
@@ -121,7 +123,7 @@ class AnalysisCrudController extends AbstractGuardianCrudController
         try {
             $this->notificationService->sendAnalysisDoneNotification($analysis);
             $this->addFlash('success', 'La notification a été envoyée à tous les canaux de notification configurés.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', sprintf('Erreur lors de l\'envoi de la notification : %s', $e->getMessage()));
         }
 
@@ -129,7 +131,8 @@ class AnalysisCrudController extends AbstractGuardianCrudController
             ->setController(self::class)
             ->setAction(Action::DETAIL)
             ->setEntityId($analysis->getId())
-            ->generateUrl();
+            ->generateUrl()
+        ;
 
         return $this->redirect($url);
     }

@@ -34,6 +34,7 @@ class MessageApiService
             NotificationType::Email => EmailClient::createClient($this->mailService, $webhook),
 
             // Future types can be added here
+            // @phpstan-ignore-next-line
             default => throw new UnsupportedApiException($type)
         };
     }
