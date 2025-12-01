@@ -1,0 +1,19 @@
+{% extends '@emails/email.base.html.twig' %}
+
+{% block content %}
+    <tr>
+        <td style="padding-top: 8px;">
+            Votre compte utilisateur vient d'être créé sur {{ APP_NAME }}
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 8px;">
+            Vous devez maintenant choisir un mot de passe en suivant le lien ci-dessous :
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 8px;">
+            <a href="{{ loginUrl }}" style="word-wrap: anywhere">{{ loginUrl }}</a>
+        </td>
+    </tr>
+{% endblock %}

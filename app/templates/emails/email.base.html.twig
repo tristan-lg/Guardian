@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}Guardian{% endblock %}</title>
+    <style>
+        /* Reset styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        img {
+            border: 0;
+            outline: none;
+            text-decoration: none;
+            -ms-interpolation-mode: bicubic;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        /* Header */
+        .email-header {
+            text-align: center;
+        }
+
+        .email-header img {
+            max-width: 600px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Body */
+        .email-body {
+            padding: 40px 30px;
+            color: #374151;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .email-body h2 {
+            color: #1f2937;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+        }
+
+        .email-body p {
+            margin: 0 0 16px 0;
+        }
+
+        .email-body a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .email-body a:hover {
+            text-decoration: underline;
+        }
+
+        .email-wrapper {
+            padding: 20px 0;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .email-footer p {
+            margin: 0 0 10px 0;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+
+            .email-header img {
+                max-width: 100% !important;
+            }
+
+            .email-body {
+                padding: 30px 20px !important;
+            }
+
+            .email-body h2 {
+                font-size: 20px !important;
+            }
+
+            .email-wrapper {
+                padding: 0 !important;
+            }
+
+            .btn {
+                display: block !important;
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" class="email-wrapper">
+                <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0">
+                    <!-- Header -->
+                    <tr>
+                        <td class="email-header">
+                            {% block header %}
+                                <img src="{{ absolute_url(asset('imgs/guardian_logo.png')) }}" alt="Guardian" />
+                            {% endblock %}
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td class="email-body">
+                            <table>
+                                {% block content %}{% endblock %}
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="email-footer">
+                            {% block footer %}
+                                <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+                            {% endblock %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+

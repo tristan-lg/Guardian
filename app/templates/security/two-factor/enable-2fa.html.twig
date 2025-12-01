@@ -1,0 +1,51 @@
+{% extends '@!EasyAdmin/page/login.html.twig' %}
+
+{% block header_logo %}
+{% endblock header_logo %}
+
+{% block page_title %}Activer l'authentification deux facteurs{% endblock %}
+
+{% block wrapper_wrapper %}
+    <div class="login-wrapper" style="margin-block-start: 0">
+        <section class="content">
+            <h2 class="h4 mb-3">Double authentification</h2>
+            <p>Pour sécuriser l'accès à votre compte, vous devez activer la double authentification.</p>
+
+            <h2 class="h6 mb-3">1. Télécharger une application</h2>
+            <p>
+                Téléchargez une application d'authentification sur votre smartphone, par exemple
+                <a href="https://play.google.com/store/apps/details?id=com.beemdevelopment.aegis">
+                    <i class="bi bi-google-play"></i> Aegis Authenticator
+                </a>
+                ou
+                <a href="https://apps.apple.com/fr/app/tofu-authenticator/id1082229305">
+                    <i class="bi bi-apple"></i> Tofu Authenticator
+                </a>
+                .
+            </p>
+
+            <h2 class="h6 mb-3">2. Scanner le QrCode</h2>
+            <p>Scannez le QR code ci-dessous avec votre application d'authentification.</p>
+            <div class="mb-4 text-center">
+                <img src="{{ qr_code_data_uri(qrCode, 'default', {size: 200 }) }}" class="img-fluisd" alt="QR Code pour l'authentification à deux facteurs"/>
+            </div>
+
+
+            <h2 class="h6 mb-3">
+                3. Renseigner le code
+            </h2>
+            {{ form_start(form) }}
+
+            <fieldset>
+                <div class="mb-3">
+                    {{ form_row(form.code) }}
+                </div>
+
+                <div class="d-grid gap-2">
+                    <twig:ea:Button type="submit" variant="primary" size="lg" isBlock htmlAttributes="{class: 'btn-block'}">Activer la double authentification</twig:ea:Button>
+                </div>
+            </fieldset>
+            {{ form_end(form) }}
+        </section>
+    </div>
+{% endblock %}

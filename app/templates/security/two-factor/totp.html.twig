@@ -1,0 +1,74 @@
+{% extends '@!EasyAdmin/page/login.html.twig' %}
+
+{% block header_logo %}
+    {% if ea is defined and ea is not null %}
+        <a class="logo logo-long text-center mb-3" title="Guardian" href="{{ path(ea.dashboardRouteName) }}">
+            <img src="{{ asset('imgs/guardian_logo.png') }}" alt="Guardian">
+        </a>
+    {% else %}
+        <div class="logo logo-long text-center mb-3 mt-3">
+            <img src="{{ asset('imgs/guardian_logo.png') }}" alt="Guardian">
+        </div>
+    {% endif %}
+{% endblock header_logo %}
+
+{% block page_title %}Authentification sécurisée{% endblock %}
+
+{% block login_form_wrapper %}
+    {# Let the user select the authentication method #}
+    {% if availableTwoFactorProviders|length > 1 %}
+        <p>{{ "choose_provider"|trans({}, 'SchebTwoFactorBundle') }}:
+            {% for provider in availableTwoFactorProviders %}
+                <a href="{{ path("2fa_login", {"preferProvider": provider}) }}">{{ provider }}</a>
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    <form class="form" action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post">
+        <fieldset>
+            <div class="mb-4">
+                <div class="form-group">
+                    <label class="form-label" for="{{ authCodeParameterName }}">
+                        Code fournit par votre application d'authentification
+                    </label>
+                    <input
+                            id="_auth_code"
+                            class="form-control"
+                            type="text"
+                            name="{{ authCodeParameterName }}"
+                            aria-required="true"
+                            autocomplete="one-time-code"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            maxlength="6"
+                            required=""
+                            autofocus
+                    />
+                </div>
+
+                {% if displayTrustedOption %}
+                    <div class="form-check mb-4 ps-0">
+                        <input class="form-check-input" name="{{ trustedParameterName }}" id="_trusted" type="checkbox">
+                        <label class="form-check-label" for="_trusted">Se souvenir de moi sur cet appareil</label>
+                    </div>
+                {% endif %}
+
+                {# Authentication errors #}
+                {% if authenticationError %}
+                    <div class="alert alert-danger mt-3" id="login-messages" role="alert" aria-live="assertive">
+                        {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+                    </div>
+                {% endif %}
+            </div>
+
+
+            {% if isCsrfProtectionEnabled %}
+                <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+            {% endif %}
+
+            <div class="d-grid gap-2">
+                <twig:ea:Button type="submit" variant="primary" size="lg" isBlock htmlAttributes="{class: 'btn-block'}">Connexion</twig:ea:Button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}
