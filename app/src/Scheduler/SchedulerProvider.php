@@ -54,7 +54,7 @@ class SchedulerProvider
 
     public function runNotificationsCheck(): void
     {
-        foreach ($this->em->getRepository(NotificationChannel::class)->findAll() as $channel) {
+        foreach ($this->em->getRepository(NotificationChannel::class)->findBy(['active' => true]) as $channel) {
             $this->notificationTestService->performNotificationChannelTest($channel);
         }
     }

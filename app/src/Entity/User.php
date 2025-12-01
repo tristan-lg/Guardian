@@ -2,18 +2,24 @@
 
 namespace App\Entity;
 
+use App\Component\Mail\MailableUser;
+use App\Component\SecureLink\SecureLinkEntityInterface;
 use App\Entity\Interface\NameableEntityInterface;
 use App\Enum\Role;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidV7Generator;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\TrustedDeviceInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, PasswordUpgraderInterface, NameableEntityInterface, TwoFactorInterface, MailableUser, SecureLinkEntityInterface, TrustedDeviceInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -29,6 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $totpSecret = null;
 
     public function getId(): ?string
     {
@@ -96,5 +105,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
     public static function getPlural(): string
     {
         return 'Utilisateurs';
+    }
+
+    public function isTotpAuthenticationEnabled(): bool
+    {
+        return null !== $this->totpSecret;
+    }
+
+    public function getTotpAuthenticationUsername(): string
+    {
+        return $this->email;
+    }
+
+    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+    {
+        if (!$this->totpSecret) {
+            return null;
+        }
+
+        return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);
+    }
+
+    public function getTotpSecret(): ?string
+    {
+        return $this->totpSecret;
+    }
+
+    public function setTotpSecret(?string $totpSecret): static
+    {
+        $this->totpSecret = $totpSecret;
+
+        return $this;
+    }
+
+    public function getSecureLinkProperties(): array
+    {
+        return ['id' => $this->getId(), 'email' => $this->getEmail()];
+    }
+
+    public function getSecureLinkIdentifier(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
+    public function getTrustedTokenVersion(): int
+    {
+        return 1; // Change to invalidate existing trusted devices
     }
 }

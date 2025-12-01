@@ -7,8 +7,10 @@
     <option name="twigNamespaces">
       <list>
         <twig_namespace custom="true" namespace="Admin" namespaceType="ADD_PATH" path="app/templates/admin" />
-        <twig_namespace custom="true" namespace="twig" namespaceType="ADD_PATH" path="app/templates/components" />
+        <twig_namespace custom="true" namespace="EasyAdmin" namespaceType="ADD_PATH" path="vendor/easycorp/easyadmin-bundle/templates" />
+        <twig_namespace custom="true" namespace="emails" namespaceType="ADD_PATH" path="app/templates/emails" />
         <twig_namespace custom="true" namespace="Pages" namespaceType="ADD_PATH" path="app/templates/pages" />
+        <twig_namespace custom="true" namespace="twig" namespaceType="ADD_PATH" path="app/templates/components" />
       </list>
     </option>
   </component>

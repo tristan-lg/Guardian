@@ -11,6 +11,10 @@
                 {% else %}
                     <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration</a>
                 {% endif %}
+
+                {% if is_granted('IS_AUTHENTICATED') %}
+                    <a href="{{ path('app_logout') }}" class="btn btn-danger ms-3">Déconnexion</a>
+                {% endif %}
             </div>
         </div>
     </header>
