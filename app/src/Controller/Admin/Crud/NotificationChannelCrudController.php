@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -52,6 +53,7 @@ class NotificationChannelCrudController extends AbstractGuardianCrudController
                 ->setRequired(true),
             TextField::new('value', 'Valeur')
                 ->setHelp('Valeur du canal de notification (email, webhook, etc.)'),
+            BooleanField::new('active', 'Activé'),
             TextField::new('workingStatus', 'Etat')
                 ->setTemplatePath('@Admin/field/channel_working.html.twig')
                 ->hideOnForm(),

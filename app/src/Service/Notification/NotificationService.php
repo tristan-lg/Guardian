@@ -150,7 +150,7 @@ class NotificationService
      */
     private function sendGlobalNotification(array|Embed $embeds, Priority $priority = Priority::Standard): void
     {
-        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['working' => true]);
+        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['working' => true, 'active' => true]);
         foreach ($channels as $channel) {
             $this->logger->info('Sending notification to channel : ' . $channel->getName(), [
                 'channelType' => $channel->getType()->value,

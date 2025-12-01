@@ -25,9 +25,8 @@ class IsWebhookValidValidator extends ConstraintValidator
         }
 
         // Ensure credentials are valid
-        /** @var Form $form */
-        $form = $this->context->getRoot();
-        $channel = $form->getData();
+        $root = $this->context->getRoot();
+        $channel = $root instanceof Form ? $root->getData() : $root;
         if (!$channel instanceof NotificationChannel) {
             $this->context
                 ->buildViolation($constraint->creationError)

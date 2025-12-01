@@ -19,26 +19,13 @@
         </td>
     </tr>
 
-    {% set toAdd = [] %}
     {% for field in embed.fields %}
-        {% set toAdd = toAdd|merge(field) %}
-        {% if field.inline or loop.last %}
-            <tr>
-                <td style="padding-top: 8px;">
-                    <table>
-                        <tr>
-                            {% for item in toAdd %}
-                                <td style="padding-right: 10px; vertical-align: top;">
-                                    <strong>{{ item.name }}</strong><br/>
-                                    {{ item.value }}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            {% set toAdd = [] %}
-        {% endif %}
+        <tr>
+            <td style="padding-top: 8px;">
+                <strong>{{ field.name }}</strong><br/>
+                {{ field.value|markdown_to_html }}
+            </td>
+        </tr>
     {% endfor %}
 {% endblock %}
 
@@ -46,4 +33,6 @@
     <p>Vérification effectuée le {{ embed.timestamp|date('d/m/Y à H:i') }}</p>
     {{ parent() }}
 {% endblock %}
+
+
 
