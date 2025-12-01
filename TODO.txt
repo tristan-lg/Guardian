@@ -30,9 +30,12 @@
 [ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
     [ ] J'ai peut être documenté une partie (avec les Scheduler), a voir ce qu'il faut rajouter
 [ ] Ajouter le fichier de deploiement
+
 [ ] Ajouter les notifications email
+
 [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
 [ ] Merger cette branche dans main
+
 [ ] Finir la fonctionnalité de premiere connexion
     [ ] Ne plus choisir le mot de passe à la création d'un utilisateur mais envoyer un mail
     [ ] Mettre en forme le mail
