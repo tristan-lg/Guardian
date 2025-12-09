@@ -30,7 +30,7 @@ class MattermostApiClient implements MessageClient
         $this->post('', [
             'username' => 'Guardian',
             'priority' => [
-                'priority' => 'urgent|important|standard',
+                'priority' => $priority->value,
                 'request_ack' => false,
             ],
             'attachments' => array_map(fn (Embed $embed) => $this->embedToArray($embed), $embeds),

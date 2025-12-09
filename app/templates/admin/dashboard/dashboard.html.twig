@@ -173,6 +173,8 @@
 
                         {% if not channel.isWorking %}
                             <span class="text-danger"><i class="fas fa-times-circle fa-fw"></i>&nbsp;Expiré</span>
+                        {% elseif not channel.active %}
+                            <span class="text-danger"><i class="fas fa-times-circle fa-fw"></i>&nbsp;Désactivé</span>
                         {% else %}
                             <span class="text-success"><i class="fas fa-check-circle fa-fw"></i>&nbsp;OK</span>
                         {% endif %}

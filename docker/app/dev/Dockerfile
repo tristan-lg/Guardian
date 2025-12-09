@@ -1,11 +1,11 @@
 FROM php:8.3-apache
 
 RUN apt-get update \
-     && apt-get install -y git zip libzip-dev libicu-dev \
+     && apt-get install -y git zip libzip-dev libicu-dev libjpeg-dev libpng-dev  \
     && apt-get clean
 
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install -j$(nproc) iconv pdo_mysql zip opcache intl
+RUN docker-php-ext-install -j$(nproc) iconv pdo_mysql zip opcache intl gd
 
 # Set the workdir
 WORKDIR /var/www/html

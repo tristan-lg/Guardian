@@ -50,31 +50,10 @@ class GitlabApiClient
         do {
             $fetchedProjects = $this->fetchProjectsPage($page);
             $projects = array_merge($projects, $fetchedProjects);
-            $page++;
-        } while($page < $maxPage && count($fetchedProjects) > 0);
+            ++$page;
+        } while ($page < $maxPage && count($fetchedProjects) > 0);
 
         return $projects;
-    }
-
-    /**
-     * @return ProjectApiDTO[]
-     */
-    private function fetchProjectsPage(int $page): array
-    {
-        $response = $this->get('projects', [
-            'simple' => true,
-            'archived' => false,
-            'page' => $page,
-            'per_page' => 20,
-        ]);
-
-        $projects = json_decode($response->getContent(), true);
-
-        if (empty($projects)) {
-            return [];
-        }
-
-        return array_map(fn ($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
     }
 
     public function getBranches(Project $project): array
@@ -152,6 +131,28 @@ class GitlabApiClient
         }
 
         return null;
+    }
+
+    /**
+     * @return ProjectApiDTO[]
+     */
+    private function fetchProjectsPage(int $page): array
+    {
+        $response = $this->get('projects', [
+            'simple' => true,
+            'archived' => false,
+            'page' => $page,
+            'per_page' => 20,
+        ]);
+
+        $projects = json_decode($response->getContent(), true);
+
+        if (empty($projects)) {
+            return [];
+        }
+
+        // @phpstan-ignore-next-line
+        return array_map(fn ($project) => new ProjectApiDTO($project['id'], $project['name_with_namespace']), $projects);
     }
 
     private function get(string $endpoint, array $options = []): ResponseInterface
