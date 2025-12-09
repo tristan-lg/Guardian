@@ -35,7 +35,6 @@ sources:
     script:
         - echo "Cloning repository"
         - git clone --branch "${CI_COMMIT_REF_NAME}" https://gitlab-ci-token:${CI_JOB_TOKEN}@git.quaidorsay.fr/sites_divers/Guardian.git .
-        - cp DEPLOY.md app/DEPLOY.md
         - echo "Cloned repository successfully"
     artifacts:
         paths:
@@ -106,10 +105,6 @@ build:
         - php bin/console importmap:install
         - php bin/console assets:install web
         - php bin/console asset-map:compile
-
-        #Back to root directory and add installation documentation
-        - cd ../..
-        - cp app/DEPLOY.md build/GUIDE-DE-DEPLOIEMENT.md
 
     artifacts:
         name: "build-${CI_COMMIT_SHORT_SHA}"
