@@ -112,7 +112,8 @@
         "symfony": {
             "allow-contrib": false,
             "require": "7.3.*"
-        }
+        },
+        "public-dir": "web"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.3",
