@@ -31,6 +31,9 @@ class NotificationChannel implements NameableEntityInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private bool $active = true;
+
     public function getId(): string
     {
         return $this->id;
@@ -90,6 +93,18 @@ class NotificationChannel implements NameableEntityInterface
     public function setName(?string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }

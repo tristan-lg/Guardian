@@ -43,9 +43,9 @@ class DashboardController extends AbstractDashboardController
         $expiredCredentials = count($this->em->getRepository(Credential::class)->findExpired());
         $expiredChannels = count($this->em->getRepository(NotificationChannel::class)->findExpired());
 
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('Accueil administration', 'fa fa-home');
 
-        yield MenuItem::linkToRoute('Page publique', 'fa fa-eye', 'homepage');
+        yield MenuItem::linkToRoute('Tableau de bord', 'fa fa-eye', 'homepage');
 
         yield MenuItem::linkToCrud('Projets', 'fas fa-list', Project::class);
 

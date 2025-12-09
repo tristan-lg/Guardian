@@ -1,41 +1,7 @@
-:::Site pour faire du reporting de sécurité sur nos applications en production
-[X] Ajouter un projet via git
-[X] Analyse automatique du code source de la branche 'master'
-[X] Lecture du composer.lock vérification des CVE
-[X] Affichage du score de l'application : Rate basé sur les CVE
-[X] Affichage des erreurs de sécurité
-[X] Faire le Dockerfile et le processus pour livrer le projet (github.com)
-[X] Intégrer la version du projet pour affichage
-
-== v1.1.0
-	[x] Dashboard avec les alertes de toutes nos applications
-	[x] Rajouter des canaux de communication (discord / email) en cas d'erreur
-	[x] Envoi de mail automatique si une nouvelle faille est découverte (gérer les doublons) -> Discord pour l'instant
-	[x] Programmer une analyse journalière (via Scheduler)
-	[x] Purger les analyses trop vielles (+ 5 / projet) (via Scheduler)
-	Lien utile : https://leovoel.github.io/embed-visualizer/
-
-== v1.2.0
-    [x] Permettre de choisir par projet la branche à analyser (demander à l'api de lister automatiquement les branches dispo ?)
-
-    [X] Verification de la version PHP (via composer.json) => Informer si version plus supportée (7.4 par exemple)
-    [X] Vérification de la version de Symfony (via composer.json) => Informer si version plus supportée en support
-    [X] Affichage de la date d'expiration des versions (PHP / Symfony) (Maintenance & Security)
-
-    [x] Permettre l'ajout d'utilisateur
-    [x] Ajouter une notification discord quand les credentials sont sur le point d'expirer (30j, 7j, et expiré)
-    [x] Ajouter dans le crud une ligne pour voir la date d'expiration credentials
-
-== v1.3.0
-[ ] Ajouter un paragraphe installation avec la liste des commandes à jouer (voir ppe)
-    [ ] J'ai peut être documenté une partie (avec les Scheduler), a voir ce qu'il faut rajouter
-
-
-== v1.4.0
-    [ ] Module audit de code
-    [ ] Ajouter mail en canal de diffusion
-
 == v1.5.0
-    [ ] Ajouter une notification discord pour les versions applicatives
-	[ ] Vérifier que le fichiers composer est bien écrit
+    [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
+        [ ] Ajouter une notification discord pour les MAJ de versions applicatives disponibles
+            -> Pouvoir parametrer les channels à notifier, et activer la notification par projet ?
+
+== v1.6.0
 	[ ] Vérifier aussi les version des librairies js ?
