@@ -68,72 +68,6 @@ quality:security:
         - php ../bin/composer audit
     allow_failure: true
 
-quality:lint:
-    stage: quality
-    extends: [.job]
-    needs: [sources, composer]
-    dependencies: [sources, composer]
-    rules:
-        -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
-            when: on_success
-        -   when: never
-    before_script:
-        - !reference [ .job, before_script ]
-        - cd app/
-        - php ../bin/composer install --no-scripts --no-interaction
-    script:
-        - php -d memory_limit=1G bin/console cache:warmup --env=dev
-        - php vendor/bin/phpstan --memory-limit=1G analyse src -c phpstan.neon
-        - php vendor/bin/php-cs-fixer fix --dry-run
-        - php bin/console lint:twig templates
-        - php bin/console lint:yaml translations config
-        - php bin/console lint:breadcrumb
-        - php bin/console debug:translation --only-missing --domain=messages fr_FR
-
-
-# --- Step 2: Static Tests ---
-quality:tests:
-    stage: quality
-    extends: .job
-    needs: [sources, composer]
-    dependencies: [sources, composer]
-    rules:
-        -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
-            when: on_success
-        -   when: never
-    before_script:
-        - !reference [ .job, before_script ]
-        - cd app/
-        - php ../bin/composer install --no-scripts --no-interaction
-    services:
-        - name: mariadb:10.11
-          alias: database
-    variables:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_USER: 'ppe'
-        MYSQL_PASSWORD: 'ppe'
-        MYSQL_DATABASE: 'ppe'
-        APP_ENV: 'test'
-        # Database credentials
-        DATABASE_HOST: database
-        DATABASE_PORT: 3306
-        DATABASE_NAME: ppe
-        DATABASE_USER: root
-        DATABASE_PASSWORD: root
-        DATABASE_VERSION: 10.11.9-MariaDB
-    script:
-        - php bin/console doctrine:database:create --if-not-exists --no-interaction
-        - php bin/console doctrine:migrations:migrate --no-interaction
-        - php bin/console doctrine:fixtures:load --no-interaction --append --group=test
-        - php bin/console sass:build
-        - php bin/console importmap:install
-        - php bin/console assets:install web
-        - php bin/console asset-map:compile
-        - vendor/bin/phpunit -d memory_limit=-1 --no-coverage --log-junit phpunit-report.xml --colors=never --exclude-group=separate
-    artifacts:
-        when: always
-        reports:
-            junit: app/phpunit-report.xml
 
 # --- Step 3: Build Artifacts ---
 build:
@@ -169,7 +103,6 @@ build:
         - php ../../bin/composer dump-autoload --no-dev --classmap-authoritative
 
         # Build assets
-        - php bin/console sass:build
         - php bin/console importmap:install
         - php bin/console assets:install web
         - php bin/console asset-map:compile
@@ -206,7 +139,7 @@ build:
         - ssh-add ~/.ssh/id_rsa
         - chmod 700 ~/.ssh
     script:
-        - echo -e "\033[1;34m[INFO] $(date) - Deploying PPE code ...\033[0m"
+        - echo -e "\033[1;34m[INFO] $(date) - Deploying Guardian code ...\033[0m"
         - export BUILD_DATE=$(date +"%Y%m%d%H%M%S")
         # Étape 1 : Copier les fichiers sur chaque serveur
         - |
@@ -255,12 +188,6 @@ deploy:preprod:
     tags: [hp]
     extends: .deploy
     variables:
-        REMOTE_USER: "refonte-diplo-ppe"
+        REMOTE_USER: "guardian"
 
-deploy:production:
-    environment: production
-    tags: [prod]
-    extends: .deploy
-    variables:
-        REMOTE_USER: "refonte-diplo-ppe"
 
