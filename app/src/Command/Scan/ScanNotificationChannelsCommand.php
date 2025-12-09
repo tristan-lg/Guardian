@@ -29,7 +29,7 @@ class ScanNotificationChannelsCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         // Set the project
-        $channels = $this->em->getRepository(NotificationChannel::class)->findAll();
+        $channels = $this->em->getRepository(NotificationChannel::class)->findBy(['active' => true]);
 
         $io->title(sprintf('Scanning %d notification channels', count($channels)));
         foreach ($channels as $channel) {

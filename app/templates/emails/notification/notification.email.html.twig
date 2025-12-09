@@ -1,0 +1,38 @@
+{% extends '@emails/email.base.html.twig' %}
+
+{% block content %}
+    {% if embed.author %}
+        <tr>
+            <td style="padding-top: 8px;">
+                <h2>{{ embed.author.name }}</h2>
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td style="padding-top: 8px;">
+            <h3>{{ embed.title }}</h3>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-top: 8px;">
+            {{ embed.description }}
+        </td>
+    </tr>
+
+    {% for field in embed.fields %}
+        <tr>
+            <td style="padding-top: 8px;">
+                <strong>{{ field.name }}</strong><br/>
+                {{ field.value|markdown_to_html }}
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block footer %}
+    <p>Vérification effectuée le {{ embed.timestamp|date('d/m/Y à H:i') }}</p>
+    {{ parent() }}
+{% endblock %}
+
+
+
