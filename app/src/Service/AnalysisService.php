@@ -21,6 +21,7 @@ use Composer\Semver\VersionParser;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 
@@ -36,6 +37,7 @@ class AnalysisService
         private readonly EndOfLifeApiService $endOfLifeApiService,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly FileService $fileService,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -165,10 +167,20 @@ class AnalysisService
         $packageList = [];
         foreach ($lock['packages'] as $lockPackage) {
             $jsonPackage = $json['require'][$lockPackage['name']] ?? null;
+            $lockVersion = $lockPackage['version'];
+
+            if (null !== $lockVersion && strlen($lockVersion) > 64) {
+                $this->logger->warning(sprintf('Package %s has an installed version with length superior to 64 characters, it will be truncated. Version: %s', $lockPackage['name'], $lockVersion));
+                $lockVersion = substr($lockVersion, 0, 64);
+            }
+            if (null !== $jsonPackage && strlen($jsonPackage) > 64) {
+                $this->logger->warning(sprintf('Package %s has a required version with length superior to 64 characters, it will be truncated. Version: %s', $lockPackage['name'], $jsonPackage));
+                $jsonPackage = substr($jsonPackage, 0, 64);
+            }
 
             $package = (new Package())
                 ->setName($lockPackage['name'])
-                ->setInstalledVersion($lockPackage['version'])
+                ->setInstalledVersion($lockVersion)
                 ->setRequiredVersion($jsonPackage)
                 ->setSubDependency(null === $jsonPackage)
             ;

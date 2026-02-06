@@ -91,6 +91,10 @@ class ProjectCrudController extends AbstractGuardianCrudController
                 ->setIcon('fa fa-flask')
                 ->setCssClass('btn btn-warning')
             )
+            ->add(Crud::PAGE_INDEX, Action::new('startAnalysis', 'Lancer l\'analyse')
+                ->linkToCrudAction('startAnalysisIndex')
+                ->setIcon('fa fa-flask')
+            )
             ->reorder(Crud::PAGE_DETAIL, [Action::INDEX, self::ACTION_START_ANALYSIS, self::ACTION_SCAN, Action::EDIT, Action::DELETE])
         ;
     }
@@ -149,16 +153,25 @@ class ProjectCrudController extends AbstractGuardianCrudController
         );
     }
 
+    public function startAnalysisIndex(AdminContext $context): Response
+    {
+        $project = $this->getProject($context);
+
+        $this->runAnalysis($project);
+
+        return $this->redirect(
+            $this->adminUrlGenerator
+                ->setController(ProjectCrudController::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl()
+        );
+    }
+
     public function startAnalysis(AdminContext $context): Response
     {
         $project = $this->getProject($context);
 
-        try {
-            $this->projectAnalysisService->scheduleAnalysis($project);
-            $this->addFlash('success', 'L\'analyse du projet a été programmée avec succès');
-        } catch (Exception $e) {
-            $this->addFlash('danger', 'Erreur lors de la programmation de l\'analyse : ' . $e->getMessage());
-        }
+        $this->runAnalysis($project);
 
         return $this->redirect(
             $this->adminUrlGenerator
@@ -167,6 +180,16 @@ class ProjectCrudController extends AbstractGuardianCrudController
                 ->setEntityId($project->getId())
                 ->generateUrl()
         );
+    }
+
+    private function runAnalysis(Project $project): void
+    {
+        try {
+            $this->projectAnalysisService->scheduleAnalysis($project);
+            $this->addFlash('success', 'L\'analyse du projet a été programmée avec succès');
+        } catch (Exception $e) {
+            $this->addFlash('danger', 'Erreur lors de la programmation de l\'analyse : ' . $e->getMessage());
+        }
     }
 
     public function viewFile(AdminContext $context): Response

@@ -21,13 +21,13 @@ class Package implements NameableEntityInterface
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(length: 32, nullable: true)]
+    #[ORM\Column(length: 64, nullable: true)]
     private ?string $requiredVersion = null;
 
-    #[ORM\Column(length: 16)]
+    #[ORM\Column(length: 64)]
     private string $installedVersion;
 
-    #[ORM\Column(length: 16, nullable: true)]
+    #[ORM\Column(length: 64, nullable: true)]
     private ?string $availablePatch = null;
 
     #[ORM\ManyToOne(inversedBy: 'packages')]

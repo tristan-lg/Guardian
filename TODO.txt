@@ -1,7 +1,10 @@
 == v1.5.0
-    [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
-        [ ] Ajouter une notification discord pour les MAJ de versions applicatives disponibles
-            -> Pouvoir parametrer les channels à notifier, et activer la notification par projet ?
+    [ ] Permettre de désactiver l'analyse d'un projet depuis l'UI
+    [ ] permettre de choisir quels canaux utiliser pour chaque projet (plusieurs choix possibles)
+    [ ] Revoir l'UI pour simplier l'analyse depuis le tableau (quitte à cacher la liste des analyses ?)
+
 
 == v1.6.0
-	[ ] Vérifier aussi les version des librairies js ?
+    [ ] Plus tard : Ajouter le check des libs js (voir comment font yarn et npm)
+    [ ] Ajouter une notification  pour les MAJ de versions applicatives disponibles ? (configurable par projet)
+

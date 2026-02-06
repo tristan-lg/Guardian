@@ -54,3 +54,8 @@ To do that, you need to add the following line to your crontab:
 ```bash
 5 * * * * /usr/bin/php bin/console messenger:consume scheduler_guardian --time-limit=3600 >> /var/log/guardian/schedule.log 2>&1
 ```
+
+### Tasks détails
+Here are the running times and the tasks that will be executed by sceduler_guardian worker:
+- 07h00 - 07h59 : Running all the analyses
+- 06h00 - 06h59 : Purge old analyses, check credentials expiration and check notification channels connections
