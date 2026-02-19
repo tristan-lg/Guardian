@@ -16,7 +16,7 @@ readonly class AnalysisDoneListener
     #[AsEventListener]
     public function onAnalysisDoneEvent(AnalysisDoneEvent $event): void
     {
-        if (!$event->hasGradeChange() && !$event->hasAdvisoriesHashChange()) {
+        if (!$event->hasAdvisoriesHashChange()) {
             return;
         }
 
