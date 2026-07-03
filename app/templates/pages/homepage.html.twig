@@ -6,10 +6,12 @@
             <h1>Guardian - {{ APP_VERSION }}</h1>
 
             <div>
-                {% if is_granted('ROLE_USER') %}
+                {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration ({{ app.user.email }})</a>
+                {% elseif is_granted('ROLE_VIEWER') %}
+                    {# Nothing #}
                 {% else %}
-                    <a href="{{ path('admin') }}" class="btn btn-warning">Espace d'administration</a>
+                    <a href="{{ path('admin') }}" class="btn btn-warning" disabled="">Espace d'administration</a>
                 {% endif %}
 
                 {% if is_granted('IS_AUTHENTICATED') %}
@@ -146,7 +148,7 @@
                     {% if project.gitUrl is not null %}
                         <a href="{{ project.gitUrl }}" class=""><i class="fab fa-gitlab fa-fw" style="color: #ff7800"></i>&nbsp;Repository</a>
                     {% endif %}
-                    {% if is_granted('ROLE_USER') and project.lastAnalysis %}
+                    {% if is_granted('ROLE_ADMIN') and project.lastAnalysis %}
                         <a href="{{ ea_url()
                             .setController('App\\Controller\\Admin\\Crud\\AnalysisCrudController')
                             .setAction('detail')

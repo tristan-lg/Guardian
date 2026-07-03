@@ -2,6 +2,7 @@
 
 namespace App\Controller\Security;
 
+use App\Enum\Role;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,9 +26,19 @@ class SecurityController extends AbstractController
             'password_label' => 'Votre mot de passe',
             'sign_in_label' => 'Connexion',
             'csrf_token_intention' => 'authenticate',
-            'target_path' => '/admin',
+            'target_path' => '/admin/logged-in',
             'forgot_password_enabled' => false,
         ]);
+    }
+
+    #[Route(path: '/admin/logged-in', name: 'app_logged_in')]
+    public function loggedIn(): Response
+    {
+        if ($this->isGranted(Role::ROLE_ADMIN->value)) {
+            return $this->redirectToRoute('admin');
+        }
+
+        return $this->redirectToRoute('homepage');
     }
 
     #[Route(path: '/logout', name: 'app_logout')]

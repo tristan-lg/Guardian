@@ -39,7 +39,7 @@ class CreateUserCommand extends Command
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
         $user->setPassword($hashedPassword);
 
-        $user->setRoles([Role::ROLE_USER->value]);
+        $user->setRole(Role::ROLE_ADMIN);
 
         // Persist
         $this->em->persist($user);

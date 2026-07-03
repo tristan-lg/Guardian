@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Project;
+use App\Enum\Role;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -15,7 +16,7 @@ class HomepageController extends AbstractController
     public function index(EntityManagerInterface $em, #[Autowire('%app.homepage_require_login%')] bool $homepageRequireLogin): Response
     {
         if ($homepageRequireLogin) {
-            $this->denyAccessUnlessGranted('ROLE_USER');
+            $this->denyAccessUnlessGranted(Role::ROLE_VIEWER->value);
         }
 
         return $this->render('@Pages/homepage.html.twig', [

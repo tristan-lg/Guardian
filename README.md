@@ -55,6 +55,10 @@ To do that, you need to add the following line to your crontab:
 5 * * * * /usr/bin/php bin/console messenger:consume scheduler_guardian --time-limit=3600 >> /var/log/guardian/schedule.log 2>&1
 ```
 
+### Login to the webapp
+The web app can be accessed at : http://guardian.localhost
+Use `php bin/console app:create-user` to create a user and login.
+
 ### Tasks détails
 Here are the running times and the tasks that will be executed by sceduler_guardian worker:
 - 07h00 - 07h59 : Running all the analyses

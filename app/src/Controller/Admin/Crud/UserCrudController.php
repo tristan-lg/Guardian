@@ -3,13 +3,14 @@
 namespace App\Controller\Admin\Crud;
 
 use App\Entity\User;
+use App\Enum\Role;
 use App\Service\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -53,7 +54,11 @@ class UserCrudController extends AbstractGuardianCrudController
 
         yield EmailField::new('email');
 
-        yield ArrayField::new('roles')->hideOnForm();
+        yield ChoiceField::new('role')
+            ->setChoices(Role::cases())
+            ->setTemplatePath('admin/field/role.html.twig')
+            ->setFormTypeOption('choice_label', fn ($value) => $value->getLabel())
+        ;
     }
 
     /**

@@ -2,8 +2,4 @@
 
 namespace App\Scheduler;
 
-
-class SchedulerProvider
-{
-
-}
+class SchedulerProvider {}
