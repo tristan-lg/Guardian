@@ -7,7 +7,6 @@
             Je pense qu'il faut virer le crud ANalyse index (enfin, le lien dans la sidebar)
 
     [ ] Documenter le fait qu'on ne notifie QUE si de nouvelles vulnérabilités sont détectées (et pas si une vulnérabilité déjà détectée est toujours présente, pour eviter un spam mail)
-    [ ] Créer plusieurs roles utilisateur : ADMIN et USER. Admin a accès a tout, User ne peut que voir la page d'accueil
 
 
 == v1.7.0

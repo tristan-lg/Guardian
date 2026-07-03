@@ -5,7 +5,6 @@ namespace App\Command\Cron;
 use App\Entity\Project;
 use App\Service\AnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;

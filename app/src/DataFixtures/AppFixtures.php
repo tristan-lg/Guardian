@@ -10,6 +10,7 @@ use App\Entity\DTO\PlatformDTO;
 use App\Entity\File;
 use App\Entity\Project;
 use App\Entity\User;
+use App\Enum\Role;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -47,7 +48,7 @@ class AppFixtures extends Fixture
     {
         $admin = new User();
         $admin->setEmail('test');
-        $admin->setRoles(['ROLE_USER']);
+        $admin->setRole(Role::ROLE_ADMIN);
         $admin->setPassword($this->hasher->hashPassword($admin, 'test'));
 
         $manager->persist($admin);

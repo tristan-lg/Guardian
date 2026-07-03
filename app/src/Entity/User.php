@@ -30,8 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
     #[ORM\Column(length: 255)]
     private string $email;
 
-    #[ORM\Column(type: Types::JSON)]
-    private array $roles = [Role::ROLE_USER->value];
+    // TODO - Modifier le crud pour voir le role de l'utilisateur et le set a la création / edition
+    #[ORM\Column]
+    private Role $role = Role::ROLE_ADMIN;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
@@ -58,16 +59,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Passwor
 
     public function getRoles(): array
     {
-        if (empty($this->roles)) {
-            return [Role::ROLE_USER->value];
-        }
-
-        return $this->roles;
+        return [$this->getRole()->value];
     }
 
-    public function setRoles(array $roles): static
+    public function getRole(): Role
     {
-        $this->roles = $roles;
+        return $this->role;
+    }
+
+    public function setRole(Role $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }

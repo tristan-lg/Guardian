@@ -182,16 +182,6 @@ class ProjectCrudController extends AbstractGuardianCrudController
         );
     }
 
-    private function runAnalysis(Project $project): void
-    {
-        try {
-            $this->projectAnalysisService->scheduleAnalysis($project);
-            $this->addFlash('success', 'L\'analyse du projet a été programmée avec succès');
-        } catch (Exception $e) {
-            $this->addFlash('danger', 'Erreur lors de la programmation de l\'analyse : ' . $e->getMessage());
-        }
-    }
-
     public function viewFile(AdminContext $context): Response
     {
         $project = $this->getProject($context);
@@ -221,6 +211,16 @@ class ProjectCrudController extends AbstractGuardianCrudController
             'fileKey' => $fileKey,
             'fileContent' => $fileContent,
         ]);
+    }
+
+    private function runAnalysis(Project $project): void
+    {
+        try {
+            $this->projectAnalysisService->scheduleAnalysis($project);
+            $this->addFlash('success', 'L\'analyse du projet a été programmée avec succès');
+        } catch (Exception $e) {
+            $this->addFlash('danger', 'Erreur lors de la programmation de l\'analyse : ' . $e->getMessage());
+        }
     }
 
     private function getProject(AdminContext $context): Project
