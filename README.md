@@ -1,6 +1,6 @@
 # Guardian
 A [Symfony 7](https://symfony.com/) project running on [docker](https://www.docker.com/)
-on a PHP 8.3 server.
+on a PHP 8.4 server.
 
 Guardian is made to prevent running production application using outdated dependencies.
 It will check the composer.lock file and the package.json file to see if there are outdated dependencies.
